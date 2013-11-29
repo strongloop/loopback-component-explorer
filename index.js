@@ -4,6 +4,7 @@
 var path = require('path');
 var loopback = require('loopback');
 var swagger = require('loopback/node_modules/strong-remoting/ext/swagger');
+var express = require('loopback/node_modules/express');
 var STATIC_ROOT = path.join(__dirname, 'public');
 
 module.exports = explorer;
@@ -16,7 +17,16 @@ module.exports = explorer;
  */
 
 function explorer(loopbackApplication, options) {
+  var options = options || {};
   var remotes = loopbackApplication.remotes();
   swagger(remotes, options);
-  return loopback.static(STATIC_ROOT);
+
+  var app = express();
+  app.get('/config.json', function(req, res) {
+    res.send({
+      discoveryUrl: (options.basePath || '') + '/swagger/resources'
+    });
+  });
+  app.use(loopback.static(STATIC_ROOT));
+  return app;
 }
