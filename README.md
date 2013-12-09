@@ -15,8 +15,8 @@ var Product = loopback.Model.extend('product');
 Product.attachTo(loopback.memory());
 app.model(Product);
 
-app.use(loopback.rest());
-app.use('/explorer', explorer(app));
+app.use('/api', loopback.rest());
+app.use('/explorer', explorer(app, { basePath: '/api' }));
 
 app.listen(3000);
 ```
