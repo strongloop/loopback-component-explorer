@@ -71,8 +71,12 @@ describe('explorer', function() {
         app.use(restUrlBase, loopback.rest());
         app.use('/explorer', explorer(app, { basePath: restUrlBase }));
       } else {
-        app.use(loopback.rest());
+        // LoopBack REST adapter owns the whole URL space and does not
+        // let other middleware handle same URLs.
+        // It's possible to circumvent this measure by installing
+        // the explorer middleware before the REST middleware.
         app.use('/explorer', explorer(app));
+        app.use(loopback.rest());
       }
       done();
     }
