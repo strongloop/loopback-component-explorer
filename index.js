@@ -29,6 +29,16 @@ function explorer(loopbackApplication, options) {
     });
   });
   app.use(loopback.static(STATIC_ROOT));
+
+  loopbackApplication.once('start', function() {
+    var baseUrl = 'http://' + this.get('host') + ':' + this.get('port');
+    // `app.route` is filled by `expressApp.use(route, app)`, i.e.
+    //   loopbackApplication.use('/explorer', explorer(loopbackApplication))
+    // sets `app.route = '/explorer'`
+    var explorerPath = app.route;
+    console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
+  });
+
   return app;
 }
 

@@ -1,3 +1,4 @@
+var format = require('util').format;
 var loopback = require('loopback');
 var explorer = require('../');
 var request = require('supertest');
@@ -76,6 +77,27 @@ describe('explorer', function() {
           done();
         });
     });
+  });
+
+  it('reports correct explorer URL on app start', function() {
+    var messages = [];
+    console._log = console.log;
+    console.log = function() {
+      messages.push(format.apply(null, Array.prototype.slice.call(arguments)));
+    };
+
+    var app = loopback();
+    app.set('host', 'custom-host');
+    app.set('port', 12345);
+    app.use('/custom-api', loopback.rest());
+    app.use('/custom-explorer', explorer(app, { basePath: '/custom-root' }));
+    app.emit('start');
+
+    console.log = console._log;
+    delete console._log;
+
+    expect(messages).to.have.length(1);
+    expect(messages[0]).to.contain('http://custom-host:12345/custom-explorer');
   });
 
   function givenLoopBackAppWithExplorer(restUrlBase) {
