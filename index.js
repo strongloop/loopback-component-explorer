@@ -2,6 +2,7 @@
  * Adds dynamically-updated docs as /explorer
  */
 var path = require('path');
+var extend = require('util')._extend;
 var loopback = require('loopback');
 var express = requireLoopbackDependency('express');
 var STATIC_ROOT = path.join(__dirname, 'public');
@@ -16,7 +17,8 @@ module.exports = explorer;
  */
 
 function explorer(loopbackApplication, options) {
-  var options = options || {};
+  options = extend({}, options);
+  options.basePath = options.basePath || loopbackApplication.get('restApiRoot');
 
   loopbackApplication.docs(options);
 
