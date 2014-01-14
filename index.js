@@ -2,8 +2,8 @@
  * Adds dynamically-updated docs as /explorer
  */
 var path = require('path');
+var extend = require('util')._extend;
 var loopback = require('loopback');
-var swagger = requireLoopbackDependency('strong-remoting/ext/swagger');
 var express = requireLoopbackDependency('express');
 var STATIC_ROOT = path.join(__dirname, 'public');
 
@@ -13,13 +13,14 @@ module.exports = explorer;
  * Example usage:
  *
  * var explorer = require('loopback-explorer');
- * app.use('/explorer', explorer(app));
+ * app.use('/explorer', explorer(app, options));
  */
 
 function explorer(loopbackApplication, options) {
-  var options = options || {};
-  var remotes = loopbackApplication.remotes();
-  swagger(remotes, options);
+  options = extend({}, options);
+  options.basePath = options.basePath || loopbackApplication.get('restApiRoot');
+
+  loopbackApplication.docs(options);
 
   var app = express();
   app.get('/config.json', function(req, res) {
