@@ -7,7 +7,7 @@
     "test": "mocha"
   },
   "peerDependencies": {
-    "loopback": "1.x.x"
+    "loopback": "1.x >=1.5"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
     "url": "https://github.com/strongloop/loopback-explorer/issues"
   },
   "devDependencies": {
-    "loopback": "1.x.x",
+    "loopback": "1.x",
     "mocha": "~1.14.0",
     "supertest": "~0.8.1",
     "chai": "~1.8.1"
