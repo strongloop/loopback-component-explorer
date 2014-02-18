@@ -19,9 +19,7 @@
     "explorer"
   ],
   "author": "Ritchie Martori",
-  "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "e95d3f1f6362d8ba9297301764be1e915f7e4e74",
   "bugs": {
     "url": "https://github.com/strongloop/loopback-explorer/issues"
   },
@@ -30,5 +28,9 @@
     "mocha": "~1.14.0",
     "supertest": "~0.8.1",
     "chai": "~1.8.1"
+  },
+  "license": {
+    "name": "Dual MIT/StrongLoop",
+    "url": "https://github.com/strongloop/loopback/blob/master/LICENSE"
   }
 }
