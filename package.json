@@ -31,6 +31,6 @@
   },
   "license": {
     "name": "Dual MIT/StrongLoop",
-    "url": "https://github.com/strongloop/loopback/blob/master/LICENSE"
+    "url": "https://github.com/strongloop/loopback-explorer/blob/master/LICENSE"
   }
 }
