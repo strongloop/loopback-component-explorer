@@ -23,6 +23,9 @@ function explorer(loopbackApplication, options) {
   loopbackApplication.docs(options);
 
   var app = express();
+
+  app.disable('x-powered-by');
+
   app.get('/config.json', function(req, res) {
     res.send({
       discoveryUrl: (options.basePath || '') + '/swagger/resources'
