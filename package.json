@@ -7,7 +7,7 @@
     "test": "mocha"
   },
   "peerDependencies": {
-    "loopback": "1.x >=1.5"
+    "loopback": "2.x || 1.x >=1.5"
   },
   "repository": {
     "type": "git",
