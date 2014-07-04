@@ -3,7 +3,11 @@ var app = loopback();
 var explorer = require('../');
 var port = 3000;
 
-var Product = loopback.Model.extend('product');
+var Product = loopback.Model.extend('product', {
+  foo: {type: 'string', required: true},
+  bar: 'string',
+  aNum: {type: 'number', min: 1, max: 10, required: true, default: 5}
+});
 Product.attachTo(loopback.memory());
 app.model(Product);
 

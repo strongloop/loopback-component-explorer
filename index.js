@@ -5,6 +5,7 @@ var path = require('path');
 var extend = require('util')._extend;
 var loopback = require('loopback');
 var express = requireLoopbackDependency('express');
+var swagger = require('./lib/swagger');
 var fs = require('fs');
 var SWAGGER_UI_ROOT = path.join(__dirname, 'node_modules', 'swagger-ui', 'dist');
 var STATIC_ROOT = path.join(__dirname, 'public');
@@ -20,9 +21,9 @@ module.exports = explorer;
 
 function explorer(loopbackApplication, options) {
   options = extend({}, options);
-  options.basePath = options.basePath || loopbackApplication.get('restApiRoot');
+  options.basePath = options.basePath || loopbackApplication.get('restApiRoot') || '';
 
-  loopbackApplication.docs(options);
+  swagger(loopbackApplication.remotes(), options);
 
   var app = express();
 
@@ -30,7 +31,7 @@ function explorer(loopbackApplication, options) {
 
   app.get('/config.json', function(req, res) {
     res.send({
-      url: (options.basePath || '') + '/swagger/resources'
+      url: options.basePath + '/swagger/resources'
     });
   });
   // Allow specifying a static file root for swagger files. Any files in that folder

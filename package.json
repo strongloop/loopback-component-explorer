@@ -7,7 +7,8 @@
     "test": "mocha"
   },
   "peerDependencies": {
-    "loopback": "2.x || 1.x >=1.5"
+    "loopback": "2.x || 1.x >=1.5",
+    "strong-remoting": "2.x || 1.x >=1.5"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "url": "https://github.com/strongloop/loopback-explorer/blob/master/LICENSE"
   },
   "dependencies": {
-    "swagger-ui": "^2.0.17"
+    "swagger-ui": "~2.0.17",
+    "debug": "~1.0.2"
   }
 }
