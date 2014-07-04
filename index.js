@@ -5,6 +5,8 @@ var path = require('path');
 var extend = require('util')._extend;
 var loopback = require('loopback');
 var express = requireLoopbackDependency('express');
+var fs = require('fs');
+var SWAGGER_UI_ROOT = path.join(__dirname, 'node_modules', 'swagger-ui', 'dist');
 var STATIC_ROOT = path.join(__dirname, 'public');
 
 module.exports = explorer;
@@ -28,10 +30,20 @@ function explorer(loopbackApplication, options) {
 
   app.get('/config.json', function(req, res) {
     res.send({
-      discoveryUrl: (options.basePath || '') + '/swagger/resources'
+      url: (options.basePath || '') + '/swagger/resources'
     });
   });
+  // Allow specifying a static file root for swagger files. Any files in that folder
+  // will override those in the swagger-ui distribution. In this way one could e.g. 
+  // make changes to index.html without having to worry about constantly pulling in
+  // JS updates.
+  if (options.swaggerDistRoot) {
+    app.use(loopback.static(options.swaggerDistRoot));
+  }
+  // File in node_modules are overridden by a few customizations
   app.use(loopback.static(STATIC_ROOT));
+  // Swagger UI distribution
+  app.use(loopback.static(SWAGGER_UI_ROOT));
   return app;
 }
 

@@ -32,5 +32,8 @@
   "license": {
     "name": "Dual MIT/StrongLoop",
     "url": "https://github.com/strongloop/loopback-explorer/blob/master/LICENSE"
+  },
+  "dependencies": {
+    "swagger-ui": "^2.0.17"
   }
 }
