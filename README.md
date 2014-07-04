@@ -96,3 +96,16 @@ Options are passed to `explorer(app, options)`.
 > Default: Read from package.json
 
 > Sets your API version. If not present, will read from your app's package.json.
+=======
+> Set the base path for swagger resources. 
+> Default: `app.get('restAPIRoot')` or  `/swagger/resources`.
+
+`swaggerDistRoot`: **String** 
+
+> Set a path within your application for overriding Swagger UI files.
+
+> If present, will search `swaggerDistRoot` first when attempting to load Swagger UI, allowing
+you to pick and choose overrides.
+
+> See [index.html](public/index.html), where you may want to begin your overrides.
+> The rest of the UI is provided by [Swagger UI](https://github.com/wordnik/swagger-ui).
