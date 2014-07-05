@@ -19,9 +19,8 @@
  * THE SOFTWARE.
  */
 
-var extend = require('util')._extend;
-var inherits = require('util').inherits;
 var url = require('url');
+var path = require('path');
 var loopback = require('loopback');
 
 var RemoteObjects = require('strong-remoting');
@@ -31,31 +30,40 @@ var request = require('supertest');
 var expect = require('chai').expect;
 
 describe('swagger definition', function() {
-  var objects;
-  var remotes;
+  var app;
 
-  // setup
-  beforeEach(function(){
-    objects = RemoteObjects.create();
-    remotes = objects.exports;
+  beforeEach(function() {
+    app = createLoopbackAppWithModel();
   });
 
   describe('basePath', function() {
-    it('is "http://{host}/" by default', function(done) {
-      swagger(objects);
+    // No basepath on resource doc in 1.2
+    it('no longer exists on resource doc', function(done) {
+      swagger(app.remotes());
 
       var getReq = getSwaggerResources();
       getReq.end(function(err, res) {
-          if (err) return done(err);
-          expect(res.body.basePath).to.equal(url.resolve(getReq.url, '/'));
-          done();
-        });
+        if (err) return done(err);
+        expect(res.body.basePath).to.equal(undefined);
+        done();
+      });
+    });
+
+    it('is "http://{host}/" by default', function(done) {
+      swagger(app.remotes());
+
+      var getReq = getAPIDeclaration('products');
+      getReq.end(function(err, res) {
+        if (err) return done(err);
+        expect(res.body.basePath).to.equal(url.resolve(getReq.url, '/'));
+        done();
+      });
     });
 
     it('is "http://{host}/{basePath}" when basePath is a path', function(done){
-      swagger(objects, { basePath: '/api-root'});
+      swagger(app.remotes(), { basePath: '/api-root'});
 
-      var getReq = getSwaggerResources();
+      var getReq = getAPIDeclaration('products');
       getReq.end(function(err, res) {
         if (err) return done(err);
         var apiRoot = url.resolve(getReq.url, '/api-root');
@@ -67,9 +75,9 @@ describe('swagger definition', function() {
     it('is custom URL when basePath is a http(s) URL', function(done) {
       var apiUrl = 'http://custom-api-url/';
 
-      swagger(objects, { basePath: apiUrl });
+      swagger(app.remotes(), { basePath: apiUrl });
 
-      var getReq = getSwaggerResources();
+      var getReq = getAPIDeclaration('products');
       getReq.end(function(err, res) {
         if (err) return done(err);
         expect(res.body.basePath).to.equal(apiUrl);
@@ -80,7 +88,6 @@ describe('swagger definition', function() {
 
   describe('Model definition attributes', function() {
     it('Properly defines basic attributes', function(done) {
-      var app = createLoopbackAppWithModel();
       var extension = swagger(app.remotes(), {});
       getModelFromRemoting(extension, 'product', function(data) {
         expect(data.id).to.equal('product');
@@ -98,25 +105,16 @@ describe('swagger definition', function() {
     });
   });
 
-  function getSwaggerResources(restPath) {
-    var app = createRestApiApp(restPath);
-    var prefix = restPath || '';
+  function getSwaggerResources(restPath, classPath) {
     return request(app)
-      .get(prefix + '/swagger/resources')
+      .get(path.join(restPath || '', '/swagger/resources', classPath || ''))
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200);
   }
 
-  function createRestApiApp(restPath) {
-    restPath = restPath || '/';
-
-    var app = loopback();
-    app.use(restPath, function (req, res, next) {
-      // create the handler for each request
-      objects.handler('rest').apply(objects, arguments);
-    });
-    return app;
+  function getAPIDeclaration(className) {
+    return getSwaggerResources('', path.join('/', className));
   }
 
   function createLoopbackAppWithModel() {
@@ -129,12 +127,14 @@ describe('swagger definition', function() {
     });
     Product.attachTo(loopback.memory());
     app.model(Product);
+
     app.use(loopback.rest());
+
     return app;
   }
 
   function getModelFromRemoting(extension, modelName, cb) {
-    extension[modelName](function(err, data) {
+    extension['resources/' + modelName + 's'](function(err, data) {
       cb(data.models[modelName]);
     });
   }

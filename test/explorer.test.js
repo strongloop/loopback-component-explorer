@@ -24,7 +24,8 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) throw err;
 
-          assert(!!~res.text.indexOf('<title>StrongLoop API Explorer</title>'), 'text does not contain expected string');
+          assert(!!~res.text.indexOf('<title>StrongLoop API Explorer</title>'), 
+            'text does not contain expected string');
           done();
         });
     });

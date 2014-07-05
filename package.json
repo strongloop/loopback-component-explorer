@@ -36,6 +36,8 @@
   },
   "dependencies": {
     "swagger-ui": "~2.0.17",
-    "debug": "~1.0.2"
+    "debug": "~1.0.2",
+    "lodash.clonedeep": "^2.4.1",
+    "lodash.defaults": "^2.4.1"
   }
 }
