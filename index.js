@@ -1,4 +1,4 @@
-'use strict';
+  'use strict';
 /*!
  * Adds dynamically-updated docs as /explorer
  */
@@ -23,7 +23,7 @@ module.exports = explorer;
 
 function explorer(loopbackApplication, options) {
   options = _defaults({}, options, {
-    basePath: loopbackApplication.get('restApiRoot') || '/',
+    basePath: loopbackApplication.get('restApiRoot') || '',
     name: 'swagger',
     resourcePath: 'resources',
     apiInfo: loopbackApplication.get('apiInfo') || {}
@@ -37,7 +37,7 @@ function explorer(loopbackApplication, options) {
 
   app.get('/config.json', function(req, res) {
     res.send({
-      url: path.join(options.basePath, options.name, options.resourcePath)
+      url: path.join(options.basePath || '/', options.name, options.resourcePath)
     });
   });
   // Allow specifying a static file root for swagger files. Any files in that folder
