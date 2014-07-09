@@ -540,7 +540,7 @@
         return dataType;
       } else {
         if (listType != null) {
-          return models[listType].getMockSignature();
+          return '<span class="strong">Array of </span>' + models[listType].getMockSignature();
         } else {
           return models[dataType].getMockSignature();
         }
