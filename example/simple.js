@@ -11,8 +11,9 @@ var Product = loopback.Model.extend('product', {
 Product.attachTo(loopback.memory());
 app.model(Product);
 
-app.use('/explorer', explorer(app));
-app.use(loopback.rest());
-console.log("Explorer mounted at localhost:" + port + "/explorer");
+var apiPath = '/api';
+app.use('/explorer', explorer(app, {basePath: apiPath}));
+app.use(apiPath, loopback.rest());
+console.log('Explorer mounted at localhost:' + port + '/explorer');
 
 app.listen(port);

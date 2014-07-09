@@ -22,26 +22,19 @@
 var url = require('url');
 var path = require('path');
 var loopback = require('loopback');
-
-var RemoteObjects = require('strong-remoting');
+var express = require('express');
 var swagger = require('../lib/swagger.js');
 
 var request = require('supertest');
 var expect = require('chai').expect;
 
 describe('swagger definition', function() {
-  var app;
-
-  beforeEach(function() {
-    app = createLoopbackAppWithModel();
-  });
-
   describe('basePath', function() {
     // No basepath on resource doc in 1.2
     it('no longer exists on resource doc', function(done) {
-      swagger(app.remotes());
+      var app = mountSwagger();
 
-      var getReq = getSwaggerResources();
+      var getReq = getSwaggerResources(app);
       getReq.end(function(err, res) {
         if (err) return done(err);
         expect(res.body.basePath).to.equal(undefined);
@@ -49,21 +42,21 @@ describe('swagger definition', function() {
       });
     });
 
-    it('is "http://{host}/" by default', function(done) {
-      swagger(app.remotes());
+    it('is "http://{host}/api" by default', function(done) {
+      var app = mountSwagger();
 
-      var getReq = getAPIDeclaration('products');
+      var getReq = getAPIDeclaration(app, 'products');
       getReq.end(function(err, res) {
         if (err) return done(err);
-        expect(res.body.basePath).to.equal(url.resolve(getReq.url, '/'));
+        expect(res.body.basePath).to.equal(url.resolve(getReq.url, '/api'));
         done();
       });
     });
 
     it('is "http://{host}/{basePath}" when basePath is a path', function(done){
-      swagger(app.remotes(), { basePath: '/api-root'});
+      var app = mountSwagger({ basePath: '/api-root'});
 
-      var getReq = getAPIDeclaration('products');
+      var getReq = getAPIDeclaration(app, 'products');
       getReq.end(function(err, res) {
         if (err) return done(err);
         var apiRoot = url.resolve(getReq.url, '/api-root');
@@ -72,15 +65,26 @@ describe('swagger definition', function() {
       });
     });
 
-    it('is custom URL when basePath is a http(s) URL', function(done) {
-      var apiUrl = 'http://custom-api-url/';
+    it('infers API basePath from app', function(done){
+      var app = mountSwagger({}, {apiRoot: '/custom-api-root'});
 
-      swagger(app.remotes(), { basePath: apiUrl });
-
-      var getReq = getAPIDeclaration('products');
+      var getReq = getAPIDeclaration(app, 'products');
       getReq.end(function(err, res) {
         if (err) return done(err);
-        expect(res.body.basePath).to.equal(apiUrl);
+        var apiRoot = url.resolve(getReq.url, '/custom-api-root');
+        expect(res.body.basePath).to.equal(apiRoot);
+        done();
+      });
+    });
+
+    it('is reachable when explorer mounting location is changed', function(done){
+      var explorerRoot = '/erforscher';
+      var app = mountSwagger({}, {explorerRoot: explorerRoot});
+
+      var getReq = getSwaggerResources(app, explorerRoot, 'products');
+      getReq.end(function(err, res) {
+        if (err) return done(err);
+        expect(res.body.basePath).to.be.a('string');
         done();
       });
     });
@@ -88,8 +92,12 @@ describe('swagger definition', function() {
 
   describe('Model definition attributes', function() {
     it('Properly defines basic attributes', function(done) {
-      var extension = swagger(app.remotes(), {});
-      getModelFromRemoting(extension, 'product', function(data) {
+      var app = mountSwagger();
+
+      var getReq = getAPIDeclaration(app, 'products');
+      getReq.end(function(err, res) {
+        if (err) return done(err);
+        var data = res.body.models.product;
         expect(data.id).to.equal('product');
         expect(data.required.sort()).to.eql(['id', 'aNum', 'foo'].sort());
         expect(data.properties.foo.type).to.equal('string');
@@ -105,19 +113,28 @@ describe('swagger definition', function() {
     });
   });
 
-  function getSwaggerResources(restPath, classPath) {
+  function getSwaggerResources(app, restPath, classPath) {
     return request(app)
-      .get(path.join(restPath || '', '/swagger/resources', classPath || ''))
+      .get(path.join(restPath || '/explorer', '/resources', classPath || ''))
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200);
   }
 
-  function getAPIDeclaration(className) {
-    return getSwaggerResources('', path.join('/', className));
+  function getAPIDeclaration(app, className) {
+    return getSwaggerResources(app, '', path.join('/', className));
   }
 
-  function createLoopbackAppWithModel() {
+  function mountSwagger(options, addlOptions) {
+    addlOptions = addlOptions || {};
+    var app = createLoopbackAppWithModel(addlOptions.apiRoot);
+    var swaggerApp = express();
+    swagger(app, swaggerApp, options);
+    app.use(addlOptions.explorerRoot || '/explorer', swaggerApp);
+    return app;
+  }
+
+  function createLoopbackAppWithModel(apiRoot) {
     var app = loopback();
 
     var Product = loopback.Model.extend('product', {
@@ -128,14 +145,10 @@ describe('swagger definition', function() {
     Product.attachTo(loopback.memory());
     app.model(Product);
 
-    app.use(loopback.rest());
+    // Simulate a restApiRoot set in config
+    app.set('restApiRoot', apiRoot || '/api');
+    app.use(app.get('restApiRoot'), loopback.rest());
 
     return app;
-  }
-
-  function getModelFromRemoting(extension, modelName, cb) {
-    extension['resources/' + modelName + 's'](function(err, data) {
-      cb(data.models[modelName]);
-    });
   }
 });

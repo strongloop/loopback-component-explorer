@@ -9,7 +9,8 @@ var loopback = require('loopback');
 var express = requireLoopbackDependency('express');
 var swagger = require('./lib/swagger');
 var fs = require('fs');
-var SWAGGER_UI_ROOT = path.join(__dirname, 'node_modules', 'swagger-ui', 'dist');
+var SWAGGER_UI_ROOT = path.join(__dirname, 'node_modules', 
+  'swagger-ui', 'dist');
 var STATIC_ROOT = path.join(__dirname, 'public');
 
 module.exports = explorer;
@@ -23,27 +24,38 @@ module.exports = explorer;
 
 function explorer(loopbackApplication, options) {
   options = _defaults({}, options, {
-    basePath: loopbackApplication.get('restApiRoot') || '',
-    name: 'swagger',
     resourcePath: 'resources',
-    apiInfo: loopbackApplication.get('apiInfo') || {}
+    apiInfo: loopbackApplication.get('apiInfo') || {},
+    preMiddleware: []
   });
-
-  swagger(loopbackApplication.remotes(), options);
 
   var app = express();
 
+  swagger(loopbackApplication, app, options);
+
+  // Allow the user to attach middleware that will run before any
+  // explorer routes, e.g. for access control.
+  if (typeof options.preMiddleware === 'function' || 
+      (Array.isArray(options.preMiddleware) && options.preMiddleware.length)) {
+    app.use(options.preMiddleware);
+  }
+
   app.disable('x-powered-by');
 
+  // config.json is loaded by swagger-ui. The server should respond
+  // with the relative URI of the resource doc.
   app.get('/config.json', function(req, res) {
+    var resourcePath = req.originalUrl.replace(/\/config.json(\?.*)?$/, 
+      path.join('/', options.resourcePath));
     res.send({
-      url: path.join(options.basePath || '/', options.name, options.resourcePath)
+      url: resourcePath
     });
   });
-  // Allow specifying a static file root for swagger files. Any files in that folder
-  // will override those in the swagger-ui distribution. In this way one could e.g. 
-  // make changes to index.html without having to worry about constantly pulling in
-  // JS updates.
+
+  // Allow specifying a static file root for swagger files. Any files in 
+  // that folder will override those in the swagger-ui distribution. 
+  // In this way one could e.g. make changes to index.html without having 
+  // to worry about constantly pulling in JS updates.
   if (options.swaggerDistRoot) {
     app.use(loopback.static(options.swaggerDistRoot));
   }
@@ -51,6 +63,7 @@ function explorer(loopbackApplication, options) {
   app.use(loopback.static(STATIC_ROOT));
   // Swagger UI distribution
   app.use(loopback.static(SWAGGER_UI_ROOT));
+
   return app;
 }
 

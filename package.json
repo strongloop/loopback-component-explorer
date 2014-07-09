@@ -29,7 +29,7 @@
     "mocha": "~1.14.0",
     "supertest": "~0.8.1",
     "chai": "~1.8.1",
-    "strong-remoting": "^2.0.0-beta4"
+    "express": "3.x"
   },
   "license": {
     "name": "Dual MIT/StrongLoop",
