@@ -45,7 +45,7 @@ $(function() {
       log('added accessToken ' + key);
       window.authorizations.add('key', new ApiKeyAuthorization('accessToken', key, 'query'));
       accessToken = key;
-      $('.accessTokenDisplay').text('Access Token Set.').addClass('set');
+      $('.accessTokenDisplay').text('Token Set.').addClass('set');
       $('.accessTokenDisplay').attr('data-tooltip', 'Current Token: ' + key);
     }
   }
@@ -55,9 +55,9 @@ $(function() {
     var key = $(e.currentTarget)[0].value;
     if (!key || key.trim === '') return;
     if (accessToken !== key) {
-      $('.accessTokenDisplay').text('Access Token changed; submit to confirm.');
+      $('.accessTokenDisplay').text('Token changed; submit to confirm.');
     } else {
-      $('.accessTokenDisplay').text('Access Token Set.');
+      $('.accessTokenDisplay').text('Token Set.');
     }
   }
 });

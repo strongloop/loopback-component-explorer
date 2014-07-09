@@ -10,6 +10,7 @@
   content: attr(data-tooltip);
   position: absolute;
   white-space: nowrap;
+  font-size: 12px;
   background: rgba(0, 0, 0, 0.85);
   padding: 3px 7px;
   color: #FFF;
@@ -19,3 +20,8 @@
   right: 0;
   bottom: -30px;
 }
+
+/* 
+FIXME: Separate the overrides from the rest of the styles, rather than override screen.css entirely.
+*/
+
