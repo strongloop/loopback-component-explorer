@@ -3,6 +3,7 @@
  * Adds dynamically-updated docs as /explorer
  */
 var path = require('path');
+var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash.defaults');
 var extend = require('util')._extend;
 var loopback = require('loopback');
@@ -46,7 +47,7 @@ function explorer(loopbackApplication, options) {
   // with the relative URI of the resource doc.
   app.get('/config.json', function(req, res) {
     var resourcePath = req.originalUrl.replace(/\/config.json(\?.*)?$/, 
-      path.join('/', options.resourcePath));
+      urlJoin('/', options.resourcePath));
     res.send({
       url: resourcePath
     });

@@ -20,10 +20,10 @@
  */
 
 var url = require('url');
-var path = require('path');
+var urlJoin = require('../lib/url-join');
 var loopback = require('loopback');
 var express = require('express');
-var swagger = require('../lib/swagger.js');
+var swagger = require('../lib/swagger');
 
 var request = require('supertest');
 var expect = require('chai').expect;
@@ -115,14 +115,14 @@ describe('swagger definition', function() {
 
   function getSwaggerResources(app, restPath, classPath) {
     return request(app)
-      .get(path.join(restPath || '/explorer', '/resources', classPath || ''))
+      .get(urlJoin(restPath || '/explorer', '/resources', classPath || ''))
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200);
   }
 
   function getAPIDeclaration(app, className) {
-    return getSwaggerResources(app, '', path.join('/', className));
+    return getSwaggerResources(app, '', urlJoin('/', className));
   }
 
   function mountSwagger(options, addlOptions) {
