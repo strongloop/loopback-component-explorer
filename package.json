@@ -6,10 +6,6 @@
   "scripts": {
     "test": "mocha"
   },
-  "peerDependencies": {
-    "loopback": "2.x || 1.x >=1.5",
-    "strong-remoting": "2.x || 1.x >=1.5"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/strongloop/loopback-explorer.git"
@@ -28,8 +24,7 @@
     "loopback": "1.x",
     "mocha": "~1.14.0",
     "supertest": "~0.8.1",
-    "chai": "~1.8.1",
-    "express": "3.x"
+    "chai": "~1.8.1"
   },
   "license": {
     "name": "Dual MIT/StrongLoop",
@@ -39,6 +34,7 @@
     "swagger-ui": "~2.0.17",
     "debug": "~1.0.2",
     "lodash.clonedeep": "^2.4.1",
-    "lodash.defaults": "^2.4.1"
+    "lodash.defaults": "^2.4.1",
+    "express": "4.x"
   }
 }
