@@ -23,20 +23,12 @@ module.exports = explorer;
 function explorer(loopbackApplication, options) {
   options = _defaults({}, options, {
     resourcePath: 'resources',
-    apiInfo: loopbackApplication.get('apiInfo') || {},
-    preMiddleware: []
+    apiInfo: loopbackApplication.get('apiInfo') || {}
   });
 
   var app = express();
 
   swagger(loopbackApplication, app, options);
-
-  // Allow the user to attach middleware that will run before any
-  // explorer routes, e.g. for access control.
-  if (typeof options.preMiddleware === 'function' || 
-      (Array.isArray(options.preMiddleware) && options.preMiddleware.length)) {
-    app.use(options.preMiddleware);
-  }
 
   app.disable('x-powered-by');
 

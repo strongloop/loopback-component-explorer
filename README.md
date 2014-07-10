@@ -30,12 +30,10 @@ Many aspects of the explorer are configurable.
 See [options](#options) for a description of these options:
 
 ```js
+// Mount middleware before calling `explorer()` to add custom headers, auth, etc.
+app.use('/explorer', loopback.basicAuth('user', 'password'));
 app.use('/explorer', explorer(app, {
   basePath: '/custom-api-root',
-  preMiddleware: [
-    // You can add as many items to this middleware chain as you like
-    loopback.basicAuth(bitmex.settings.basicAuth.user, bitmex.settings.basicAuth.password)
-  ],
   swaggerDistRoot: '/swagger',
   apiInfo: {
     'title': 'My API',
@@ -58,7 +56,6 @@ Options are passed to `explorer(app, options)`.
 > Sets the API's base path. This must be set if you are mounting your api
 > to a path different than '/api', e.g. with
 > `loopback.use('/custom-api-root', loopback.rest());
-
 
 `swaggerDistRoot`: **String** 
 
@@ -89,9 +86,3 @@ Options are passed to `explorer(app, options)`.
 > Default: Read from package.json
 
 > Sets your API version. If not present, will read from your app's package.json.
-
-`preMiddleware`: **Array<Function>|Function**
-
-> Middleware to run before any explorer routes, including static routes.
-
-> Useful for setting HTTP Auth, modifying the `Host` header, and so on.
