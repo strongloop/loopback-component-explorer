@@ -99,7 +99,7 @@ describe('swagger definition', function() {
         if (err) return done(err);
         var data = res.body.models.product;
         expect(data.id).to.equal('product');
-        expect(data.required.sort()).to.eql(['id', 'aNum', 'foo'].sort());
+        expect(data.required.sort()).to.eql(['aNum', 'foo'].sort());
         expect(data.properties.foo.type).to.equal('string');
         expect(data.properties.bar.type).to.equal('string');
         expect(data.properties.aNum.type).to.equal('number');
