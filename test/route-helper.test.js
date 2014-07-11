@@ -5,7 +5,6 @@ var expect = require('chai').expect;
 var _defaults = require('lodash.defaults');
 
 describe('route-helper', function() {
-  // TODO
   it('returns "object" when a route has multiple return values', function() {
     var doc = createAPIDoc({
       returns: [
