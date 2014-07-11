@@ -14,12 +14,11 @@ describe('model-helper', function() {
         buf: Buffer // {type: 'string', format: 'byte'}
       });
       var props = def.properties;
-      expect(props.str.type).to.equal('string');
-      expect(props.num.type).to.equal('number');
-      expect(props.num.format).to.equal('double');
-      expect(props.date.type).to.equal('string');
-      expect(props.bool.type).to.equal('boolean');
-      expect(props.buf.type).to.equal('string');
+      expect(props.str).to.eql({ type: 'string' });
+      expect(props.num).to.eql({ type: 'number', format: 'double' });
+      expect(props.date).eql({ type: 'string', format: 'date' });
+      expect(props.bool).to.eql({ type: 'boolean' });
+      expect(props.buf).to.eql({ type: 'string', format: 'byte' });
     });
     it('converts string types', function() {
       var def = getDefinition({
@@ -30,12 +29,11 @@ describe('model-helper', function() {
         buf: 'buffer' // {type: 'string', format: 'byte'}
       });
       var props = def.properties;
-      expect(props.str.type).to.equal('string');
-      expect(props.num.type).to.equal('number');
-      expect(props.num.format).to.equal('double');
-      expect(props.date.type).to.equal('string');
-      expect(props.bool.type).to.equal('boolean');
-      expect(props.buf.type).to.equal('string');
+      expect(props.str).to.eql({ type: 'string' });
+      expect(props.num).to.eql({ type: 'number', format: 'double' });
+      expect(props.date).eql({ type: 'string', format: 'date' });
+      expect(props.bool).to.eql({ type: 'boolean' });
+      expect(props.buf).to.eql({ type: 'string', format: 'byte' });
     });
     describe('array definitions', function() {
       // There are three types we want to checK:
@@ -47,8 +45,9 @@ describe('model-helper', function() {
           array: [String]
         });
         var props = def.properties;
-        expect(props.array.type).to.equal('array');
-        expect(props.array.items.type).to.equal('string');
+        expect(props.array).to.eql({ type: 'array', items: { 
+          type: 'string' 
+        }});
       });
 
       it('converts ["string"] type', function() {
@@ -56,8 +55,9 @@ describe('model-helper', function() {
           array: ['string']
         });
         var props = def.properties;
-        expect(props.array.type).to.equal('array');
-        expect(props.array.items.type).to.equal('string');
+        expect(props.array).to.eql({ type: 'array', items: { 
+          type: 'string' 
+        }});
       });
 
       it('converts [{type: "string", length: 64}] type', function() {
@@ -65,8 +65,10 @@ describe('model-helper', function() {
           array: [{type: 'string', length: 64}]
         });
         var props = def.properties;
-        expect(props.array.type).to.equal('array');
-        expect(props.array.items.type).to.equal('string');
+        expect(props.array).to.eql({ type: 'array', items: { 
+          type: 'string',
+          length: 64
+        }});
       });
 
       it('converts [{type: "date"}] type (with `format`)', function() {
@@ -74,15 +76,15 @@ describe('model-helper', function() {
           array: [{type: 'date'}]
         });
         var props = def.properties;
-        expect(props.array.type).to.equal('array');
-        expect(props.array.items.type).to.equal('string');
-        expect(props.array.items.format).to.equal('date');
+        expect(props.array).to.eql({ type: 'array', items: {
+          type: 'string', format: 'date'
+        }});
       });
     });
   });
 });
 
-// Simulates the format of a rmeoting class.
+// Simulates the format of a remoting class.
 function getDefinition(model) {
   Object.keys(model).forEach(function(name) {
     model[name] = {type: model[name]};
