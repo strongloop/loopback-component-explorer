@@ -2,6 +2,7 @@
 /*!
  * Adds dynamically-updated docs as /explorer
  */
+var url = require('url');
 var path = require('path');
 var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash.defaults');
@@ -35,10 +36,15 @@ function explorer(loopbackApplication, options) {
   // config.json is loaded by swagger-ui. The server should respond
   // with the relative URI of the resource doc.
   app.get('/config.json', function(req, res) {
-    var resourcePath = req.originalUrl.replace(/\/config.json(\?.*)?$/, 
-      urlJoin('/', options.resourcePath));
+    // Get the path we're mounted at. It's best to get this from the referer
+    // in case we're proxied at a deep path.
+    var source = url.parse(req.headers.referer || '').pathname;
+    // If no referer is available, use the incoming url.
+    if (!source) {
+      source = req.originalUrl.replace(/\/config.json(\?.*)?$/, '');
+    }
     res.send({
-      url: resourcePath
+      url: urlJoin(source, '/' + options.resourcePath)
     });
   });
 
