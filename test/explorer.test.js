@@ -24,7 +24,8 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) throw err;
 
-          assert(!!~res.text.indexOf('<title>StrongLoop API Explorer</title>'), 'text does not contain expected string');
+          assert(!!~res.text.indexOf('<title>StrongLoop API Explorer</title>'), 
+            'text does not contain expected string');
           done();
         });
     });
@@ -37,24 +38,24 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to
-            .have.property('discoveryUrl', '/swagger/resources');
+            .have.property('url', '/explorer/resources');
           done();
         });
     });
   });
 
-  describe('with custom baseUrl', function() {
-    beforeEach(givenLoopBackAppWithExplorer('/api'));
+  describe('with custom explorer base', function() {
+    beforeEach(givenLoopBackAppWithExplorer('/swagger'));
 
     it('should serve correct swagger-ui config', function(done) {
       request(this.app)
-        .get('/explorer/config.json')
+        .get('/swagger/config.json')
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to
-            .have.property('discoveryUrl', '/api/swagger/resources');
+            .have.property('url', '/swagger/resources');
           done();
         });
     });
@@ -72,36 +73,26 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to
-            .have.property('discoveryUrl', '/rest-api-root/swagger/resources');
+            .have.property('url', '/explorer/resources');
           done();
         });
     });
   });
 
-  function givenLoopBackAppWithExplorer(restUrlBase) {
+  function givenLoopBackAppWithExplorer(explorerBase) {
     return function(done) {
       var app = this.app = loopback();
-      configureRestApiAndExplorer(app, restUrlBase);
+      configureRestApiAndExplorer(app, explorerBase);
       done();
     };
   }
 
-  function configureRestApiAndExplorer(app, restUrlBase) {
+  function configureRestApiAndExplorer(app, explorerBase) {
     var Product = loopback.Model.extend('product');
     Product.attachTo(loopback.memory());
     app.model(Product);
 
-    if (restUrlBase) {
-      app.use(restUrlBase, loopback.rest());
-      app.use('/explorer', explorer(app, { basePath: restUrlBase }));
-    } else {
-      // LoopBack REST adapter owns the whole URL space and does not
-      // let other middleware handle same URLs.
-      // It's possible to circumvent this measure by installing
-      // the explorer middleware before the REST middleware.
-      // This way we can acess `/explorer` even when REST is mounted at `/`
-      app.use('/explorer', explorer(app));
-      app.use(app.get('restApiRoot') || '/', loopback.rest());
-    }
+    app.use(explorerBase || '/explorer', explorer(app));
+    app.use(app.get('restApiRoot') || '/', loopback.rest());
   }
 });

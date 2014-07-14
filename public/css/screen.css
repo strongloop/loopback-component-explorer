@@ -1,3 +1,4 @@
+/* FIXME move overrides only into loopbackStyles.css */
 html,
 body,
 div,
@@ -132,24 +133,7 @@ section,
 summary {
   display: block;
 }
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Ubuntu Light'), local('Ubuntu-Light'), url(../fonts/_aijTyevf54tkVDLy-dlnLO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
-}
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 500;
-  src: local('Ubuntu Medium'), local('Ubuntu-Medium'), url(../fonts/OsJ2DjdpjqFRVUSto6IffLO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
-}
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url(../fonts/0ihfXUL2emPh0ROJezvraLO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
-}
+
 h1 a,
 h2 a,
 h3 a,
