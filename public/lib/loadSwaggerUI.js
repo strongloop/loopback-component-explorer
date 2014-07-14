@@ -43,7 +43,7 @@ $(function() {
     log('key: ' + key);
     if(key && key.trim() !== '') {
       log('added accessToken ' + key);
-      window.authorizations.add('key', new ApiKeyAuthorization('accessToken', key, 'query'));
+      window.authorizations.add('key', new ApiKeyAuthorization('access_token', key, 'query'));
       accessToken = key;
       $('.accessTokenDisplay').text('Token Set.').addClass('set');
       $('.accessTokenDisplay').attr('data-tooltip', 'Current Token: ' + key);
