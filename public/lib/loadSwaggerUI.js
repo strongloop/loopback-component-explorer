@@ -11,7 +11,7 @@ $(function() {
   var accessToken;
   function loadSwaggerUi(config) {
     window.swaggerUi = new SwaggerUi({
-      url: config.url || '/swagger/resources',
+      url: config.discoveryUrl || '/swagger/resources',
       apiKey: '',
       dom_id: 'swagger-ui-container',
       supportHeaderParams: true,
