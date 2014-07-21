@@ -53,6 +53,28 @@ describe('route-helper', function() {
     expect(paramDoc.format).to.equal('byte');
   });
 
+  it('correctly converts return types (arrays)', function() {
+    var doc = createAPIDoc({
+      returns: [
+        {arg: 'data', type: ['customType']}
+      ]
+    });
+    var opDoc = doc.operations[0];
+    expect(opDoc.type).to.equal('array');
+    expect(opDoc.items).to.eql({type: 'customType'});
+  });
+
+  it('correctly converts return types (format)', function() {
+    var doc = createAPIDoc({
+      returns: [
+        {arg: 'data', type: 'buffer'}
+      ]
+    });
+    var opDoc = doc.operations[0];
+    expect(opDoc.type).to.equal('string');
+    expect(opDoc.format).to.equal('byte');
+  });
+
 });
 
 // Easy wrapper around createRoute
