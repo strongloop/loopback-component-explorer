@@ -80,6 +80,22 @@ describe('model-helper', function() {
           type: 'string', format: 'date'
         }});
       });
+
+      it('converts [] type', function() {
+        var def = getDefinition({
+          array: []
+        });
+        var prop = def.properties.array;
+        expect(prop).to.eql({ type: 'array' });
+      });
+
+      it('converts "array" type', function() {
+        var def = getDefinition({
+          array: 'array'
+        });
+        var prop = def.properties.array;
+        expect(prop).to.eql({ type: 'array' });
+      });
     });
   });
 });
