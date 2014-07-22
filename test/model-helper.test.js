@@ -89,6 +89,16 @@ describe('model-helper', function() {
         expect(prop).to.eql({ type: 'array' });
       });
 
+      it('converts [undefined] type', function() {
+        var def = getDefinition({
+          // This value is somehow provided by loopback-boot called from
+          // loopback-workspace.
+          array: [undefined]
+        });
+        var prop = def.properties.array;
+        expect(prop).to.eql({ type: 'array' });
+      });
+
       it('converts "array" type', function() {
         var def = getDefinition({
           array: 'array'
