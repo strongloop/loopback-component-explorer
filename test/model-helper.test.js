@@ -6,7 +6,7 @@ var expect = require('chai').expect;
 describe('model-helper', function() {
   describe('properly converts LDL definitions to swagger types', function() {
     it('converts constructor types', function() {
-      var def = getDefinition({
+      var def = buildSwaggerModels({
         str: String, // 'string'
         num: Number, // {type: 'number', format: 'double'}
         date: Date,  // {type: 'string', format: 'date'}
@@ -21,7 +21,7 @@ describe('model-helper', function() {
       expect(props.buf).to.eql({ type: 'string', format: 'byte' });
     });
     it('converts string types', function() {
-      var def = getDefinition({
+      var def = buildSwaggerModels({
         str: 'string', // 'string'
         num: 'number', // {type: 'number', format: 'double'}
         date: 'date',  // {type: 'string', format: 'date'}
@@ -41,7 +41,7 @@ describe('model-helper', function() {
       // ["string"],
       // [{type: String, ...}]
       it('converts [Constructor] type', function() {
-        var def = getDefinition({
+        var def = buildSwaggerModels({
           array: [String]
         });
         var props = def.properties;
@@ -51,7 +51,7 @@ describe('model-helper', function() {
       });
 
       it('converts ["string"] type', function() {
-        var def = getDefinition({
+        var def = buildSwaggerModels({
           array: ['string']
         });
         var props = def.properties;
@@ -61,7 +61,7 @@ describe('model-helper', function() {
       });
 
       it('converts [{type: "string", length: 64}] type', function() {
-        var def = getDefinition({
+        var def = buildSwaggerModels({
           array: [{type: 'string', length: 64}]
         });
         var props = def.properties;
@@ -72,7 +72,7 @@ describe('model-helper', function() {
       });
 
       it('converts [{type: "date"}] type (with `format`)', function() {
-        var def = getDefinition({
+        var def = buildSwaggerModels({
           array: [{type: 'date'}]
         });
         var props = def.properties;
@@ -82,7 +82,7 @@ describe('model-helper', function() {
       });
 
       it('converts [] type', function() {
-        var def = getDefinition({
+        var def = buildSwaggerModels({
           array: []
         });
         var prop = def.properties.array;
@@ -90,7 +90,7 @@ describe('model-helper', function() {
       });
 
       it('converts [undefined] type', function() {
-        var def = getDefinition({
+        var def = buildSwaggerModels({
           // This value is somehow provided by loopback-boot called from
           // loopback-workspace.
           array: [undefined]
@@ -100,7 +100,7 @@ describe('model-helper', function() {
       });
 
       it('converts "array" type', function() {
-        var def = getDefinition({
+        var def = buildSwaggerModels({
           array: 'array'
         });
         var prop = def.properties.array;
@@ -108,10 +108,19 @@ describe('model-helper', function() {
       });
     });
   });
+  describe('related models', function() {
+    it('should include related models', function() {
+      var defs = buildSwaggerModelsWithRelations({
+        str: String // 'string'
+      });
+      expect(defs).has.property('testModel');
+      expect(defs).has.property('relatedModel');
+    });
+  });
 });
 
 // Simulates the format of a remoting class.
-function getDefinition(model) {
+function buildSwaggerModels(model) {
   Object.keys(model).forEach(function(name) {
     model[name] = {type: model[name]};
   });
@@ -123,5 +132,36 @@ function getDefinition(model) {
       }
     }
   };
-  return modelHelper.generateModelDefinition(aClass).testModel;
+  return modelHelper.generateModelDefinition(aClass.ctor, {}).testModel;
 }
+
+function buildSwaggerModelsWithRelations(model) {
+  Object.keys(model).forEach(function(name) {
+    model[name] = {type: model[name]};
+  });
+  // Mock up the related model
+  var relatedModel = {
+    definition: {
+      name: 'relatedModel',
+      properties: {
+        fk: String
+      }
+    }
+  };
+  var aClass = {
+    ctor: {
+      definition: {
+        name: 'testModel',
+        properties: model
+      },
+      // Mock up relations
+      relations: {
+        other: {
+          modelTo: relatedModel
+        }
+      }
+    }
+  };
+  return modelHelper.generateModelDefinition(aClass.ctor, {});
+}
+
