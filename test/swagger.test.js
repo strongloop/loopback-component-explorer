@@ -3,7 +3,6 @@
 var url = require('url');
 var urlJoin = require('../lib/url-join');
 var loopback = require('loopback');
-var express = require('express');
 var swagger = require('../lib/swagger');
 
 var request = require('supertest');
@@ -109,7 +108,7 @@ describe('swagger definition', function() {
   function mountSwagger(options, addlOptions) {
     addlOptions = addlOptions || {};
     var app = createLoopbackAppWithModel(addlOptions.apiRoot);
-    var swaggerApp = express();
+    var swaggerApp = loopback();
     swagger(app, swaggerApp, options);
     app.use(addlOptions.explorerRoot || '/explorer', swaggerApp);
     return app;

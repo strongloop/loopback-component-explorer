@@ -6,7 +6,7 @@ var url = require('url');
 var path = require('path');
 var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash.defaults');
-var express = require('express');
+var loopback = require('loopback');
 var swagger = require('./lib/swagger');
 var SWAGGER_UI_ROOT = path.join(__dirname, 'node_modules', 
   'swagger-ui', 'dist');
@@ -27,7 +27,7 @@ function explorer(loopbackApplication, options) {
     apiInfo: loopbackApplication.get('apiInfo') || {}
   });
 
-  var app = express();
+  var app = loopback();
 
   swagger(loopbackApplication, app, options);
 
@@ -53,12 +53,12 @@ function explorer(loopbackApplication, options) {
   // In this way one could e.g. make changes to index.html without having 
   // to worry about constantly pulling in JS updates.
   if (options.swaggerDistRoot) {
-    app.use(express.static(options.swaggerDistRoot));
+    app.use(loopback.static(options.swaggerDistRoot));
   }
   // File in node_modules are overridden by a few customizations
-  app.use(express.static(STATIC_ROOT));
+  app.use(loopback.static(STATIC_ROOT));
   // Swagger UI distribution
-  app.use(express.static(SWAGGER_UI_ROOT));
+  app.use(loopback.static(SWAGGER_UI_ROOT));
 
   return app;
 }
