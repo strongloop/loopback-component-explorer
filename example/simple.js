@@ -16,4 +16,10 @@ app.use('/explorer', explorer(app, {basePath: apiPath}));
 app.use(apiPath, loopback.rest());
 console.log('Explorer mounted at http://localhost:' + port + '/explorer');
 
+var Catalog = loopback.PersistedModel.extend('catalog', {
+  name: {type: 'string', required: true}
+});
+Catalog.attachTo(loopback.memory());
+app.model(Catalog);
+
 app.listen(port);

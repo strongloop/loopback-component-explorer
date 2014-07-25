@@ -100,7 +100,7 @@ describe('swagger definition', function() {
       var app = givenAppWithSwagger();
 
       var getReq = getAPIDeclaration(app, 'products');
-      getReq.end(function(err, res) {
+      getReq.end(function (err, res) {
         if (err) return done(err);
         var data = res.body.models.product;
         expect(data.id).to.equal('product');
@@ -323,6 +323,27 @@ describe('swagger definition', function() {
             .to.equal(undefined);
           done();
         });
+    });
+  });
+
+  describe('Allow model remoting after initiation', function () {
+    it('should be able to access models remoted after initiation', function (done) {
+      var app = givenAppWithSwagger();
+
+      var Catalog = loopback.PersistedModel.extend('catalog', {
+        name: {type: 'string', required: true}
+      });
+      Catalog.attachTo(loopback.memory());
+      app.model(Catalog);
+
+      var getReq = getAPIDeclaration(app, 'catalogs');
+
+      getReq.end(function (err, res) {
+        if (err) return done(err);
+        var data = res.body.models.catalog;
+        expect(data.id).to.equal('catalog');
+        done();
+      });
     });
   });
 
