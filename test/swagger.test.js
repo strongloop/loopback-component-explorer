@@ -3,7 +3,6 @@
 var url = require('url');
 var urlJoin = require('../lib/url-join');
 var loopback = require('loopback');
-var express = require('express');
 var swagger = require('../lib/swagger');
 
 var request = require('supertest');
