@@ -6,7 +6,6 @@ var url = require('url');
 var path = require('path');
 var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash.defaults');
-var loopback = require('loopback');
 var swagger = require('./lib/swagger');
 var SWAGGER_UI_ROOT = path.join(__dirname, 'node_modules', 
   'swagger-ui', 'dist');
@@ -27,11 +26,11 @@ function explorer(loopbackApplication, options) {
     apiInfo: loopbackApplication.get('apiInfo') || {}
   });
 
+  var loopback = loopbackApplication.loopback;
   var app = loopback();
+  app.disable('x-powered-by');
 
   swagger(loopbackApplication, app, options);
-
-  app.disable('x-powered-by');
 
   // config.json is loaded by swagger-ui. The server should respond
   // with the relative URI of the resource doc.
