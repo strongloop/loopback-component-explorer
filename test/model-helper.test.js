@@ -117,10 +117,29 @@ describe('model-helper', function() {
       expect(defs).has.property('relatedModel');
     });
   });
+  describe('hidden properties', function() {
+    it('should hide properties marked as "hidden"', function() {
+      var aClass = createModelCtor({
+        visibleProperty: 'string',
+        hiddenProperty: 'string'
+      });
+      aClass.ctor.definition.settings = {
+        hidden: ['hiddenProperty']
+      };
+      var def = modelHelper.generateModelDefinition(aClass.ctor, {}).testModel;
+      expect(def.properties).to.not.have.property('hiddenProperty');
+      expect(def.properties).to.have.property('visibleProperty');
+    });
+  });
 });
 
 // Simulates the format of a remoting class.
 function buildSwaggerModels(model) {
+  var aClass = createModelCtor(model);
+  return modelHelper.generateModelDefinition(aClass.ctor, {}).testModel;
+}
+
+function createModelCtor(model) {
   Object.keys(model).forEach(function(name) {
     model[name] = {type: model[name]};
   });
@@ -132,7 +151,7 @@ function buildSwaggerModels(model) {
       }
     }
   };
-  return modelHelper.generateModelDefinition(aClass.ctor, {}).testModel;
+  return aClass;
 }
 
 function buildSwaggerModelsWithRelations(model) {
