@@ -57,6 +57,16 @@ Options are passed to `explorer(app, options)`.
 > to a path different than '/api', e.g. with
 > `loopback.use('/custom-api-root', loopback.rest());
 
+`protocol`: **String**
+
+> Default: `null`
+
+> A hard override for the outgoing protocol (`http` or `https`) that is designated in Swagger
+> resource documents. By default, `loopback-explorer` will write the protocol that was used to retrieve
+> the doc. This option is useful if, for instance, your API sits behind an SSL terminator
+> and thus needs to report its endpoints as `https`, even though incoming traffic is auto-detected
+> as `http`.
+
 `swaggerDistRoot`: **String** 
 
 > Sets a path within your application for overriding Swagger UI files.

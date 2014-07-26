@@ -69,6 +69,18 @@ describe('swagger definition', function() {
         done();
       });
     });
+
+    it('respects a hardcoded protocol (behind SSL terminator)', function(done){
+      var app = mountSwagger({protocol: 'https'});
+
+      var getReq = getAPIDeclaration(app, 'products');
+      getReq.end(function(err, res) {
+        if (err) return done(err);
+        var parsed = url.parse(res.body.basePath);
+        expect(parsed.protocol).to.equal('https:');
+        done();
+      });
+    });
   });
 
   describe('Model definition attributes', function() {
