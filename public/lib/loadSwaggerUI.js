@@ -11,7 +11,7 @@ $(function() {
   var accessToken;
   function loadSwaggerUi(config) {
     window.swaggerUi = new SwaggerUi({
-      url: config.discoveryUrl || '/swagger/resources',
+      url: config.url || '/swagger/resources',
       apiKey: '',
       dom_id: 'swagger-ui-container',
       supportHeaderParams: true,
@@ -61,3 +61,4 @@ $(function() {
     }
   }
 });
+
