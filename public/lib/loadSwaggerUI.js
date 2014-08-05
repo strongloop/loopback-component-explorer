@@ -4,8 +4,8 @@
 /*global SwaggerUi, log, ApiKeyAuthorization, hljs, window, $ */
 $(function() {
   $.getJSON('config.json', function(config) {
-    log(config);
-    loadSwaggerUi(config);
+      log(config);
+      loadSwaggerUi(config);
   });
 
   var accessToken;
@@ -61,4 +61,3 @@ $(function() {
     }
   }
 });
-
