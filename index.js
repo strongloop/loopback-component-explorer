@@ -1,4 +1,4 @@
-'use strict';
+  'use strict';
 /*!
  * Adds dynamically-updated docs as /explorer
  */
@@ -8,7 +8,7 @@ var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash.defaults');
 var express = require('express');
 var swagger = require('./lib/swagger');
-var SWAGGER_UI_ROOT = path.join(__dirname, 'node_modules',
+var SWAGGER_UI_ROOT = path.join(__dirname, 'node_modules', 
   'swagger-ui', 'dist');
 var STATIC_ROOT = path.join(__dirname, 'public');
 
