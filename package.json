@@ -21,7 +21,7 @@
     "url": "https://github.com/strongloop/loopback-explorer/issues"
   },
   "devDependencies": {
-    "loopback": "1.x",
+    "loopback": "git+https://github.com/shelbys/loopback.git#loopback-v2",
     "mocha": "~1.20.1",
     "supertest": "~0.13.0",
     "chai": "~1.9.1"
@@ -31,7 +31,7 @@
     "url": "https://github.com/strongloop/loopback-explorer/blob/master/LICENSE"
   },
   "dependencies": {
-    "swagger-ui": "~2.0.18",
+    "swagger-ui": "git+https://github.com/shelbys/swagger-ui.git",
     "debug": "~1.0.3",
     "lodash.clonedeep": "^2.4.1",
     "lodash.defaults": "^2.4.1",
