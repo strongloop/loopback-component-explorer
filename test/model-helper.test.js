@@ -86,7 +86,10 @@ describe('model-helper', function() {
           array: []
         });
         var prop = def.properties.array;
-        expect(prop).to.eql({ type: 'array' });
+        expect(prop).to.eql({
+          type: 'array',
+          items: { type: 'any' }
+        });
       });
 
       it('converts [undefined] type', function() {
@@ -96,7 +99,7 @@ describe('model-helper', function() {
           array: [undefined]
         });
         var prop = def.properties.array;
-        expect(prop).to.eql({ type: 'array' });
+        expect(prop).to.eql({ type: 'array', items: { type: 'any' } });
       });
 
       it('converts "array" type', function() {
@@ -104,7 +107,7 @@ describe('model-helper', function() {
           array: 'array'
         });
         var prop = def.properties.array;
-        expect(prop).to.eql({ type: 'array' });
+        expect(prop).to.eql({ type: 'array', items: { type: 'any' } });
       });
     });
   });
