@@ -21,7 +21,7 @@
     "url": "https://github.com/strongloop/loopback-explorer/issues"
   },
   "devDependencies": {
-    "loopback": "git+https://github.com/shelbys/loopback.git#loopback-v2",
+    "loopback": "git+https://github.com/shelbys/loopback.git",
     "mocha": "~1.20.1",
     "supertest": "~0.13.0",
     "chai": "~1.9.1"
