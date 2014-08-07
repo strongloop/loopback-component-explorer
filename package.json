@@ -1,13 +1,10 @@
 {
   "name": "loopback-explorer",
-  "version": "1.1.1",
+  "version": "1.2.7",
   "description": "Browse and test your LoopBack app's APIs",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
-  },
-  "peerDependencies": {
-    "loopback": "2.x || 1.x >=1.5"
   },
   "repository": {
     "type": "git",
@@ -24,13 +21,20 @@
     "url": "https://github.com/strongloop/loopback-explorer/issues"
   },
   "devDependencies": {
-    "loopback": "1.x",
-    "mocha": "~1.14.0",
-    "supertest": "~0.8.1",
-    "chai": "~1.8.1"
+    "loopback": "git+https://github.com/shelbys/loopback.git",
+    "mocha": "~1.20.1",
+    "supertest": "~0.13.0",
+    "chai": "~1.9.1"
   },
   "license": {
     "name": "Dual MIT/StrongLoop",
     "url": "https://github.com/strongloop/loopback-explorer/blob/master/LICENSE"
+  },
+  "dependencies": {
+    "swagger-ui": "git+https://github.com/shelbys/swagger-ui.git",
+    "debug": "~1.0.3",
+    "lodash.clonedeep": "^2.4.1",
+    "lodash.defaults": "^2.4.1",
+    "express": "3.x"
   }
 }
