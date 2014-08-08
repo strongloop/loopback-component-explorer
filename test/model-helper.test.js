@@ -1,6 +1,7 @@
 'use strict';
 
 var modelHelper = require('../lib/model-helper');
+var loopback = require('loopback');
 var expect = require('chai').expect;
 
 describe('model-helper', function() {
@@ -109,6 +110,17 @@ describe('model-helper', function() {
         var prop = def.properties.array;
         expect(prop).to.eql({ type: 'array', items: { type: 'any' } });
       });
+
+      it('converts Model type', function() {
+        var Address = loopback.createModel('Address', {street: String});
+        var def = buildSwaggerModels({
+          str: String,
+          address: Address
+        });
+        var prop = def.properties.address;
+        expect(prop).to.eql({ type: 'Address' });
+      });
+
     });
   });
   describe('related models', function() {
