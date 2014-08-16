@@ -177,7 +177,8 @@ function buildSwaggerModelsWithRelations(model) {
       relations: {
         other: {
           modelTo: relatedModel
-        }
+        },
+        thing: {}
       }
     }
   };
