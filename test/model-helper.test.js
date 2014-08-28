@@ -123,15 +123,38 @@ describe('model-helper', function() {
 
     });
   });
+
   describe('related models', function() {
-    it('should include related models', function() {
+    it('should include related models', function () {
       var defs = buildSwaggerModelsWithRelations({
         str: String // 'string'
       });
       expect(defs).has.property('testModel');
       expect(defs).has.property('relatedModel');
     });
+
+    it('should include nesting models', function() {
+      var Model2 = loopback.createModel('Model2', {street: String});
+      var Model1 = loopback.createModel('Model1', {
+        str: String, // 'string'
+        address: Model2
+      });
+      var defs = modelHelper.generateModelDefinition(Model1, {});
+      expect(defs).has.property('Model1');
+      expect(defs).has.property('Model2');
+    });
+
+    it('should include used models', function() {
+      var Model4 = loopback.createModel('Model4', {street: String});
+      var Model3 = loopback.createModel('Model3', {
+        str: String, // 'string'
+      }, {models: {model4: 'Model4'}});
+      var defs = modelHelper.generateModelDefinition(Model3, {});
+      expect(defs).has.property('Model3');
+      expect(defs).has.property('Model4');
+    });
   });
+
   describe('hidden properties', function() {
     it('should hide properties marked as "hidden"', function() {
       var aClass = createModelCtor({
