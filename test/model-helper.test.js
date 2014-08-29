@@ -153,6 +153,17 @@ describe('model-helper', function() {
       expect(defs).has.property('Model3');
       expect(defs).has.property('Model4');
     });
+
+    it('should include nesting models in array', function() {
+      var Model6 = loopback.createModel('Model6', {street: String});
+      var Model5 = loopback.createModel('Model5', {
+        str: String, // 'string'
+        addresses: [Model6]
+      });
+      var defs = modelHelper.generateModelDefinition(Model5, {});
+      expect(defs).has.property('Model5');
+      expect(defs).has.property('Model6');
+    });
   });
 
   describe('hidden properties', function() {
