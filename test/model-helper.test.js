@@ -164,6 +164,18 @@ describe('model-helper', function() {
       expect(defs).has.property('Model5');
       expect(defs).has.property('Model6');
     });
+
+    // https://github.com/strongloop/loopback-explorer/issues/49
+    it('should work if Array class is extended and no related models are found',
+      function() {
+        var Model7 = loopback.createModel('Model7', {street: String});
+        Array.prototype.customFunc = function() {
+        };
+        var defs = modelHelper.generateModelDefinition(Model7, {});
+        expect(defs).has.property('Model7');
+        expect(Object.keys(defs)).has.property('length', 1);
+      });
+
   });
 
   describe('hidden properties', function() {
