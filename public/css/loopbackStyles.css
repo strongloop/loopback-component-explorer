@@ -21,6 +21,11 @@
   bottom: -30px;
 }
 
+.contentWell {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
 /* 
 FIXME: Separate the overrides from the rest of the styles, rather than override screen.css entirely.
 */
