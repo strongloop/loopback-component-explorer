@@ -26,7 +26,8 @@ $(function() {
         log('Unable to Load SwaggerUI');
         log(data);
       },
-      docExpansion: 'none'
+      docExpansion: 'none',
+      highlightSizeThreshold: 16384
     });
 
     $('#explore').click(setAccessToken);
