@@ -13,7 +13,7 @@ describe('route-helper', function() {
         { arg: 'avg', type: 'number' }
       ]
     });
-    expect(doc.operations[0].type).to.equal('object');
+    expect(doc.operations[0].responseMessages[0].responseModel).to.equal('object');
   });
 
   it('converts path params when they exist in the route name', function() {
@@ -60,8 +60,7 @@ describe('route-helper', function() {
       ]
     });
     var opDoc = doc.operations[0];
-    expect(opDoc.type).to.equal('array');
-    expect(opDoc.items).to.eql({type: 'customType'});
+    expect(opDoc.responseMessages[0].responseModel).to.equal('[customType]');
   });
 
   it('correctly converts return types (format)', function() {
@@ -71,8 +70,7 @@ describe('route-helper', function() {
       ]
     });
     var opDoc = doc.operations[0];
-    expect(opDoc.type).to.equal('string');
-    expect(opDoc.format).to.equal('byte');
+    expect(opDoc.responseMessages[0].responseModel).to.equal('string');
   });
 
 });
