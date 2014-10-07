@@ -8,8 +8,7 @@ var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash.defaults');
 var express = require('express');
 var swagger = require('./lib/swagger');
-var SWAGGER_UI_ROOT = path.join(__dirname, 'node_modules', 
-  'swagger-ui', 'dist');
+var SWAGGER_UI_ROOT = require('swagger-ui').dist;
 var STATIC_ROOT = path.join(__dirname, 'public');
 
 module.exports = explorer;

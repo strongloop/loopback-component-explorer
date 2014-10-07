@@ -1,6 +1,7 @@
 'use strict';
 
 var modelHelper = require('../lib/model-helper');
+var loopback = require('loopback');
 var expect = require('chai').expect;
 
 describe('model-helper', function() {
@@ -109,17 +110,74 @@ describe('model-helper', function() {
         var prop = def.properties.array;
         expect(prop).to.eql({ type: 'array', items: { type: 'any' } });
       });
+
+      it('converts Model type', function() {
+        var Address = loopback.createModel('Address', {street: String});
+        var def = buildSwaggerModels({
+          str: String,
+          address: Address
+        });
+        var prop = def.properties.address;
+        expect(prop).to.eql({ type: 'Address' });
+      });
+
     });
   });
+
   describe('related models', function() {
-    it('should include related models', function() {
+    it('should include related models', function () {
       var defs = buildSwaggerModelsWithRelations({
         str: String // 'string'
       });
       expect(defs).has.property('testModel');
       expect(defs).has.property('relatedModel');
     });
+
+    it('should include nesting models', function() {
+      var Model2 = loopback.createModel('Model2', {street: String});
+      var Model1 = loopback.createModel('Model1', {
+        str: String, // 'string'
+        address: Model2
+      });
+      var defs = modelHelper.generateModelDefinition(Model1, {});
+      expect(defs).has.property('Model1');
+      expect(defs).has.property('Model2');
+    });
+
+    it('should include used models', function() {
+      var Model4 = loopback.createModel('Model4', {street: String});
+      var Model3 = loopback.createModel('Model3', {
+        str: String, // 'string'
+      }, {models: {model4: 'Model4'}});
+      var defs = modelHelper.generateModelDefinition(Model3, {});
+      expect(defs).has.property('Model3');
+      expect(defs).has.property('Model4');
+    });
+
+    it('should include nesting models in array', function() {
+      var Model6 = loopback.createModel('Model6', {street: String});
+      var Model5 = loopback.createModel('Model5', {
+        str: String, // 'string'
+        addresses: [Model6]
+      });
+      var defs = modelHelper.generateModelDefinition(Model5, {});
+      expect(defs).has.property('Model5');
+      expect(defs).has.property('Model6');
+    });
+
+    // https://github.com/strongloop/loopback-explorer/issues/49
+    it('should work if Array class is extended and no related models are found',
+      function() {
+        var Model7 = loopback.createModel('Model7', {street: String});
+        Array.prototype.customFunc = function() {
+        };
+        var defs = modelHelper.generateModelDefinition(Model7, {});
+        expect(defs).has.property('Model7');
+        expect(Object.keys(defs)).has.property('length', 1);
+      });
+
   });
+
   describe('hidden properties', function() {
     it('should hide properties marked as "hidden"', function() {
       var aClass = createModelCtor({

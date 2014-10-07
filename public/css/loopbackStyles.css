@@ -21,9 +21,22 @@
   bottom: -30px;
 }
 
+/* JSON syntax highlighting */
+.json, .json .attribute {
+  color: black;
+}
+
+.json .value .string {
+  color: #800;
+}
+
+.json .value .number, .json .value .literal {
+  color: #080;
+}
+
 .contentWell {
-  padding-left: 30px;
-  padding-right: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 /* 
