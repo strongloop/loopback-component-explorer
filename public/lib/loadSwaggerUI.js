@@ -27,7 +27,8 @@ $(function() {
         log(data);
       },
       docExpansion: 'none',
-      highlightSizeThreshold: 16384
+      highlightSizeThreshold: 16384,
+      sorter: 'alpha'
     });
 
     $('#explore').click(setAccessToken);
