@@ -106,6 +106,31 @@ describe('swagger definition', function() {
     });
   });
 
+  describe('Cross-origin resource sharing', function() {
+    it('allows cross-origin requests by default', function(done) {
+      var app = mountSwagger();
+      request(app)
+        .options('/explorer/resources')
+        .set('Origin', 'http://example.com/')
+        .expect('Access-Control-Allow-Origin', /^http:\/\/example.com\/|\*/)
+        .expect('Access-Control-Allow-Methods', /\bGET\b/)
+        .end(done);
+    });
+
+    it('can be disabled by configuration', function(done) {
+      var app = mountSwagger({}, { remoting: { cors: { origin: false } } });
+      request(app)
+        .options('/explorer/resources')
+        .end(function(err, res) {
+          if (err) return done(err);
+          var allowOrigin = res.get('Access-Control-Allow-Origin');
+          expect(allowOrigin, 'Access-Control-Allow-Origin')
+            .to.equal(undefined);
+          done();
+        });
+    });
+  });
+
   function getSwaggerResources(app, restPath, classPath) {
     return request(app)
       .get(urlJoin(restPath || '/explorer', '/resources', classPath || ''))
@@ -122,6 +147,7 @@ describe('swagger definition', function() {
     addlOptions = addlOptions || {};
     var app = createLoopbackAppWithModel(addlOptions.apiRoot);
     var swaggerApp = express();
+    if (addlOptions.remoting) app.set('remoting', addlOptions.remoting);
     swagger(app, swaggerApp, options);
     app.use(addlOptions.explorerRoot || '/explorer', swaggerApp);
     return app;
