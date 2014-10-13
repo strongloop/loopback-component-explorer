@@ -75,6 +75,19 @@ describe('route-helper', function() {
     expect(opDoc.format).to.equal('byte');
   });
 
+  it('includes `notes` metadata', function() {
+    var doc = createAPIDoc({
+      notes: 'some notes'
+    });
+    expect(doc.operations[0].notes).to.equal('some notes');
+  });
+
+  it('includes `deprecated` metadata', function() {
+    var doc = createAPIDoc({
+      deprecated: 'true'
+    });
+    expect(doc.operations[0].deprecated).to.equal('true');
+  });
 });
 
 // Easy wrapper around createRoute
