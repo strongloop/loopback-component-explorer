@@ -88,6 +88,27 @@ describe('route-helper', function() {
     });
     expect(doc.operations[0].deprecated).to.equal('true');
   });
+
+  it('joins array description/summary', function() {
+    var doc = createAPIDoc({
+      description: [ 'line1', 'line2' ]
+    });
+    expect(doc.operations[0].summary).to.equal('line1\nline2');
+  });
+
+  it('joins array notes', function() {
+    var doc = createAPIDoc({
+      notes: [ 'line1', 'line2' ]
+    });
+    expect(doc.operations[0].notes).to.equal('line1\nline2');
+  });
+
+  it('joins array description/summary of an input arg', function() {
+    var doc = createAPIDoc({
+      accepts: [{ name: 'arg', description: [ 'line1', 'line2' ] }]
+    });
+    expect(doc.operations[0].parameters[0].description).to.equal('line1\nline2');
+  });
 });
 
 // Easy wrapper around createRoute
