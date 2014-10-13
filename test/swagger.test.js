@@ -104,6 +104,33 @@ describe('swagger definition', function() {
         done();
       });
     });
+
+    it('includes `consumes`', function(done) {
+      var app = mountSwagger();
+      getAPIDeclaration(app, 'products').end(function(err, res) {
+        if (err) return done(err);
+        expect(res.body.consumes).to.have.members([
+          'application/json',
+          'application/x-www-form-urlencoded',
+          'application/xml', 'text/xml'
+        ]);
+        done();
+      });
+    });
+
+    it('includes `produces`', function(done) {
+      var app = mountSwagger();
+      getAPIDeclaration(app, 'products').end(function(err, res) {
+        if (err) return done(err);
+        expect(res.body.produces).to.have.members([
+          'application/json',
+          'application/xml', 'text/xml',
+          // JSONP content types
+          'application/javascript', 'text/javascript'
+        ]);
+        done();
+      });
+    });
   });
 
   describe('Cross-origin resource sharing', function() {
