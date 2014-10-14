@@ -21,10 +21,10 @@
     "url": "https://github.com/strongloop/loopback-explorer/issues"
   },
   "devDependencies": {
-    "loopback": "1.x",
-    "mocha": "~1.20.1",
-    "supertest": "~0.13.0",
-    "chai": "~1.9.1"
+    "loopback": "^2.4.1",
+    "mocha": "^1.21.5",
+    "supertest": "~0.14.0",
+    "chai": "^1.9.1"
   },
   "license": {
     "name": "Dual MIT/StrongLoop",
