@@ -34,7 +34,12 @@
   color: #080;
 }
 
-/* 
-FIXME: Separate the overrides from the rest of the styles, rather than override screen.css entirely.
-*/
+/* Improve spacing when the browser window is small */
+#message-bar, #swagger-ui-container {
+  padding-left: 30px;
+  padding-right: 30px;
+}
 
+#api_selector {
+  padding: 0px 20px;
+}
