@@ -6,6 +6,9 @@ lib-cov
 *.out
 *.pid
 *.gz
+.idea
+*.iml
+*.tgz
 
 pids
 logs
