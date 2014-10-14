@@ -185,6 +185,24 @@ describe('swagger definition', function() {
         done();
       });
     });
+
+    it('includes `responseMessages` models', function(done) {
+      var app = createLoopbackAppWithModel();
+      loopback.createModel('ValidationError');
+      givenSharedMethod(app.models.Product, 'setImage', {
+        errors: [{
+          code: '422',
+          message: 'Validation failed',
+          responseModel: 'ValidationError'
+        }]
+      });
+      mountExplorer(app);
+
+      getAPIDeclaration(app, 'products').end(function(err, res) {
+        expect(Object.keys(res.body.models)).to.include('ValidationError');
+        done();
+      });
+    });
   });
 
   describe('Cross-origin resource sharing', function() {
