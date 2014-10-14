@@ -13,7 +13,7 @@ describe('swagger definition', function() {
   describe('basePath', function() {
     // No basepath on resource doc in 1.2
     it('no longer exists on resource doc', function(done) {
-      var app = mountSwagger();
+      var app = givenAppWithSwagger();
 
       var getReq = getSwaggerResources(app);
       getReq.end(function(err, res) {
@@ -24,7 +24,7 @@ describe('swagger definition', function() {
     });
 
     it('is "http://{host}/api" by default', function(done) {
-      var app = mountSwagger();
+      var app = givenAppWithSwagger();
 
       var getReq = getAPIDeclaration(app, 'products');
       getReq.end(function(err, res) {
@@ -35,7 +35,7 @@ describe('swagger definition', function() {
     });
 
     it('is "http://{host}/{basePath}" when basePath is a path', function(done){
-      var app = mountSwagger({ basePath: '/api-root'});
+      var app = givenAppWithSwagger({ basePath: '/api-root'});
 
       var getReq = getAPIDeclaration(app, 'products');
       getReq.end(function(err, res) {
@@ -47,7 +47,7 @@ describe('swagger definition', function() {
     });
 
     it('infers API basePath from app', function(done){
-      var app = mountSwagger({}, {apiRoot: '/custom-api-root'});
+      var app = givenAppWithSwagger({}, {apiRoot: '/custom-api-root'});
 
       var getReq = getAPIDeclaration(app, 'products');
       getReq.end(function(err, res) {
@@ -60,7 +60,7 @@ describe('swagger definition', function() {
 
     it('is reachable when explorer mounting location is changed', function(done){
       var explorerRoot = '/erforscher';
-      var app = mountSwagger({}, {explorerRoot: explorerRoot});
+      var app = givenAppWithSwagger({}, {explorerRoot: explorerRoot});
 
       var getReq = getSwaggerResources(app, explorerRoot, 'products');
       getReq.end(function(err, res) {
@@ -71,7 +71,7 @@ describe('swagger definition', function() {
     });
 
     it('respects a hardcoded protocol (behind SSL terminator)', function(done){
-      var app = mountSwagger({protocol: 'https'});
+      var app = givenAppWithSwagger({protocol: 'https'});
 
       var getReq = getAPIDeclaration(app, 'products');
       getReq.end(function(err, res) {
@@ -83,7 +83,7 @@ describe('swagger definition', function() {
     });
 
     it('respects X-Forwarded-Host header (behind a proxy)', function(done) {
-      var app = mountSwagger();
+      var app = givenAppWithSwagger();
       getAPIDeclaration(app, 'products')
         .set('X-Forwarded-Host', 'example.com')
         .end(function(err, res) {
@@ -97,7 +97,7 @@ describe('swagger definition', function() {
 
   describe('Model definition attributes', function() {
     it('Properly defines basic attributes', function(done) {
-      var app = mountSwagger();
+      var app = givenAppWithSwagger();
 
       var getReq = getAPIDeclaration(app, 'products');
       getReq.end(function(err, res) {
@@ -118,7 +118,7 @@ describe('swagger definition', function() {
     });
 
     it('includes `consumes`', function(done) {
-      var app = mountSwagger();
+      var app = givenAppWithSwagger();
       getAPIDeclaration(app, 'products').end(function(err, res) {
         if (err) return done(err);
         expect(res.body.consumes).to.have.members([
@@ -131,7 +131,7 @@ describe('swagger definition', function() {
     });
 
     it('includes `produces`', function(done) {
-      var app = mountSwagger();
+      var app = givenAppWithSwagger();
       getAPIDeclaration(app, 'products').end(function(err, res) {
         if (err) return done(err);
         expect(res.body.produces).to.have.members([
@@ -143,11 +143,53 @@ describe('swagger definition', function() {
         done();
       });
     });
+
+    it('includes models from `accepts` args', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenPrivateAppModel(app, 'Image');
+      givenSharedMethod(app.models.Product, 'setImage', {
+        accepts: { name: 'image', type: 'Image' }
+      });
+      mountExplorer(app);
+
+      getAPIDeclaration(app, 'products').end(function(err, res) {
+        expect(Object.keys(res.body.models)).to.include('Image');
+        done();
+      });
+    });
+
+    it('includes models from `returns` args', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenPrivateAppModel(app, 'Image');
+      givenSharedMethod(app.models.Product, 'getImage', {
+        returns: { name: 'image', type: 'Image' }
+      });
+      mountExplorer(app);
+
+      getAPIDeclaration(app, 'products').end(function(err, res) {
+        expect(Object.keys(res.body.models)).to.include('Image');
+        done();
+      });
+    });
+
+    it('includes `accepts` models not attached to the app', function(done) {
+      var app = createLoopbackAppWithModel();
+      loopback.createModel('Image');
+      givenSharedMethod(app.models.Product, 'setImage', {
+        accepts: { name: 'image', type: 'Image' }
+      });
+      mountExplorer(app);
+
+      getAPIDeclaration(app, 'products').end(function(err, res) {
+        expect(Object.keys(res.body.models)).to.include('Image');
+        done();
+      });
+    });
   });
 
   describe('Cross-origin resource sharing', function() {
     it('allows cross-origin requests by default', function(done) {
-      var app = mountSwagger();
+      var app = givenAppWithSwagger();
       request(app)
         .options('/explorer/resources')
         .set('Origin', 'http://example.com/')
@@ -157,7 +199,7 @@ describe('swagger definition', function() {
     });
 
     it('can be disabled by configuration', function(done) {
-      var app = mountSwagger({}, { remoting: { cors: { origin: false } } });
+      var app = givenAppWithSwagger({}, { remoting: { cors: { origin: false } } });
       request(app)
         .options('/explorer/resources')
         .end(function(err, res) {
@@ -182,31 +224,50 @@ describe('swagger definition', function() {
     return getSwaggerResources(app, '', urlJoin('/', className));
   }
 
-  function mountSwagger(options, addlOptions) {
-    addlOptions = addlOptions || {};
-    var app = createLoopbackAppWithModel(addlOptions.apiRoot);
+  function givenAppWithSwagger(swaggerOptions, appConfig) {
+    appConfig = appConfig || {};
+    var app = createLoopbackAppWithModel(appConfig.apiRoot);
+
+    if (appConfig.remoting) app.set('remoting', appConfig.remoting);
+    if (appConfig.explorerRoot) app.set('explorerRoot', appConfig.explorerRoot);
+
+    mountExplorer(app, swaggerOptions);
+    return app;
+  }
+
+  function mountExplorer(app, options) {
     var swaggerApp = express();
-    if (addlOptions.remoting) app.set('remoting', addlOptions.remoting);
     swagger(app, swaggerApp, options);
-    app.use(addlOptions.explorerRoot || '/explorer', swaggerApp);
+    app.use(app.get('explorerRoot') || '/explorer', swaggerApp);
     return app;
   }
 
   function createLoopbackAppWithModel(apiRoot) {
     var app = loopback();
 
+    app.dataSource('db', { connector: 'memory' });
+
     var Product = loopback.Model.extend('product', {
       foo: {type: 'string', required: true},
       bar: 'string',
       aNum: {type: 'number', min: 1, max: 10, required: true, default: 5}
     });
-    Product.attachTo(loopback.memory());
-    app.model(Product);
+    app.model(Product, { dataSource: 'db'});
 
     // Simulate a restApiRoot set in config
     app.set('restApiRoot', apiRoot || '/api');
     app.use(app.get('restApiRoot'), loopback.rest());
 
     return app;
+  }
+
+  function givenSharedMethod(model, name, metadata) {
+    model[name] = function(){};
+    loopback.remoteMethod(model[name], metadata);
+  }
+
+  function givenPrivateAppModel(app, name) {
+    var model = loopback.createModel(name);
+    app.model(model, { dataSource: 'db', public: false} );
   }
 });
