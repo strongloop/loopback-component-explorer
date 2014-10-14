@@ -109,6 +109,40 @@ describe('route-helper', function() {
     });
     expect(doc.operations[0].parameters[0].description).to.equal('line1\nline2');
   });
+
+  it('correctly does not include context params', function() {
+    var doc = createAPIDoc({
+      accepts: [
+        {arg: 'ctx', http: {source: 'context'}}
+      ],
+      path: '/test'
+    });
+    var params = doc.operations[0].parameters;
+    expect(params.length).to.equal(0);
+  });
+
+  it('correctly does not include request params', function() {
+    var doc = createAPIDoc({
+      accepts: [
+        {arg: 'req', http: {source: 'req'}}
+      ],
+      path: '/test'
+    });
+    var params = doc.operations[0].parameters;
+    expect(params.length).to.equal(0);
+  });
+
+  it('correctly does not include response params', function() {
+    var doc = createAPIDoc({
+      accepts: [
+        {arg: 'res', http: {source: 'res'}}
+      ],
+      path: '/test'
+    });
+    var params = doc.operations[0].parameters;
+    expect(params.length).to.equal(0);
+  });
+
 });
 
 // Easy wrapper around createRoute
