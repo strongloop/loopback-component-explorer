@@ -81,6 +81,18 @@ describe('swagger definition', function() {
         done();
       });
     });
+
+    it('respects X-Forwarded-Host header (behind a proxy)', function(done) {
+      var app = mountSwagger();
+      getAPIDeclaration(app, 'products')
+        .set('X-Forwarded-Host', 'example.com')
+        .end(function(err, res) {
+          if (err) return done(err);
+          var baseUrl = url.parse(res.body.basePath);
+          expect(baseUrl.hostname).to.equal('example.com');
+          done();
+        });
+    });
   });
 
   describe('Model definition attributes', function() {
