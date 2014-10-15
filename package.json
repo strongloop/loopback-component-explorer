@@ -34,8 +34,10 @@
     "cors": "^2.4.2",
     "debug": "~1.0.3",
     "express": "3.x",
+    "lodash.assign": "^2.4.1",
     "lodash.clonedeep": "^2.4.1",
     "lodash.defaults": "^2.4.1",
+    "lodash.pick": "^2.4.1",
     "swagger-ui": "~2.0.18"
   }
 }
