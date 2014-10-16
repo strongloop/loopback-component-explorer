@@ -143,6 +143,21 @@ describe('route-helper', function() {
     expect(params.length).to.equal(0);
   });
 
+  it('preserves `enum` accepts arg metadata', function() {
+    var doc = createAPIDoc({
+      accepts: [{ name: 'arg', type: 'number', enum: [1,2,3] }]
+    });
+    expect(doc.operations[0].parameters[0])
+      .to.have.property('enum').eql([1,2,3]);
+  });
+
+  it('preserves `enum` returns arg metadata', function() {
+    var doc = createAPIDoc({
+      returns: [{ name: 'arg', root: true, type: 'number', enum: [1,2,3] }]
+    });
+    expect(doc.operations[0])
+      .to.have.property('enum').eql([1,2,3]);
+  });
 });
 
 // Easy wrapper around createRoute
