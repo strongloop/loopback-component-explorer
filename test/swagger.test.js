@@ -196,12 +196,108 @@ describe('swagger definition', function() {
           responseModel: 'ValidationError'
         }]
       });
-      mountExplorer(app);
 
-      getAPIDeclaration(app, 'products').end(function(err, res) {
-        expect(Object.keys(res.body.models)).to.include('ValidationError');
-        done();
+      expectProductDocIncludesModels(app, 'ValidationError', done);
+    });
+
+    it('includes nested model references in properties', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenWarehouseWithAddressModels(app);
+
+      app.models.Product.defineProperty('location', { type: 'Warehouse' });
+
+      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+    });
+
+    it('includes nested array model references in properties', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenWarehouseWithAddressModels(app);
+
+      app.models.Product.defineProperty('location', { type: ['Warehouse'] });
+
+      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+    });
+
+    it('includes nested model references in modelTo relation', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenWarehouseWithAddressModels(app);
+
+      app.models.Product.belongsTo(app.models.Warehouse);
+
+      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+    });
+
+    it('includes nested model references in modelTo relation', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenWarehouseWithAddressModels(app);
+      givenPrivateAppModel(app, 'ProductLocations');
+
+      app.models.Product.hasMany(app.models.Warehouse,
+        { through: app.models.ProductLocations });
+
+      expectProductDocIncludesModels(
+        app,
+        ['Address', 'Warehouse', 'ProductLocations'],
+        done);
+    });
+
+    it('includes nested model references in accept args', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenWarehouseWithAddressModels(app);
+
+      givenSharedMethod(app.models.Product, 'aMethod', {
+        accepts: { arg: 'w', type: 'Warehouse' }
       });
+
+      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+    });
+
+    it('includes nested array model references in accept args', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenWarehouseWithAddressModels(app);
+
+      givenSharedMethod(app.models.Product, 'aMethod', {
+        accepts: { arg: 'w', type: [ 'Warehouse' ] }
+      });
+
+      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+    });
+
+    it('includes nested model references in return args', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenWarehouseWithAddressModels(app);
+
+      givenSharedMethod(app.models.Product, 'aMethod', {
+        returns: { arg: 'w', type: 'Warehouse', root: true }
+      });
+
+      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+    });
+
+    it('includes nested array model references in return args', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenWarehouseWithAddressModels(app);
+
+      givenSharedMethod(app.models.Product, 'aMethod', {
+        returns: { arg: 'w', type: ['Warehouse'], root: true }
+      });
+
+      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+    });
+
+    it('includes nested model references in error responses', function(done) {
+      var app = createLoopbackAppWithModel();
+      givenWarehouseWithAddressModels(app);
+
+      givenSharedMethod(app.models.Product, 'aMethod', {
+        errors: {
+          code: '222',
+          message: 'Warehouse',
+          responseModel: 'Warehouse'
+        }
+      });
+
+      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
     });
   });
 
@@ -234,8 +330,8 @@ describe('swagger definition', function() {
     return request(app)
       .get(urlJoin(restPath || '/explorer', '/resources', classPath || ''))
       .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(200);
+      .expect(200)
+      .expect('Content-Type', /json/);
   }
 
   function getAPIDeclaration(app, className) {
@@ -284,8 +380,27 @@ describe('swagger definition', function() {
     loopback.remoteMethod(model[name], metadata);
   }
 
-  function givenPrivateAppModel(app, name) {
-    var model = loopback.createModel(name);
+  function givenPrivateAppModel(app, name, properties) {
+    var model = loopback.createModel(name, properties);
     app.model(model, { dataSource: 'db', public: false} );
+  }
+
+  function givenWarehouseWithAddressModels(app) {
+    givenPrivateAppModel(app, 'Address');
+    givenPrivateAppModel(app, 'Warehouse', {
+      shippingAddress: { type: 'Address' }
+    });
+  }
+
+  function expectProductDocIncludesModels(app, modelNames, done) {
+    if (!Array.isArray(modelNames)) modelNames = [modelNames];
+
+    mountExplorer(app);
+
+    getAPIDeclaration(app, 'products').end(function(err, res) {
+      if (err) return done(err);
+      expect(Object.keys(res.body.models)).to.include.members(modelNames);
+      done();
+    });
   }
 });
