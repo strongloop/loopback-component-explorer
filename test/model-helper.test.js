@@ -214,6 +214,13 @@ describe('model-helper', function() {
       expect(def.properties).to.have.property('visibleProperty');
     });
   });
+
+  describe('getPropType', function() {
+    it('converts anonymous object types', function() {
+      var type = modelHelper.getPropType({ name: 'string', value: 'string' });
+      expect(type).to.eql('object');
+    });
+  });
 });
 
 // Simulates the format of a remoting class.
