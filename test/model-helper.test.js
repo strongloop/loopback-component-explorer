@@ -1,6 +1,7 @@
 'use strict';
 
 var modelHelper = require('../lib/model-helper');
+var _defaults = require('lodash.defaults');
 var loopback = require('loopback');
 var expect = require('chai').expect;
 
@@ -122,6 +123,27 @@ describe('model-helper', function() {
       });
 
     });
+
+    it('converts model property field `doc`', function() {
+      var def = buildSwaggerModels({
+        name: { type: String, doc: 'a-description' }
+      });
+      var nameProp = def.properties.name;
+      expect(nameProp).to.have.property('description', 'a-description');
+    });
+
+    it('converts model property field `description`', function() {
+      var def = buildSwaggerModels({
+        name: { type: String, description: 'a-description' }
+      });
+      var nameProp = def.properties.name;
+      expect(nameProp).to.have.property('description', 'a-description');
+    });
+
+    it('converts model field `description`', function() {
+      var def = buildSwaggerModels({}, { description: 'a-description' });
+      expect(def).to.have.property('description', 'a-description');
+    });
   });
 
   describe('related models', function() {
@@ -192,24 +214,37 @@ describe('model-helper', function() {
       expect(def.properties).to.have.property('visibleProperty');
     });
   });
+
+  describe('getPropType', function() {
+    it('converts anonymous object types', function() {
+      var type = modelHelper.getPropType({ name: 'string', value: 'string' });
+      expect(type).to.eql('object');
+    });
+  });
 });
 
 // Simulates the format of a remoting class.
-function buildSwaggerModels(model) {
-  var aClass = createModelCtor(model);
+function buildSwaggerModels(modelProperties, modelOptions) {
+  var aClass = createModelCtor(modelProperties, modelOptions);
   return modelHelper.generateModelDefinition(aClass.ctor, {}).testModel;
 }
 
-function createModelCtor(model) {
-  Object.keys(model).forEach(function(name) {
-    model[name] = {type: model[name]};
+function createModelCtor(properties, modelOptions) {
+  Object.keys(properties).forEach(function(name) {
+    var type = properties[name];
+    if (typeof type !== 'object' || Array.isArray(type))
+      properties[name] = { type: type };
   });
+
+  var definition = {
+    name: 'testModel',
+    properties: properties
+  };
+  _defaults(definition, modelOptions);
+
   var aClass = {
     ctor: {
-      definition: {
-        name: 'testModel',
-        properties: model
-      }
+      definition: definition
     }
   };
   return aClass;
