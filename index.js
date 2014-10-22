@@ -47,15 +47,25 @@ function explorer(loopbackApplication, options) {
     });
   });
 
-  // Allow specifying a static file root for swagger files. Any files in 
-  // that folder will override those in the swagger-ui distribution. 
-  // In this way one could e.g. make changes to index.html without having 
+  // Allow specifying a static file roots for swagger files. Any files in
+  // these folders will override those in the swagger-ui distribution.
+  // In this way one could e.g. make changes to index.html without having
   // to worry about constantly pulling in JS updates.
+  if (options.uiDirs) {
+    options.uiDirs.forEach(function(dir) {
+     app.use(express.static(dir));
+    });
+  }
+
   if (options.swaggerDistRoot) {
+    console.warn('loopback-explorer: `swaggerDistRoot` is deprecated,' +
+      ' use `uiDirs` instead');
     app.use(express.static(options.swaggerDistRoot));
   }
+
   // File in node_modules are overridden by a few customizations
   app.use(express.static(STATIC_ROOT));
+
   // Swagger UI distribution
   app.use(express.static(SWAGGER_UI_ROOT));
 

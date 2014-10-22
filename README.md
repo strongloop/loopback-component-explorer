@@ -25,7 +25,7 @@ app.listen(port);
 
 ## Advanced Usage
 
-Many aspects of the explorer are configurable. 
+Many aspects of the explorer are configurable.
 
 See [options](#options) for a description of these options:
 
@@ -34,7 +34,10 @@ See [options](#options) for a description of these options:
 app.use('/explorer', loopback.basicAuth('user', 'password'));
 app.use('/explorer', explorer(app, {
   basePath: '/custom-api-root',
-  swaggerDistRoot: '/swagger',
+  uiDirs: [
+    path.resolve(__dirname, 'public'),
+    path.resolve(__dirname, 'node_modules', 'swagger-ui')
+  ]
   apiInfo: {
     'title': 'My API',
     'description': 'Explorer example app.'
@@ -67,27 +70,27 @@ Options are passed to `explorer(app, options)`.
 > and thus needs to report its endpoints as `https`, even though incoming traffic is auto-detected
 > as `http`.
 
-`swaggerDistRoot`: **String** 
+`uiDirs`: **Array of Strings**
 
-> Sets a path within your application for overriding Swagger UI files.
+> Sets a list of paths within your application for overriding Swagger UI files.
 
-> If present, will search `swaggerDistRoot` first when attempting to load Swagger UI, allowing
-> you to pick and choose overrides to the interface. Use this to style your explorer or
-> add additional functionality.
+> If present, will search `uiDirs` first when attempting to load Swagger UI,
+> allowing you to pick and choose overrides to the interface. Use this to
+> style your explorer or add additional functionality.
 
 > See [index.html](public/index.html), where you may want to begin your overrides.
 > The rest of the UI is provided by [Swagger UI](https://github.com/wordnik/swagger-ui).
 
 `apiInfo`: **Object**
 
-> Additional information about your API. See the 
+> Additional information about your API. See the
 > [spec](https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#513-info-object).
 
 `resourcePath`: **String**
 
 > Default: `'resources'`
 
-> Sets a different path for the 
+> Sets a different path for the
 > [resource listing](https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#51-resource-listing).
 > You generally shouldn't have to change this.
 
