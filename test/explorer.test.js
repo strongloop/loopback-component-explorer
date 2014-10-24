@@ -2,6 +2,7 @@ var loopback = require('loopback');
 var explorer = require('../');
 var request = require('supertest');
 var assert = require('assert');
+var path = require('path');
 var expect = require('chai').expect;
 
 describe('explorer', function() {
@@ -24,7 +25,7 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) throw err;
 
-          assert(!!~res.text.indexOf('<title>StrongLoop API Explorer</title>'), 
+          assert(!!~res.text.indexOf('<title>StrongLoop API Explorer</title>'),
             'text does not contain expected string');
           done();
         });
@@ -76,6 +77,32 @@ describe('explorer', function() {
             .have.property('url', '/explorer/resources');
           done();
         });
+    });
+  });
+
+  describe('with custom front-end files', function() {
+    var app;
+    beforeEach(function setupExplorerWithUiDirs() {
+      app = loopback();
+      app.use('/explorer', explorer(app, {
+        uiDirs: [ path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui') ]
+      }));
+    });
+
+    it('overrides swagger-ui files', function(done) {
+      request(app).get('/explorer/swagger-ui.js')
+        .expect(200)
+        // expect the content of `dummy-swagger-ui/swagger-ui.js`
+        .expect('/* custom swagger-ui file */\n')
+        .end(done);
+    });
+
+    it('overrides strongloop overrides', function(done) {
+      request(app).get('/explorer/')
+        .expect(200)
+        // expect the content of `dummy-swagger-ui/index.html`
+        .expect('custom index.html\n')
+        .end(done);
     });
   });
 

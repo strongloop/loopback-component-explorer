@@ -93,6 +93,18 @@ describe('swagger definition', function() {
           done();
         });
     });
+
+    it('respects X-Forwarded-Proto header (behind a proxy)', function(done) {
+      var app = givenAppWithSwagger();
+      getAPIDeclaration(app, 'products')
+        .set('X-Forwarded-Proto', 'https')
+        .end(function(err, res) {
+          if (err) return done(err);
+          var baseUrl = url.parse(res.body.basePath);
+          expect(baseUrl.protocol).to.equal('https:');
+          done();
+        });
+    });
   });
 
   describe('Model definition attributes', function() {
