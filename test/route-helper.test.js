@@ -185,11 +185,24 @@ describe('route-helper', function() {
       responseModel: 'ValidationError'
     });
   });
+
+  it('route nickname does not include model name.', function() {
+    var doc = createAPIDoc();
+    expect(doc.operations[0].nickname).to.equal('get');
+  });
+
+  it('route nickname with a period is shorted correctly', function() {
+    // Method is built by remoting to always be #{className}.#{methodName}
+    var doc = createAPIDoc({
+      method: 'test.get.me'
+    });
+    expect(doc.operations[0].nickname).to.eql('get.me');
+  });
 });
 
 // Easy wrapper around createRoute
 function createAPIDoc(def) {
-  return routeHelper.routeToAPIDoc(_defaults(def, {
+  return routeHelper.routeToAPIDoc(_defaults(def || {}, {
     path: '/test',
     verb: 'GET',
     method: 'test.get'
