@@ -1,15 +1,21 @@
+2014-12-02, Version 1.6.0
+=========================
+
+ * Remove model name from nickname, swagger spec understands op context. (Samuel Reed)
+
+
 2014-11-29, Version 1.5.2
 =========================
 
  * model-helper: ignore unknown property types (Miroslav Bajtoš)
 
 
-2014-10-24, Version 1.5.1
+2014-10-24, Version 1.5.0
 =========================
 
 
 
-2014-10-24, Version 1.5.0
+2014-10-24, Version 1.5.1
 =========================
 
  * Add an option `uiDirs` (Miroslav Bajtoš)
