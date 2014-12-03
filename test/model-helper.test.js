@@ -1,7 +1,7 @@
 'use strict';
 
 var modelHelper = require('../lib/model-helper');
-var _defaults = require('lodash.defaults');
+var _defaults = require('lodash').defaults;
 var loopback = require('loopback');
 var expect = require('chai').expect;
 
