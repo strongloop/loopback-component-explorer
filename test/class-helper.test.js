@@ -2,7 +2,7 @@
 
 var classHelper = require('../lib/class-helper');
 var expect = require('chai').expect;
-var _defaults = require('lodash.defaults');
+var _defaults = require('lodash').defaults;
 
 describe('class-helper', function() {
   it('joins array descriptions', function() {

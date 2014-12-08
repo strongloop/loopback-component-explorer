@@ -2,7 +2,7 @@
 
 var routeHelper = require('../lib/route-helper');
 var expect = require('chai').expect;
-var _defaults = require('lodash.defaults');
+var _defaults = require('lodash').defaults;
 
 describe('route-helper', function() {
   it('returns "object" when a route has multiple return values', function() {
