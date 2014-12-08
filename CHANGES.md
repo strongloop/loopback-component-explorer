@@ -1,3 +1,9 @@
+2014-12-08, Version 1.6.1
+=========================
+
+ * Use full lodash instead of lodash components (Ryan Graham)
+
+
 2014-12-02, Version 1.6.0
 =========================
 
@@ -10,12 +16,12 @@
  * model-helper: ignore unknown property types (Miroslav Bajtoš)
 
 
-2014-10-24, Version 1.5.0
+2014-10-24, Version 1.5.1
 =========================
 
 
 
-2014-10-24, Version 1.5.1
+2014-10-24, Version 1.5.0
 =========================
 
  * Add an option `uiDirs` (Miroslav Bajtoš)
