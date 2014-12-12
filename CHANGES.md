@@ -1,3 +1,9 @@
+2014-12-12, Version 1.6.2
+=========================
+
+ * Move 200 response to `type` on the operation object. See #75. (Samuel Reed)
+
+
 2014-12-08, Version 1.6.1
 =========================
 
