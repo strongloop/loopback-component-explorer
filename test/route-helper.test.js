@@ -13,8 +13,8 @@ describe('route-helper', function() {
         { arg: 'avg', type: 'number' }
       ]
     });
-    expect(doc.operations[0].type).to.equal(undefined);
-    expect(getResponseType(doc.operations[0])).to.equal('object');
+    expect(doc.operations[0].type).to.equal('object');
+    expect(getResponseType(doc.operations[0])).to.equal(undefined);
   });
 
   it('converts path params when they exist in the route name', function() {
@@ -61,12 +61,22 @@ describe('route-helper', function() {
       ]
     });
     var opDoc = doc.operations[0];
-    // Note: swagger-ui treat arrays of X the same way as object X
-    expect(getResponseType(opDoc)).to.equal('customType');
+    expect(getResponseType(opDoc)).to.equal(undefined);
 
     // NOTE(bajtos) this would be the case if there was a single response type
-    // expect(opDoc.type).to.equal('array');
-    // expect(opDoc.items).to.eql({type: 'customType'});
+    expect(opDoc.type).to.equal('array');
+    expect(opDoc.items).to.eql({type: 'customType'});
+  });
+
+  it('correctly converts return types (format)', function() {
+    var doc = createAPIDoc({
+      returns: [ 
+        {arg: 'data', type: 'buffer'}    
+      ]    
+    });    
+    var opDoc = doc.operations[0];   
+    expect(opDoc.type).to.equal('string');   
+    expect(opDoc.format).to.equal('byte');   
   });
 
   it('includes `notes` metadata', function() {
@@ -149,11 +159,11 @@ describe('route-helper', function() {
     var doc = createAPIDoc({
       returns: [{ name: 'result', type: 'object', root: true }]
     });
+    expect(doc.operations[0].type).to.eql('object');
     expect(doc.operations[0].responseMessages).to.eql([
       {
         code: 200,
-        message: 'Request was successful',
-        responseModel: 'object'
+        message: 'Request was successful'
       }
     ]);
   });
@@ -162,11 +172,11 @@ describe('route-helper', function() {
     var doc = createAPIDoc({
       returns: []
     });
+    expect(doc.operations[0].type).to.eql('void');
     expect(doc.operations[0].responseMessages).to.eql([
       {
         code: 204,
-        message: 'Request was successful',
-        responseModel: 'void'
+        message: 'Request was successful'
       }
     ]);
   });
