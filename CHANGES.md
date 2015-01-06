@@ -1,3 +1,11 @@
+2015-01-06, Version 1.6.3
+=========================
+
+ * Fix bad CLA URL in CONTRIBUTING.md (Ryan Graham)
+
+ * Add X-UA-Compatible tag (Nick Van Dyck)
+
+
 2014-12-12, Version 1.6.2
 =========================
 
@@ -160,15 +168,18 @@
 
  * Ensure models from relations are included (Raymond Feng)
 
-
-2014-07-22, Version 1.2.4
-=========================
-
  * model-helper: handle arrays with undefined items (Miroslav Bajtoš)
 
 
 2014-07-22, Version 1.2.3
 =========================
+
+
+
+2014-07-22, Version 1.2.4
+=========================
+
+ * model-helper: handle arrays with undefined items (Miroslav Bajtoš)
 
  * model-helper: handle array types with no item type (Miroslav Bajtoš)
 
