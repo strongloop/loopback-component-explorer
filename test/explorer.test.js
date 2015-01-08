@@ -106,6 +106,37 @@ describe('explorer', function() {
     });
   });
 
+  describe('when specifying custom static file root directories', function() {
+    var app;
+    beforeEach(function() {
+      app = loopback();
+    });
+
+    it('should allow `uiDirs` to be defined as an Array', function(done) {
+      app.use('/explorer', explorer(app, {
+        uiDirs: [ path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui') ]
+      }));
+
+      request(app).get('/explorer/')
+        .expect(200)
+        // expect the content of `dummy-swagger-ui/index.html`
+        .expect('custom index.html\n')
+        .end(done);
+    });
+
+    it('should allow `uiDirs` to be defined as an String', function(done) {
+      app.use('/explorer', explorer(app, {
+        uiDirs: path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')
+      }));
+
+      request(app).get('/explorer/')
+        .expect(200)
+        // expect the content of `dummy-swagger-ui/index.html`
+        .expect('custom index.html\n')
+        .end(done);
+    });
+  });
+
   function givenLoopBackAppWithExplorer(explorerBase) {
     return function(done) {
       var app = this.app = loopback();
