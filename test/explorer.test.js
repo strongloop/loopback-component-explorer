@@ -4,6 +4,7 @@ var request = require('supertest');
 var assert = require('assert');
 var path = require('path');
 var expect = require('chai').expect;
+var urlJoin = require('../lib/url-join');
 
 describe('explorer', function() {
 
@@ -78,6 +79,26 @@ describe('explorer', function() {
           done();
         });
     });
+
+    it('removes trailing slash from baseUrl', function(done) {
+      // SwaggerUI builds resource URL by concatenating basePath + resourcePath
+      // Since the resource paths are always startign with a slash,
+      // if the basePath ends with a slash too, an incorrect URL is produced
+      var app = loopback();
+      app.set('restApiRoot', '/');
+      configureRestApiAndExplorer(app);
+
+      request(app)
+        .get('/explorer/resources/products')
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          var baseUrl = res.body.basePath;
+          var apiPath = res.body.apis[0].path;
+          expect(baseUrl + apiPath).to.match(/http:\/\/[^\/]+\/products/);
+          done();
+        });
+    });
   });
 
   describe('with custom front-end files', function() {
@@ -146,7 +167,7 @@ describe('explorer', function() {
   }
 
   function configureRestApiAndExplorer(app, explorerBase) {
-    var Product = loopback.Model.extend('product');
+    var Product = loopback.PersistedModel.extend('product');
     Product.attachTo(loopback.memory());
     app.model(Product);
 
