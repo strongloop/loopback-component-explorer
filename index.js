@@ -52,9 +52,13 @@ function explorer(loopbackApplication, options) {
   // In this way one could e.g. make changes to index.html without having
   // to worry about constantly pulling in JS updates.
   if (options.uiDirs) {
-    options.uiDirs.forEach(function(dir) {
-     app.use(express.static(dir));
-    });
+    if (typeof options.uiDirs === 'string') {
+      app.use(express.static(options.uiDirs));
+    } else if (Array.isArray(options.uiDirs)) {
+      options.uiDirs.forEach(function(dir) {
+        app.use(express.static(dir));
+      });
+    }
   }
 
   if (options.swaggerDistRoot) {

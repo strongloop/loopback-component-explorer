@@ -3,9 +3,10 @@
 // Refactoring of inline script from index.html.
 /*global SwaggerUi, log, ApiKeyAuthorization, hljs, window, $ */
 $(function() {
+  var lsKey = 'swagger_accessToken';
   $.getJSON('config.json', function(config) {
-      log(config);
-      loadSwaggerUi(config);
+    log(config);
+    loadSwaggerUi(config);
   });
 
   var accessToken;
@@ -35,6 +36,14 @@ $(function() {
     $('#api_selector').submit(setAccessToken);
     $('#input_accessToken').keyup(onInputChange);
 
+    // Recover accessToken from localStorage if present.
+    if (window.localStorage) {
+      var key = window.localStorage.getItem(lsKey);
+      if (key) {
+        $('#input_accessToken').val(key).submit();
+      }
+    }
+
     window.swaggerUi.load();
   }
 
@@ -49,6 +58,11 @@ $(function() {
       accessToken = key;
       $('.accessTokenDisplay').text('Token Set.').addClass('set');
       $('.accessTokenDisplay').attr('data-tooltip', 'Current Token: ' + key);
+      
+      // Save this token to localStorage if we can to make it persist on refresh. 
+      if (window.localStorage) {
+        window.localStorage.setItem(lsKey, key);
+      }
     }
   }
 
