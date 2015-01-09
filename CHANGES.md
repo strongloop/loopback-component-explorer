@@ -1,3 +1,13 @@
+2015-01-09, Version 1.6.4
+=========================
+
+ * Prevent double slash in the resource URLs (Miroslav Bajtoš)
+
+ * Allow `uiDirs` to be defined as a String (Simon Ho)
+
+ * Save accessToken in localStorage. Fixes #47 (Samuel Reed)
+
+
 2015-01-06, Version 1.6.3
 =========================
 
@@ -30,12 +40,12 @@
  * model-helper: ignore unknown property types (Miroslav Bajtoš)
 
 
-2014-10-24, Version 1.5.1
+2014-10-24, Version 1.5.0
 =========================
 
 
 
-2014-10-24, Version 1.5.0
+2014-10-24, Version 1.5.1
 =========================
 
  * Add an option `uiDirs` (Miroslav Bajtoš)
