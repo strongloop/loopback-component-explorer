@@ -1,3 +1,9 @@
+2015-02-17, Version 1.7.0
+=========================
+
+ * Made API doc of class use the http.path of the class if available, or the name of the class as a fallback (gandrianakis)
+
+
 2015-01-09, Version 1.6.4
 =========================
 
@@ -40,12 +46,12 @@
  * model-helper: ignore unknown property types (Miroslav Bajtoš)
 
 
-2014-10-24, Version 1.5.0
+2014-10-24, Version 1.5.1
 =========================
 
 
 
-2014-10-24, Version 1.5.1
+2014-10-24, Version 1.5.0
 =========================
 
  * Add an option `uiDirs` (Miroslav Bajtoš)
@@ -178,18 +184,15 @@
 
  * Ensure models from relations are included (Raymond Feng)
 
- * model-helper: handle arrays with undefined items (Miroslav Bajtoš)
-
-
-2014-07-22, Version 1.2.3
-=========================
-
-
 
 2014-07-22, Version 1.2.4
 =========================
 
  * model-helper: handle arrays with undefined items (Miroslav Bajtoš)
+
+
+2014-07-22, Version 1.2.3
+=========================
 
  * model-helper: handle array types with no item type (Miroslav Bajtoš)
 
