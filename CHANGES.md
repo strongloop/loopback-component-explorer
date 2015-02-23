@@ -1,3 +1,9 @@
+2015-02-23, Version 1.7.1
+=========================
+
+ * Remove unused external font "Droid Sans". (Miroslav Bajtoš)
+
+
 2015-02-17, Version 1.7.0
 =========================
 
