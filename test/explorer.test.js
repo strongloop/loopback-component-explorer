@@ -5,6 +5,7 @@ var assert = require('assert');
 var path = require('path');
 var expect = require('chai').expect;
 var urlJoin = require('../lib/url-join');
+var os = require('os');
 
 describe('explorer', function() {
 
@@ -114,7 +115,7 @@ describe('explorer', function() {
       request(app).get('/explorer/swagger-ui.js')
         .expect(200)
         // expect the content of `dummy-swagger-ui/swagger-ui.js`
-        .expect('/* custom swagger-ui file */\n')
+        .expect('/* custom swagger-ui file */' + os.EOL)
         .end(done);
     });
 
@@ -122,7 +123,7 @@ describe('explorer', function() {
       request(app).get('/explorer/')
         .expect(200)
         // expect the content of `dummy-swagger-ui/index.html`
-        .expect('custom index.html\n')
+        .expect('custom index.html' + os.EOL)
         .end(done);
     });
   });
@@ -141,7 +142,7 @@ describe('explorer', function() {
       request(app).get('/explorer/')
         .expect(200)
         // expect the content of `dummy-swagger-ui/index.html`
-        .expect('custom index.html\n')
+        .expect('custom index.html' + os.EOL)
         .end(done);
     });
 
@@ -153,7 +154,7 @@ describe('explorer', function() {
       request(app).get('/explorer/')
         .expect(200)
         // expect the content of `dummy-swagger-ui/index.html`
-        .expect('custom index.html\n')
+        .expect('custom index.html' + os.EOL)
         .end(done);
     });
   });
