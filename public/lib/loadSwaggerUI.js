@@ -64,6 +64,17 @@ $(function() {
         window.localStorage.setItem(lsKey, key);
       }
     }
+    // If submitted with an empty token, remove the current token. Can be 
+    // useful to intentionally remove authorization.
+    else {
+      log('removed accessToken.');
+      $('.accessTokenDisplay').text('Token Not Set.').removeClass('set');
+      $('.accessTokenDisplay').removeAttr('data-tooltip');
+      window.authorizations.remove('key');
+      if (window.localStorage) {
+        window.localStorage.removeItem(lsKey);
+      }
+    }
   }
 
   function onInputChange(e) {
