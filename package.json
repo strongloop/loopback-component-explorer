@@ -21,23 +21,22 @@
     "url": "https://github.com/strongloop/loopback-explorer/issues"
   },
   "devDependencies": {
-    "loopback": "^2.4.1",
-    "mocha": "^1.21.5",
-    "supertest": "~0.14.0",
-    "chai": "^1.9.1"
+    "loopback": "^2.14.0",
+    "mocha": "^2.1.0",
+    "supertest": "~0.15.0",
+    "chai": "^2.1.1"
   },
   "license": {
     "name": "Dual MIT/StrongLoop",
     "url": "https://github.com/strongloop/loopback-explorer/blob/master/LICENSE"
   },
   "dependencies": {
-    "cors": "^2.4.2",
-    "debug": "~1.0.3",
-    "express": "4.x",
-    "lodash.assign": "^2.4.1",
-    "lodash.clonedeep": "^2.4.1",
-    "lodash.defaults": "^2.4.1",
-    "lodash.pick": "^2.4.1",
-    "swagger-ui": "~2.0.18"
+    "cors": "^2.5.3",
+    "debug": "~2.1.2",
+    "lodash.assign": "^3.0.0",
+    "lodash.clonedeep": "^3.0.0",
+    "lodash.defaults": "^3.0.0",
+    "lodash.pick": "^3.0.0",
+    "swagger-ui": "~2.0.24"
   }
 }

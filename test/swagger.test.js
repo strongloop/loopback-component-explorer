@@ -349,7 +349,7 @@ describe('swagger definition', function() {
   }
 
   function mountExplorer(app, options) {
-    var swaggerApp = express();
+    var swaggerApp = loopback();
     swagger(app, swaggerApp, options);
     app.use(app.get('explorerRoot') || '/explorer', swaggerApp);
     return app;
