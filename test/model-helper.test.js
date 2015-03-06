@@ -1,7 +1,7 @@
 'use strict';
 
 var modelHelper = require('../lib/model-helper');
-var _defaults = require('lodash.defaults');
+var _defaults = require('lodash').defaults;
 var loopback = require('loopback');
 var expect = require('chai').expect;
 
@@ -198,6 +198,18 @@ describe('model-helper', function() {
         expect(Object.keys(defs)).has.property('length', 1);
       });
 
+    // https://github.com/strongloop/loopback-explorer/issues/71
+    it('should skip unknown types', function() {
+      var Model8 = loopback.createModel('Model8', {
+        patient: {
+          model: 'physician',
+          type: 'hasMany',
+          through: 'appointment'
+        }
+      });
+      var defs = modelHelper.generateModelDefinition(Model8, {});
+      expect(Object.keys(defs)).to.not.contain('hasMany');
+    });
   });
 
   describe('hidden properties', function() {

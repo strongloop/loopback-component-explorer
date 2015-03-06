@@ -2,7 +2,7 @@
 
 var routeHelper = require('../lib/route-helper');
 var expect = require('chai').expect;
-var _defaults = require('lodash.defaults');
+var _defaults = require('lodash').defaults;
 
 describe('route-helper', function() {
   it('returns "object" when a route has multiple return values', function() {
@@ -13,8 +13,8 @@ describe('route-helper', function() {
         { arg: 'avg', type: 'number' }
       ]
     });
-    expect(doc.operations[0].type).to.equal(undefined);
-    expect(getResponseType(doc.operations[0])).to.equal('object');
+    expect(doc.operations[0].type).to.equal('object');
+    expect(getResponseType(doc.operations[0])).to.equal(undefined);
   });
 
   it('converts path params when they exist in the route name', function() {
@@ -61,12 +61,22 @@ describe('route-helper', function() {
       ]
     });
     var opDoc = doc.operations[0];
-    // Note: swagger-ui treat arrays of X the same way as object X
-    expect(getResponseType(opDoc)).to.equal('customType');
+    expect(getResponseType(opDoc)).to.equal(undefined);
 
     // NOTE(bajtos) this would be the case if there was a single response type
-    // expect(opDoc.type).to.equal('array');
-    // expect(opDoc.items).to.eql({type: 'customType'});
+    expect(opDoc.type).to.equal('array');
+    expect(opDoc.items).to.eql({type: 'customType'});
+  });
+
+  it('correctly converts return types (format)', function() {
+    var doc = createAPIDoc({
+      returns: [ 
+        {arg: 'data', type: 'buffer'}    
+      ]    
+    });    
+    var opDoc = doc.operations[0];   
+    expect(opDoc.type).to.equal('string');   
+    expect(opDoc.format).to.equal('byte');   
   });
 
   it('includes `notes` metadata', function() {
@@ -149,11 +159,11 @@ describe('route-helper', function() {
     var doc = createAPIDoc({
       returns: [{ name: 'result', type: 'object', root: true }]
     });
+    expect(doc.operations[0].type).to.eql('object');
     expect(doc.operations[0].responseMessages).to.eql([
       {
         code: 200,
-        message: 'Request was successful',
-        responseModel: 'object'
+        message: 'Request was successful'
       }
     ]);
   });
@@ -162,11 +172,11 @@ describe('route-helper', function() {
     var doc = createAPIDoc({
       returns: []
     });
+    expect(doc.operations[0].type).to.eql('void');
     expect(doc.operations[0].responseMessages).to.eql([
       {
         code: 204,
-        message: 'Request was successful',
-        responseModel: 'void'
+        message: 'Request was successful'
       }
     ]);
   });
@@ -185,11 +195,24 @@ describe('route-helper', function() {
       responseModel: 'ValidationError'
     });
   });
+
+  it('route nickname does not include model name.', function() {
+    var doc = createAPIDoc();
+    expect(doc.operations[0].nickname).to.equal('get');
+  });
+
+  it('route nickname with a period is shorted correctly', function() {
+    // Method is built by remoting to always be #{className}.#{methodName}
+    var doc = createAPIDoc({
+      method: 'test.get.me'
+    });
+    expect(doc.operations[0].nickname).to.eql('get.me');
+  });
 });
 
 // Easy wrapper around createRoute
 function createAPIDoc(def) {
-  return routeHelper.routeToAPIDoc(_defaults(def, {
+  return routeHelper.routeToAPIDoc(_defaults(def || {}, {
     path: '/test',
     verb: 'GET',
     method: 'test.get'
