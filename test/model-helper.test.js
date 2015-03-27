@@ -118,7 +118,7 @@ describe('model-helper', function() {
           address: Address
         });
         var prop = def.properties.address;
-        expect(prop).to.eql({ type: 'Address' });
+        expect(prop).to.eql({ $ref: 'Address' });
       });
 
     });
