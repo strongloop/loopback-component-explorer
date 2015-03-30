@@ -1,3 +1,13 @@
+2015-03-30, Version 1.7.2
+=========================
+
+ * Allow submitting token input with empty value to remove token. (Samuel Reed)
+
+ * Fix duplicate stylesheet issue (Pradnya Baviskar)
+
+ * Fix explorer tests for different line endings on Windows (Pradnya Baviskar)
+
+
 2015-02-23, Version 1.7.1
 =========================
 
