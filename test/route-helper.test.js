@@ -73,6 +73,35 @@ describe('route-helper', function() {
     expect(opDoc.responseMessages[0].responseModel).to.equal('string');
   });
 
+  describe('#acceptToParameter', function(){
+    it('should return function that converts accepts.description from array of string to string', function(){
+      var f = routeHelper.acceptToParameter({verb: 'get', path: 'path'});
+      var result = f({description: ['1','2','3']});
+      expect(result.description).to.eql('123');
+    });
+  });
+
+  describe('#routeToAPIDoc', function(){
+    it('should convert route.description from array fo string to string', function(){
+      var result = routeHelper.routeToAPIDoc({
+        method: 'someMethod',
+        verb: 'get',
+        path: 'path',
+        description:['1','2','3']
+      });
+      expect(result.operations[0].summary).to.eql('123');
+    });
+
+    it('should convert route.notes from array fo string to string', function(){
+      var result = routeHelper.routeToAPIDoc({
+        method: 'someMethod',
+        verb: 'get',
+        path: 'path',
+        notes:['1','2','3']
+      });
+      expect(result.operations[0].notes).to.eql('123');
+    });
+  });
 });
 
 // Easy wrapper around createRoute

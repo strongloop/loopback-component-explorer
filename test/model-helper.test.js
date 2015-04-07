@@ -192,6 +192,36 @@ describe('model-helper', function() {
       expect(def.properties).to.have.property('visibleProperty');
     });
   });
+
+  describe('#generateModelDefinition', function(){
+    it('should convert top level array description to string', function(){
+      var model = {};
+      model.definition = {
+        name: 'test',
+        description: ['1','2','3'],
+        properties: {}
+      };
+      var models = {};
+      modelHelper.generateModelDefinition(model, models);
+      expect(models.test.description).to.equal('123');
+    });
+
+    it('should convert property level array description to string', function(){
+      var model = {};
+      model.definition = {
+        name: 'test',
+        properties: {
+          prop1: {
+            type: 'string',
+            description: ['1','2','3']
+          }
+        }
+      };
+      var models = {};
+      modelHelper.generateModelDefinition(model, models);
+      expect(models.test.properties.prop1.description).to.equal('123');
+    });
+  });
 });
 
 // Simulates the format of a remoting class.
