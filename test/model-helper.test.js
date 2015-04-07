@@ -15,7 +15,6 @@ describe('model-helper', function() {
         buf: Buffer // {type: 'string', format: 'byte'}
       });
       var props = def.properties;
-      console.log(props.str);
       expect(props.str).to.eql({ type: 'string' });
       expect(props.num).to.eql({ type: 'number', format: 'double' });
       expect(props.date).eql({ type: 'string', format: 'date' });
@@ -119,7 +118,7 @@ describe('model-helper', function() {
           address: Address
         });
         var prop = def.properties.address;
-        expect(prop).to.eql({ $ref: 'https://strongloop.com/loopback/testModel#/definitions/Address' });
+        expect(prop).to.eql({ $ref: 'Address' });
       });
 
     });
