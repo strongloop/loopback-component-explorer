@@ -91,7 +91,7 @@ describe('swagger definition', function() {
       getReq.end(function(err, res) {
         if (err) return done(err);
         var data = res.body.models.product;
-        expect(data.id).to.equal('product');
+        expect(data.id).to.equal('https://strongloop.com/loopback/product#');
         expect(data.required.sort()).to.eql(['aNum', 'foo'].sort());
         expect(data.properties.foo.type).to.equal('string');
         expect(data.properties.bar.type).to.equal('string');

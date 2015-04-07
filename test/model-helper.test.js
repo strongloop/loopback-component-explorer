@@ -15,6 +15,7 @@ describe('model-helper', function() {
         buf: Buffer // {type: 'string', format: 'byte'}
       });
       var props = def.properties;
+      console.log(props.str);
       expect(props.str).to.eql({ type: 'string' });
       expect(props.num).to.eql({ type: 'number', format: 'double' });
       expect(props.date).eql({ type: 'string', format: 'date' });
@@ -111,14 +112,14 @@ describe('model-helper', function() {
         expect(prop).to.eql({ type: 'array', items: { type: 'any' } });
       });
 
-      it('converts Model type', function() {
+      it('converts Model type to $ref', function() {
         var Address = loopback.createModel('Address', {street: String});
         var def = buildSwaggerModels({
           str: String,
           address: Address
         });
         var prop = def.properties.address;
-        expect(prop).to.eql({ $ref: 'Address' });
+        expect(prop).to.eql({ $ref: 'https://strongloop.com/loopback/testModel#/definitions/Address' });
       });
 
     });
