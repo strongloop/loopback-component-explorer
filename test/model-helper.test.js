@@ -111,14 +111,14 @@ describe('model-helper', function() {
         expect(prop).to.eql({ type: 'array', items: { type: 'any' } });
       });
 
-      it('converts Model type', function() {
+      it('converts Model type to $ref', function() {
         var Address = loopback.createModel('Address', {street: String});
         var def = buildSwaggerModels({
           str: String,
           address: Address
         });
         var prop = def.properties.address;
-        expect(prop).to.eql({ type: 'Address' });
+        expect(prop).to.eql({ $ref: 'Address' });
       });
 
     });
@@ -190,6 +190,36 @@ describe('model-helper', function() {
       var def = modelHelper.generateModelDefinition(aClass.ctor, {}).testModel;
       expect(def.properties).to.not.have.property('hiddenProperty');
       expect(def.properties).to.have.property('visibleProperty');
+    });
+  });
+
+  describe('#generateModelDefinition', function(){
+    it('should convert top level array description to string', function(){
+      var model = {};
+      model.definition = {
+        name: 'test',
+        description: ['1','2','3'],
+        properties: {}
+      };
+      var models = {};
+      modelHelper.generateModelDefinition(model, models);
+      expect(models.test.description).to.equal('123');
+    });
+
+    it('should convert property level array description to string', function(){
+      var model = {};
+      model.definition = {
+        name: 'test',
+        properties: {
+          prop1: {
+            type: 'string',
+            description: ['1','2','3']
+          }
+        }
+      };
+      var models = {};
+      modelHelper.generateModelDefinition(model, models);
+      expect(models.test.properties.prop1.description).to.equal('123');
     });
   });
 });
