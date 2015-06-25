@@ -105,6 +105,20 @@ describe('swagger definition', function() {
           done();
         });
     });
+
+    it('supports options.omitProtocolInBaseUrl', function(done) {
+      var app = givenAppWithSwagger({ omitProtocolInBaseUrl: true });
+
+      var getReq = getAPIDeclaration(app, 'products');
+      getReq.end(function(err, res) {
+        if (err) return done(err);
+        var basePath = res.body.basePath;
+        expect(basePath).to.match(/^\/\//);
+        var parsed = url.parse(res.body.basePath);
+        expect(parsed.protocol).to.equal(null);
+        done();
+      });
+    });
   });
 
   describe('Model definition attributes', function() {
