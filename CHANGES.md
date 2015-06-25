@@ -1,3 +1,13 @@
+2015-06-25, Version 1.8.0
+=========================
+
+ * Add opts.omitProtocolInBaseUrl (Miroslav Bajtoš)
+
+ * Fix tests broken by fa3035c (#96) (Miroslav Bajtoš)
+
+ * Fix model description getting lost (bkniffler)
+
+
 2015-03-30, Version 1.7.2
 =========================
 
