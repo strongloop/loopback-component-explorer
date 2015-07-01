@@ -6,35 +6,46 @@ var url = require('url');
 var path = require('path');
 var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash').defaults;
-var express = require('express');
 var swagger = require('./lib/swagger');
 var SWAGGER_UI_ROOT = require('strong-swagger-ui').dist;
 var STATIC_ROOT = path.join(__dirname, 'public');
 
 module.exports = explorer;
+explorer.routes = routes;
 
 /**
  * Example usage:
  *
  * var explorer = require('loopback-explorer');
- * app.use('/explorer', explorer(app, options));
+ * explorer(app, options);
  */
 
 function explorer(loopbackApplication, options) {
+  var mountPath = options.mountPath || '/explorer';
+  loopbackApplication.use(mountPath, routes(loopbackApplication, options));
+}
+
+function routes(loopbackApplication, options) {
+  var loopback = loopbackApplication.loopback;
+  var loopbackMajor = loopback && loopback.version &&
+    loopback.version.split('.')[0] || 1;
+
+  if (loopbackMajor < 2) {
+    throw new Error('loopback-explorer requires loopback 2.0 or newer');
+  }
+
   options = _defaults({}, options, {
     resourcePath: 'resources',
     apiInfo: loopbackApplication.get('apiInfo') || {}
   });
 
-  var app = express();
+  var router = new loopback.Router();
 
-  swagger(loopbackApplication, app, options);
-
-  app.disable('x-powered-by');
+  swagger(loopbackApplication, router, options);
 
   // config.json is loaded by swagger-ui. The server should respond
   // with the relative URI of the resource doc.
-  app.get('/config.json', function(req, res) {
+  router.get('/config.json', function(req, res) {
     // Get the path we're mounted at. It's best to get this from the referer
     // in case we're proxied at a deep path.
     var source = url.parse(req.headers.referer || '').pathname;
@@ -53,10 +64,10 @@ function explorer(loopbackApplication, options) {
   // to worry about constantly pulling in JS updates.
   if (options.uiDirs) {
     if (typeof options.uiDirs === 'string') {
-      app.use(express.static(options.uiDirs));
+      router.use(loopback.static(options.uiDirs));
     } else if (Array.isArray(options.uiDirs)) {
       options.uiDirs.forEach(function(dir) {
-        app.use(express.static(dir));
+        router.use(loopback.static(dir));
       });
     }
   }
@@ -64,14 +75,14 @@ function explorer(loopbackApplication, options) {
   if (options.swaggerDistRoot) {
     console.warn('loopback-explorer: `swaggerDistRoot` is deprecated,' +
       ' use `uiDirs` instead');
-    app.use(express.static(options.swaggerDistRoot));
+    router.use(loopback.static(options.swaggerDistRoot));
   }
 
   // File in node_modules are overridden by a few customizations
-  app.use(express.static(STATIC_ROOT));
+  router.use(loopback.static(STATIC_ROOT));
 
   // Swagger UI distribution
-  app.use(express.static(SWAGGER_UI_ROOT));
+  router.use(loopback.static(SWAGGER_UI_ROOT));
 
-  return app;
+  return router;
 }

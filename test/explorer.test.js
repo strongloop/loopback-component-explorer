@@ -106,9 +106,9 @@ describe('explorer', function() {
     var app;
     beforeEach(function setupExplorerWithUiDirs() {
       app = loopback();
-      app.use('/explorer', explorer(app, {
+      explorer(app, {
         uiDirs: [ path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui') ]
-      }));
+      });
     });
 
     it('overrides swagger-ui files', function(done) {
@@ -128,6 +128,27 @@ describe('explorer', function() {
     });
   });
 
+  describe('explorer.routes API', function() {
+    var app;
+    beforeEach(function() {
+      app = loopback();
+      var Product = loopback.PersistedModel.extend('product');
+      Product.attachTo(loopback.memory());
+      app.model(Product);
+    });
+
+    it('creates explorer routes', function(done) {
+      app.use('/explorer', explorer.routes(app));
+      app.use(app.get('restApiRoot') || '/', loopback.rest());
+
+      request(app)
+        .get('/explorer/config.json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(done);
+    });
+  });
+
   describe('when specifying custom static file root directories', function() {
     var app;
     beforeEach(function() {
@@ -135,9 +156,9 @@ describe('explorer', function() {
     });
 
     it('should allow `uiDirs` to be defined as an Array', function(done) {
-      app.use('/explorer', explorer(app, {
+      explorer(app, {
         uiDirs: [ path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui') ]
-      }));
+      });
 
       request(app).get('/explorer/')
         .expect(200)
@@ -147,9 +168,9 @@ describe('explorer', function() {
     });
 
     it('should allow `uiDirs` to be defined as an String', function(done) {
-      app.use('/explorer', explorer(app, {
+      explorer(app, {
         uiDirs: path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')
-      }));
+      });
 
       request(app).get('/explorer/')
         .expect(200)
@@ -172,7 +193,7 @@ describe('explorer', function() {
     Product.attachTo(loopback.memory());
     app.model(Product);
 
-    app.use(explorerBase || '/explorer', explorer(app));
+    explorer(app, { mountPath: explorerBase });
     app.use(app.get('restApiRoot') || '/', loopback.rest());
   }
 });

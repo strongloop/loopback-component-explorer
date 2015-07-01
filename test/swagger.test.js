@@ -3,7 +3,6 @@
 var url = require('url');
 var urlJoin = require('../lib/url-join');
 var loopback = require('loopback');
-var express = require('express');
 var swagger = require('../lib/swagger');
 
 var request = require('supertest');
@@ -387,7 +386,7 @@ describe('swagger definition', function() {
   }
 
   function mountExplorer(app, options) {
-    var swaggerApp = express();
+    var swaggerApp = loopback();
     swagger(app, swaggerApp, options);
     app.use(app.get('explorerRoot') || '/explorer', swaggerApp);
     return app;
