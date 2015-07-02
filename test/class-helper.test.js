@@ -3,7 +3,6 @@
 var classHelper = require('../lib/class-helper');
 var expect = require('chai').expect;
 var _defaults = require('lodash').defaults;
-var loopback = require('loopback');
 
 describe('class-helper', function() {
   it('joins array descriptions', function() {

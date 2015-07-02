@@ -1,6 +1,6 @@
 {
   "name": "loopback-explorer",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "Browse and test your LoopBack app's APIs",
   "main": "index.js",
   "scripts": {
@@ -22,9 +22,9 @@
   },
   "devDependencies": {
     "loopback": "git+https://github.com/shelbys/loopback.git#validate_param_enum",
-    "mocha": "^2.2.5",
-    "supertest": "~1.0.1",
-    "chai": "^2.3.0"
+    "mocha": "^1.21.5",
+    "supertest": "~0.14.0",
+    "chai": "^1.9.1"
   },
   "license": {
     "name": "Dual MIT/StrongLoop",
@@ -35,6 +35,6 @@
     "debug": "~1.0.3",
     "express": "3.x",
     "lodash": "^2.4.1",
-  "swagger-ui": "git+https://github.com/shelbys/swagger-ui.git"
+    "swagger-ui": "git+https://github.com/shelbys/swagger-ui.git"
   }
 }
