@@ -1,6 +1,7 @@
 'use strict';
 
 var modelHelper = require('../lib/model-helper');
+var _defaults = require('lodash').defaults;
 var loopback = require('loopback');
 var expect = require('chai').expect;
 
@@ -122,6 +123,27 @@ describe('model-helper', function() {
       });
 
     });
+
+    it('converts model property field `doc`', function() {
+      var def = buildSwaggerModels({
+        name: { type: String, doc: 'a-description' }
+      });
+      var nameProp = def.properties.name;
+      expect(nameProp).to.have.property('description', 'a-description');
+    });
+
+    it('converts model property field `description`', function() {
+      var def = buildSwaggerModels({
+        name: { type: String, description: 'a-description' }
+      });
+      var nameProp = def.properties.name;
+      expect(nameProp).to.have.property('description', 'a-description');
+    });
+
+    it('converts model field `description`', function() {
+      var def = buildSwaggerModels({}, { description: 'a-description' });
+      expect(def).to.have.property('description', 'a-description');
+    });
   });
 
   describe('related models', function() {
@@ -138,7 +160,7 @@ describe('model-helper', function() {
       var Model1 = loopback.createModel('Model1', {
         str: String, // 'string'
         address: Model2
-      });
+      }, { models: { Model2: Model2 } });
       var defs = modelHelper.generateModelDefinition(Model1, {});
       expect(defs).has.property('Model1');
       expect(defs).has.property('Model2');
@@ -147,7 +169,7 @@ describe('model-helper', function() {
     it('should include used models', function() {
       var Model4 = loopback.createModel('Model4', {street: String});
       var Model3 = loopback.createModel('Model3', {
-        str: String, // 'string'
+        str: String // 'string'
       }, {models: {model4: 'Model4'}});
       var defs = modelHelper.generateModelDefinition(Model3, {});
       expect(defs).has.property('Model3');
@@ -159,7 +181,7 @@ describe('model-helper', function() {
       var Model5 = loopback.createModel('Model5', {
         str: String, // 'string'
         addresses: [Model6]
-      });
+      }, { models: { Model6: Model6 } });
       var defs = modelHelper.generateModelDefinition(Model5, {});
       expect(defs).has.property('Model5');
       expect(defs).has.property('Model6');
@@ -176,6 +198,18 @@ describe('model-helper', function() {
         expect(Object.keys(defs)).has.property('length', 1);
       });
 
+    // https://github.com/strongloop/loopback-explorer/issues/71
+    it('should skip unknown types', function() {
+      var Model8 = loopback.createModel('Model8', {
+        patient: {
+          model: 'physician',
+          type: 'hasMany',
+          through: 'appointment'
+        }
+      });
+      var defs = modelHelper.generateModelDefinition(Model8, {});
+      expect(Object.keys(defs)).to.not.contain('hasMany');
+    });
   });
 
   describe('hidden properties', function() {
@@ -193,53 +227,66 @@ describe('model-helper', function() {
     });
   });
 
-  describe('#generateModelDefinition', function(){
-    it('should convert top level array description to string', function(){
+  describe('#generateModelDefinition', function() {
+    it('should convert top level array description to string', function () {
       var model = {};
       model.definition = {
         name: 'test',
-        description: ['1','2','3'],
+        description: ['1', '2', '3'],
         properties: {}
       };
       var models = {};
       modelHelper.generateModelDefinition(model, models);
-      expect(models.test.description).to.equal('123');
+      expect(models.test.description).to.equal("1\n2\n3");
     });
 
-    it('should convert property level array description to string', function(){
+    it('should convert property level array description to string', function () {
       var model = {};
       model.definition = {
         name: 'test',
         properties: {
           prop1: {
             type: 'string',
-            description: ['1','2','3']
+            description: ['1', '2', '3']
           }
         }
       };
       var models = {};
       modelHelper.generateModelDefinition(model, models);
-      expect(models.test.properties.prop1.description).to.equal('123');
+      expect(models.test.properties.prop1.description).to.equal("1\n2\n3");
+    });
+  });
+
+  describe('getPropType', function() {
+    it('converts anonymous object types', function() {
+      var type = modelHelper.getPropType({ name: 'string', value: 'string' });
+      expect(type).to.eql('object');
     });
   });
 });
 
 // Simulates the format of a remoting class.
-function buildSwaggerModels(model) {
-  var aClass = createModelCtor(model);
+function buildSwaggerModels(modelProperties, modelOptions) {
+  var aClass = createModelCtor(modelProperties, modelOptions);
   return modelHelper.generateModelDefinition(aClass.ctor, {}).testModel;
 }
 
-function createModelCtor(model) {
-  Object.keys(model).forEach(function(name) {
-    model[name] = {type: model[name]};
+function createModelCtor(properties, modelOptions) {
+  Object.keys(properties).forEach(function(name) {
+    var type = properties[name];
+    if (typeof type !== 'object' || Array.isArray(type))
+      properties[name] = { type: type };
   });
+
+  var definition = {
+    name: 'testModel',
+    properties: properties
+  };
+  _defaults(definition, modelOptions);
+
   var aClass = {
     ctor: {
-      definition: {
-        name: 'testModel',
-        properties: model
-      }
+      definition: definition
     }
   };
   return aClass;
