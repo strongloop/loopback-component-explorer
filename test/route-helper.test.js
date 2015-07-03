@@ -14,7 +14,7 @@ describe('route-helper', function() {
       ]
     });
     expect(doc.operations[0].type).to.equal('object');
-    expect(getResponseType(doc.operations[0])).to.equal(undefined);
+    expect(getResponseType(doc.operations[0])).to.equal('object');
   });
 
   it('converts path params when they exist in the route name', function() {
@@ -61,7 +61,7 @@ describe('route-helper', function() {
       ]
     });
     var opDoc = doc.operations[0];
-    expect(getResponseType(opDoc)).to.equal(undefined);
+    expect(getResponseType(opDoc)).to.eql('[customType]');
 
     // NOTE(bajtos) this would be the case if there was a single response type
     expect(opDoc.type).to.equal('array');
@@ -193,7 +193,8 @@ describe('route-helper', function() {
     expect(doc.operations[0].responseMessages).to.eql([
       {
         code: 200,
-        message: 'Request was successful'
+        message: 'Request was successful',
+        responseModel: 'object'
       }
     ]);
   });
@@ -206,7 +207,8 @@ describe('route-helper', function() {
     expect(doc.operations[0].responseMessages).to.eql([
       {
         code: 204,
-        message: 'Request was successful'
+        message: 'Request was successful',
+        responseModel: 'void'
       }
     ]);
   });
