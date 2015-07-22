@@ -1,6 +1,6 @@
 {
   "name": "loopback-explorer",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "Browse and test your LoopBack app's APIs",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "url": "https://github.com/strongloop/loopback-explorer/issues"
   },
   "devDependencies": {
-    "loopback": "git+https://github.com/shelbys/loopback.git#validate_param_enum",
+    "loopback": "git+https://github.com/shelbys/loopback.git",
     "mocha": "^1.21.5",
     "supertest": "~0.14.0",
     "chai": "^1.9.1"
