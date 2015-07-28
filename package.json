@@ -35,6 +35,8 @@
     "debug": "^2.2.0",
     "express": "4.x",
     "lodash": "^3.10.0",
-    "strong-swagger-ui": "^20.0.2"
+    "strong-swagger-ui": "^20.0.2",
+    "pkginfo": "^0.3.0",
+    "swagger-converter": "^0.1.7"
   }
 }
