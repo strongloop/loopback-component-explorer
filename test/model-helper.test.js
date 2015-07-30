@@ -112,14 +112,14 @@ describe('model-helper', function() {
         expect(prop).to.eql({ type: 'array', items: { type: 'any' } });
       });
 
-      it('converts Model type', function() {
+      it('converts Model type to $ref', function() {
         var Address = loopback.createModel('Address', {street: String});
         var def = buildSwaggerModels({
           str: String,
           address: Address
         });
         var prop = def.properties.address;
-        expect(prop).to.eql({ type: 'Address' });
+        expect(prop).to.eql({ $ref: 'Address' });
       });
 
     });
@@ -160,7 +160,7 @@ describe('model-helper', function() {
       var Model1 = loopback.createModel('Model1', {
         str: String, // 'string'
         address: Model2
-      });
+      }, { models: { Model2: Model2 } });
       var defs = modelHelper.generateModelDefinition(Model1, {});
       expect(defs).has.property('Model1');
       expect(defs).has.property('Model2');
@@ -169,7 +169,7 @@ describe('model-helper', function() {
     it('should include used models', function() {
       var Model4 = loopback.createModel('Model4', {street: String});
       var Model3 = loopback.createModel('Model3', {
-        str: String, // 'string'
+        str: String // 'string'
       }, {models: {model4: 'Model4'}});
       var defs = modelHelper.generateModelDefinition(Model3, {});
       expect(defs).has.property('Model3');
@@ -181,7 +181,7 @@ describe('model-helper', function() {
       var Model5 = loopback.createModel('Model5', {
         str: String, // 'string'
         addresses: [Model6]
-      });
+      }, { models: { Model6: Model6 } });
       var defs = modelHelper.generateModelDefinition(Model5, {});
       expect(defs).has.property('Model5');
       expect(defs).has.property('Model6');
@@ -224,6 +224,36 @@ describe('model-helper', function() {
       var def = modelHelper.generateModelDefinition(aClass.ctor, {}).testModel;
       expect(def.properties).to.not.have.property('hiddenProperty');
       expect(def.properties).to.have.property('visibleProperty');
+    });
+  });
+
+  describe('#generateModelDefinition', function() {
+    it('should convert top level array description to string', function () {
+      var model = {};
+      model.definition = {
+        name: 'test',
+        description: ['1', '2', '3'],
+        properties: {}
+      };
+      var models = {};
+      modelHelper.generateModelDefinition(model, models);
+      expect(models.test.description).to.equal("1\n2\n3");
+    });
+
+    it('should convert property level array description to string', function () {
+      var model = {};
+      model.definition = {
+        name: 'test',
+        properties: {
+          prop1: {
+            type: 'string',
+            description: ['1', '2', '3']
+          }
+        }
+      };
+      var models = {};
+      modelHelper.generateModelDefinition(model, models);
+      expect(models.test.properties.prop1.description).to.equal("1\n2\n3");
     });
   });
 

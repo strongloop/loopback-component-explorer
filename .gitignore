@@ -10,9 +10,12 @@ lib-cov
 *.iml
 *.tgz
 
+.idea
 pids
 logs
 results
 
 npm-debug.log
 node_modules
+
+LoopBackExplorer.iml

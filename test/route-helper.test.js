@@ -14,7 +14,7 @@ describe('route-helper', function() {
       ]
     });
     expect(doc.operations[0].type).to.equal('object');
-    expect(getResponseType(doc.operations[0])).to.equal(undefined);
+    expect(getResponseType(doc.operations[0])).to.equal('object');
   });
 
   it('converts path params when they exist in the route name', function() {
@@ -61,7 +61,7 @@ describe('route-helper', function() {
       ]
     });
     var opDoc = doc.operations[0];
-    expect(getResponseType(opDoc)).to.equal(undefined);
+    expect(getResponseType(opDoc)).to.eql('[customType]');
 
     // NOTE(bajtos) this would be the case if there was a single response type
     expect(opDoc.type).to.equal('array');
@@ -84,6 +84,36 @@ describe('route-helper', function() {
       notes: 'some notes'
     });
     expect(doc.operations[0].notes).to.equal('some notes');
+  });
+
+  describe('#acceptToParameter', function(){
+    it('should return function that converts accepts.description from array of string to string', function(){
+      var f = routeHelper.acceptToParameter({verb: 'get', path: 'path'});
+      var result = f({description: ['1','2','3']});
+      expect(result.description).to.eql("1\n2\n3");
+    });
+  });
+
+  describe('#routeToAPIDoc', function() {
+    it('should convert route.description from array of string to string', function () {
+      var result = routeHelper.routeToAPIDoc({
+        method: 'someMethod',
+        verb: 'get',
+        path: 'path',
+        description: ['1', '2', '3']
+      });
+      expect(result.operations[0].summary).to.eql("1\n2\n3");
+    });
+
+    it('should convert route.notes from array of string to string', function () {
+      var result = routeHelper.routeToAPIDoc({
+        method: 'someMethod',
+        verb: 'get',
+        path: 'path',
+        notes: ['1', '2', '3']
+      });
+      expect(result.operations[0].notes).to.eql("1\n2\n3");
+    });
   });
 
   it('includes `deprecated` metadata', function() {
@@ -163,7 +193,8 @@ describe('route-helper', function() {
     expect(doc.operations[0].responseMessages).to.eql([
       {
         code: 200,
-        message: 'Request was successful'
+        message: 'Request was successful',
+        responseModel: 'object'
       }
     ]);
   });
@@ -176,7 +207,8 @@ describe('route-helper', function() {
     expect(doc.operations[0].responseMessages).to.eql([
       {
         code: 204,
-        message: 'Request was successful'
+        message: 'Request was successful',
+        responseModel: 'void'
       }
     ]);
   });
