@@ -24,6 +24,45 @@ describe('class-helper', function() {
 
     expect(doc.resourcePath).to.equal('/test');
   });
+
+  describe('#generateResourceDocAPIEntry', function() {
+    describe('when ctor.settings.description is an array of string', function() {
+      it('should return description as a string', function() {
+        var aClass = {
+          ctor: {
+            settings: {
+              description: ['1','2','3']
+            }
+          },
+          http:{
+            path: 'path'
+          }
+        };
+
+        var result = classHelper.generateResourceDocAPIEntry(aClass);
+        expect(result.description).to.eql("1\n2\n3");
+      });
+    });
+
+    describe('when ctor.sharedCtor.description is an array of string', function() {
+      it('should return description as a string', function() {
+        var aClass = {
+          ctor: {
+            settings: {},
+            sharedCtor: {
+              description: ['1','2','3']
+            }
+          },
+          http:{
+            path: 'path'
+          }
+        };
+
+        var result = classHelper.generateResourceDocAPIEntry(aClass);
+        expect(result.description).to.eql("1\n2\n3");
+      });
+    });
+  });
 });
 
 // Easy wrapper around createRoute

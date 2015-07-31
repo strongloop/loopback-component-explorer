@@ -350,6 +350,14 @@ li.operation.delete .content > .content-type > div > label {
   color: #080;
 }
 
+.contentWell {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+/* 
+FIXME: Separate the overrides from the rest of the styles, rather than override screen.css entirely.
+*/
 /* Improve spacing when the browser window is small */
 #message-bar, #swagger-ui-container {
   padding-left: 30px;
