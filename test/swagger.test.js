@@ -119,6 +119,17 @@ describe('swagger definition', function() {
         done();
       });
     });
+
+    it('supports opts.header', function(done) {
+      var app = givenAppWithSwagger({ host: 'example.com:8080' });
+      getAPIDeclaration(app, 'products')
+        .end(function(err, res) {
+          if (err) return done(err);
+          var baseUrl = url.parse(res.body.basePath);
+          expect(baseUrl.host).to.equal('example.com:8080');
+          done();
+        });
+    });
   });
 
   describe('Model definition attributes', function() {
