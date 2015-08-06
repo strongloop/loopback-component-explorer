@@ -21,7 +21,7 @@
     "url": "https://github.com/strongloop/loopback-explorer/issues"
   },
   "devDependencies": {
-    "loopback": "^2.19.1",
+    "loopback": "^2.20.0",
     "mocha": "^2.2.5",
     "supertest": "^1.0.1",
     "chai": "^3.2.0"
@@ -33,7 +33,6 @@
   "dependencies": {
     "cors": "^2.7.1",
     "debug": "^2.2.0",
-    "express": "4.x",
     "lodash": "^3.10.0",
     "strong-swagger-ui": "^20.0.2"
   }
