@@ -1,3 +1,23 @@
+2015-06-25, Version 1.8.0
+=========================
+
+ * Add opts.omitProtocolInBaseUrl (Miroslav Bajtoš)
+
+ * Fix tests broken by fa3035c (#96) (Miroslav Bajtoš)
+
+ * Fix model description getting lost (bkniffler)
+
+
+2015-03-30, Version 1.7.2
+=========================
+
+ * Allow submitting token input with empty value to remove token. (Samuel Reed)
+
+ * Fix duplicate stylesheet issue (Pradnya Baviskar)
+
+ * Fix explorer tests for different line endings on Windows (Pradnya Baviskar)
+
+
 2015-02-23, Version 1.7.1
 =========================
 

@@ -25,21 +25,23 @@
   <script src='lib/loadSwaggerUI.js' type="text/javascript"></script>
 </head>
 
-<body class="swagger-section">
+<body class="swagger-section standalone">
 <div id='header'>
-  <div class="swagger-ui-wrap">
-    <a id="logo">StrongLoop API Explorer</a>
-    <form id='api_selector'>
-      <div class='input'>
-        <span class='accessTokenDisplay'>Token Not Set</span>
-        <input placeholder="accessToken" id="input_accessToken" name="accessToken" type="text"/>
-      </div>
-      <div class='input'><a id="explore" type="submit">Set Access Token</a></div>
-    </form>
-  </div>
+    <div class="swagger-ui-wrap">
+        <a id="logo">StrongLoop API Explorer</a>
+        <form id='api_selector'>
+            <div class='input'>
+                <span class='accessTokenDisplay'>Token Not Set</span>
+                <input placeholder="accessToken" id="input_accessToken" name="accessToken" type="text"/>
+            </div>
+            <div class='input'><a id="explore" type="submit">Set Access Token</a></div>
+        </form>
+    </div>
 </div>
 
-<div id="message-bar" class="swagger-ui-wrap">&nbsp;</div>
-<div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+<div class="contentWell">
+    <div id="message-bar" class="swagger-ui-wrap">&nbsp;</div>
+    <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+</div>
 </body>
 </html>
