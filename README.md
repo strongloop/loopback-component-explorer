@@ -16,11 +16,41 @@ var Product = loopback.Model.extend('product');
 Product.attachTo(loopback.memory());
 app.model(Product);
 
-app.use('/explorer', explorer(app, {basePath: '/api'}));
 app.use('/api', loopback.rest());
+
+// Register explorer using component-centric API:
+explorer(app, { basePath: '/api', mountPath: '/explorer' });
+// Alternatively, register as a middleware:
+app.use('/explorer', explorer.routes(app, { basePath: '/api' }));
+
 console.log("Explorer mounted at localhost:" + port + "/explorer");
 
 app.listen(port);
+```
+
+## Upgrading from v1.x
+
+To upgrade your application using loopback-explorer version 1.x, just replace
+`explorer()` with `explorer.routes()` in your server script:
+
+```js
+var explorer = require('loopback-explorer');
+
+// v1.x - does not work anymore
+app.use('/explorer', explorer(app, options);
+// v2.x
+app.use('/explorer', explorer.routes(app, options));
+```
+
+In applications scaffolded by `slc loopback`, the idiomatic way is to register
+loopback-explorer via `component-config.json`:
+
+```json
+{
+  "loopback-explorer": {
+    "mountPath": "/explorer"
+  }
+}
 ```
 
 ## Advanced Usage
@@ -32,7 +62,7 @@ See [options](#options) for a description of these options:
 ```js
 // Mount middleware before calling `explorer()` to add custom headers, auth, etc.
 app.use('/explorer', loopback.basicAuth('user', 'password'));
-app.use('/explorer', explorer(app, {
+explorer(app, {
   basePath: '/custom-api-root',
   uiDirs: [
     path.resolve(__dirname, 'public'),
@@ -59,6 +89,12 @@ Options are passed to `explorer(app, options)`.
 > Sets the API's base path. This must be set if you are mounting your api
 > to a path different than '/api', e.g. with
 > `loopback.use('/custom-api-root', loopback.rest());
+
+`mountPath`: **String**
+
+> Default: `/explorer`
+
+> Set the path where to mount the explorer component.
 
 `protocol`: **String**
 
