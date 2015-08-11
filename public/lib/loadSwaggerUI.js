@@ -3,6 +3,11 @@
 // Refactoring of inline script from index.html.
 /*global SwaggerUi, log, ApiKeyAuthorization, hljs, window, $ */
 $(function() {
+  // Pre load translate...
+  if(window.SwaggerTranslator) {
+    window.SwaggerTranslator.translate();
+  }
+
   var lsKey = 'swagger_accessToken';
   $.getJSON('config.json', function(config) {
     log(config);
@@ -16,12 +21,26 @@ $(function() {
       apiKey: '',
       dom_id: 'swagger-ui-container',
       supportHeaderParams: true,
-      supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
       onComplete: function(swaggerApi, swaggerUi) {
         log('Loaded SwaggerUI');
         log(swaggerApi);
         log(swaggerUi);
-        $('pre code').each(function(i, e) {hljs.highlightBlock(e); });
+
+        if(window.SwaggerTranslator) {
+          window.SwaggerTranslator.translate();
+        }
+
+        $('pre code').each(function(i, e) {
+          hljs.highlightBlock(e);
+        });
+
+        // Recover accessToken from localStorage if present.
+        if (window.localStorage) {
+          var key = window.localStorage.getItem(lsKey);
+          if (key) {
+            $('#input_accessToken').val(key).submit();
+          }
+        }
       },
       onFailure: function(data) {
         log('Unable to Load SwaggerUI');
@@ -36,14 +55,6 @@ $(function() {
     $('#api_selector').submit(setAccessToken);
     $('#input_accessToken').keyup(onInputChange);
 
-    // Recover accessToken from localStorage if present.
-    if (window.localStorage) {
-      var key = window.localStorage.getItem(lsKey);
-      if (key) {
-        $('#input_accessToken').val(key).submit();
-      }
-    }
-
     window.swaggerUi.load();
   }
 
@@ -54,23 +65,26 @@ $(function() {
     log('key: ' + key);
     if(key && key.trim() !== '') {
       log('added accessToken ' + key);
-      window.authorizations.add('key', new ApiKeyAuthorization('access_token', key, 'query'));
+      var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization('access_token', key, 'query');
+      window.swaggerUi.api.clientAuthorizations.add('key', apiKeyAuth);
       accessToken = key;
       $('.accessTokenDisplay').text('Token Set.').addClass('set');
       $('.accessTokenDisplay').attr('data-tooltip', 'Current Token: ' + key);
-      
-      // Save this token to localStorage if we can to make it persist on refresh. 
+
+      // Save this token to localStorage if we can to make it persist on refresh.
       if (window.localStorage) {
         window.localStorage.setItem(lsKey, key);
       }
     }
-    // If submitted with an empty token, remove the current token. Can be 
+    // If submitted with an empty token, remove the current token. Can be
     // useful to intentionally remove authorization.
     else {
       log('removed accessToken.');
       $('.accessTokenDisplay').text('Token Not Set.').removeClass('set');
       $('.accessTokenDisplay').removeAttr('data-tooltip');
-      window.authorizations.remove('key');
+      if (window.swaggerUi) {
+        window.swaggerUi.api.clientAuthorizations.remove('key');
+      }
       if (window.localStorage) {
         window.localStorage.removeItem(lsKey);
       }
@@ -85,6 +99,12 @@ $(function() {
       $('.accessTokenDisplay').text('Token changed; submit to confirm.');
     } else {
       $('.accessTokenDisplay').text('Token Set.');
+    }
+  }
+
+  function log() {
+    if ('console' in window) {
+      console.log.apply(console, arguments);
     }
   }
 });
