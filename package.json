@@ -34,6 +34,6 @@
     "cors": "^2.7.1",
     "debug": "^2.2.0",
     "lodash": "^3.10.0",
-    "strong-swagger-ui": "^20.0.2"
+    "strong-swagger-ui": "^21.0.0-dev.1"
   }
 }
