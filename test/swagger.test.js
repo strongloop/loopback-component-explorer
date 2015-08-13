@@ -9,220 +9,180 @@ var request = require('supertest');
 var expect = require('chai').expect;
 
 describe('swagger definition', function() {
+  describe('defaults', function() {
+    var swaggerResource;
+    before(function() {
+      var app = createLoopbackAppWithModel();
+      swaggerResource = swagger.createSwaggerObject(app);
+    });
+
+    it('advertises Swagger Spec version 2.0', function() {
+      expect(swaggerResource).to.have.property('swagger', '2.0');
+    });
+
+    it('has "basePath" set to "/api"', function() {
+      expect(swaggerResource).to.have.property('basePath', '/api');
+    });
+
+    it('uses the "host" serving the documentation', function() {
+      // see swagger-spec/2.0.md#fixed-fields
+      // If the host is not included, the host serving the documentation is to
+      // be used (including the port).
+      expect(swaggerResource).to.have.property('host', undefined);
+    });
+
+    it('uses the "schemes" serving the documentation', function() {
+      // see swagger-spec/2.0.md#fixed-fields
+      // If the schemes is not included, the default scheme to be used is the
+      // one used to access the Swagger definition itself.
+      expect(swaggerResource).to.have.property('schemes', undefined);
+    });
+
+    it('provides info.title', function() {
+      expect(swaggerResource.info)
+        .to.have.property('title', 'loopback-explorer');
+    });
+  });
+
   describe('basePath', function() {
-    // No basepath on resource doc in 1.2
-    it('no longer exists on resource doc', function(done) {
-      var app = givenAppWithSwagger();
-
-      var getReq = getSwaggerResources(app);
-      getReq.end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body.basePath).to.equal(undefined);
-        done();
+    it('is "{basePath}" when basePath is a path', function() {
+      var app = createLoopbackAppWithModel();
+      var swaggerResource = swagger.createSwaggerObject(app, {
+        basePath: '/api-root'
       });
+
+      expect(swaggerResource.basePath).to.equal('/api-root');
     });
 
-    it('is "http://{host}/api" by default', function(done) {
-      var app = givenAppWithSwagger();
-
-      var getReq = getAPIDeclaration(app, 'products');
-      getReq.end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body.basePath).to.equal(url.resolve(getReq.url, '/api'));
-        done();
-      });
+    it('is inferred from app.get("apiRoot")', function() {
+      var app = createLoopbackAppWithModel();
+      app.set('restApiRoot', '/custom-api-root');
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(swaggerResource.basePath).to.equal('/custom-api-root');
     });
 
-    it('is "http://{host}/{basePath}" when basePath is a path', function(done){
-      var app = givenAppWithSwagger({ basePath: '/api-root'});
-
-      var getReq = getAPIDeclaration(app, 'products');
-      getReq.end(function(err, res) {
-        if (err) return done(err);
-        var apiRoot = url.resolve(getReq.url, '/api-root');
-        expect(res.body.basePath).to.equal(apiRoot);
-        done();
-      });
-    });
-
-    it('infers API basePath from app', function(done){
-      var app = givenAppWithSwagger({}, {apiRoot: '/custom-api-root'});
-
-      var getReq = getAPIDeclaration(app, 'products');
-      getReq.end(function(err, res) {
-        if (err) return done(err);
-        var apiRoot = url.resolve(getReq.url, '/custom-api-root');
-        expect(res.body.basePath).to.equal(apiRoot);
-        done();
-      });
-    });
-
-    it('is reachable when explorer mounting location is changed', function(done){
+    it('is reachable when explorer mounting location is changed',
+    function(done) {
       var explorerRoot = '/erforscher';
       var app = givenAppWithSwagger({}, {explorerRoot: explorerRoot});
 
-      var getReq = getSwaggerResources(app, explorerRoot, 'products');
-      getReq.end(function(err, res) {
+      getSwaggerResource(app, explorerRoot).end(function(err, res) {
         if (err) return done(err);
         expect(res.body.basePath).to.be.a('string');
         done();
       });
     });
 
-    it('respects a hardcoded protocol (behind SSL terminator)', function(done){
-      var app = givenAppWithSwagger({protocol: 'https'});
-
-      var getReq = getAPIDeclaration(app, 'products');
-      getReq.end(function(err, res) {
-        if (err) return done(err);
-        var parsed = url.parse(res.body.basePath);
-        expect(parsed.protocol).to.equal('https:');
-        done();
+    it('respects a hardcoded protocol (behind SSL terminator)', function() {
+      var app = createLoopbackAppWithModel();
+      var swaggerResource = swagger.createSwaggerObject(app, {
+        protocol: 'https'
       });
+      expect(swaggerResource.schemes).to.eql(['https']);
     });
 
-    it('respects X-Forwarded-Host header (behind a proxy)', function(done) {
-      var app = givenAppWithSwagger();
-      getAPIDeclaration(app, 'products')
-        .set('X-Forwarded-Host', 'example.com')
-        .end(function(err, res) {
-          if (err) return done(err);
-          var baseUrl = url.parse(res.body.basePath);
-          expect(baseUrl.hostname).to.equal('example.com');
-          done();
-        });
-    });
-
-    it('respects X-Forwarded-Proto header (behind a proxy)', function(done) {
-      var app = givenAppWithSwagger();
-      getAPIDeclaration(app, 'products')
-        .set('X-Forwarded-Proto', 'https')
-        .end(function(err, res) {
-          if (err) return done(err);
-          var baseUrl = url.parse(res.body.basePath);
-          expect(baseUrl.protocol).to.equal('https:');
-          done();
-        });
-    });
-
-    it('supports options.omitProtocolInBaseUrl', function(done) {
-      var app = givenAppWithSwagger({ omitProtocolInBaseUrl: true });
-
-      var getReq = getAPIDeclaration(app, 'products');
-      getReq.end(function(err, res) {
-        if (err) return done(err);
-        var basePath = res.body.basePath;
-        expect(basePath).to.match(/^\/\//);
-        var parsed = url.parse(res.body.basePath);
-        expect(parsed.protocol).to.equal(null);
-        done();
+    it('supports opts.host', function() {
+      var app = createLoopbackAppWithModel();
+      var swaggerResource = swagger.createSwaggerObject(app, {
+        host: 'example.com:8080'
       });
-    });
-
-    it('supports opts.header', function(done) {
-      var app = givenAppWithSwagger({ host: 'example.com:8080' });
-      getAPIDeclaration(app, 'products')
-        .end(function(err, res) {
-          if (err) return done(err);
-          var baseUrl = url.parse(res.body.basePath);
-          expect(baseUrl.host).to.equal('example.com:8080');
-          done();
-        });
+      expect(swaggerResource.host).to.equal('example.com:8080');
     });
   });
 
-  describe('Model definition attributes', function() {
-    it('Properly defines basic attributes', function(done) {
-      var app = givenAppWithSwagger();
+  it('has global "consumes"', function() {
+    var app = createLoopbackAppWithModel();
+    var swaggerResource = swagger.createSwaggerObject(app);
+    expect(swaggerResource.consumes).to.have.members([
+      'application/json',
+      'application/x-www-form-urlencoded',
+      'application/xml', 'text/xml'
+    ]);
+  });
 
-      var getReq = getAPIDeclaration(app, 'products');
-      getReq.end(function(err, res) {
-        if (err) return done(err);
-        var data = res.body.models.product;
-        expect(data.id).to.equal('product');
-        expect(data.required.sort()).to.eql(['aNum', 'foo'].sort());
-        expect(data.properties.foo.type).to.equal('string');
-        expect(data.properties.bar.type).to.equal('string');
-        expect(data.properties.aNum.type).to.equal('number');
-        // These will be Numbers for Swagger 2.0
-        expect(data.properties.aNum.minimum).to.equal('1');
-        expect(data.properties.aNum.maximum).to.equal('10');
-        // Should be Number even in 1.2
-        expect(data.properties.aNum.defaultValue).to.equal(5);
-        done();
-      });
+  it('has global "produces"', function() {
+    var app = createLoopbackAppWithModel();
+    var swaggerResource = swagger.createSwaggerObject(app);
+    expect(swaggerResource.produces).to.have.members([
+      'application/json',
+      'application/xml', 'text/xml',
+      // JSONP content types
+      'application/javascript', 'text/javascript'
+    ]);
+  });
+
+  describe('tags', function() {
+    it('has one tag for each model', function() {
+      var app = createLoopbackAppWithModel();
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(swaggerResource.tags).to.eql([
+        { name: 'Product', description: 'a-description\nline2' }
+      ]);
+    });
+  });
+
+  describe('paths node', function() {
+    it('contains model routes for static methods', function() {
+      var app = createLoopbackAppWithModel();
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(swaggerResource.paths).to.have.property('/Products');
+      var products = swaggerResource.paths['/Products'];
+      var verbs = Object.keys(products);
+      verbs.sort();
+      expect(verbs).to.eql(['get', 'post', 'put']);
+    });
+  });
+
+  describe('definitions node', function() {
+    it('properly defines basic attributes', function() {
+      var app = createLoopbackAppWithModel();
+      var swaggerResource = swagger.createSwaggerObject(app);
+      var data = swaggerResource.definitions.Product;
+      expect(data.required.sort()).to.eql(['aNum', 'foo'].sort());
+      expect(data.properties.foo.type).to.equal('string');
+      expect(data.properties.bar.type).to.equal('string');
+      expect(data.properties.aNum.type).to.equal('number');
+      // These will be Numbers for Swagger 2.0
+      expect(data.properties.aNum.minimum).to.equal(1);
+      expect(data.properties.aNum.maximum).to.equal(10);
+      // Should be Number even in 1.2
+      expect(data.properties.aNum.default).to.equal(5);
     });
 
-    it('includes `consumes`', function(done) {
-      var app = givenAppWithSwagger();
-      getAPIDeclaration(app, 'products').end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body.consumes).to.have.members([
-          'application/json',
-          'application/x-www-form-urlencoded',
-          'application/xml', 'text/xml'
-        ]);
-        done();
-      });
-    });
-
-    it('includes `produces`', function(done) {
-      var app = givenAppWithSwagger();
-      getAPIDeclaration(app, 'products').end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body.produces).to.have.members([
-          'application/json',
-          'application/xml', 'text/xml',
-          // JSONP content types
-          'application/javascript', 'text/javascript'
-        ]);
-        done();
-      });
-    });
-
-    it('includes models from `accepts` args', function(done) {
+    it('includes models from "accepts" args', function() {
       var app = createLoopbackAppWithModel();
       givenPrivateAppModel(app, 'Image');
       givenSharedMethod(app.models.Product, 'setImage', {
         accepts: { name: 'image', type: 'Image' }
       });
-      mountExplorer(app);
 
-      getAPIDeclaration(app, 'products').end(function(err, res) {
-        expect(Object.keys(res.body.models)).to.include('Image');
-        done();
-      });
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions)).to.include('Image');
     });
 
-    it('includes models from `returns` args', function(done) {
+    it('includes models from "returns" args', function() {
       var app = createLoopbackAppWithModel();
       givenPrivateAppModel(app, 'Image');
       givenSharedMethod(app.models.Product, 'getImage', {
-        returns: { name: 'image', type: 'Image' }
+        returns: { name: 'image', type: 'Image', root: true }
       });
-      mountExplorer(app);
 
-      getAPIDeclaration(app, 'products').end(function(err, res) {
-        expect(Object.keys(res.body.models)).to.include('Image');
-        done();
-      });
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions)).to.include('Image');
     });
 
-    it('includes `accepts` models not attached to the app', function(done) {
+    it('includes "accepts" models not attached to the app', function() {
       var app = createLoopbackAppWithModel();
       loopback.createModel('Image');
       givenSharedMethod(app.models.Product, 'setImage', {
         accepts: { name: 'image', type: 'Image' }
       });
-      mountExplorer(app);
 
-      getAPIDeclaration(app, 'products').end(function(err, res) {
-        expect(Object.keys(res.body.models)).to.include('Image');
-        done();
-      });
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions)).to.include('Image');
     });
 
-    it('includes `responseMessages` models', function(done) {
+    it('includes "responseMessages" models', function() {
       var app = createLoopbackAppWithModel();
       loopback.createModel('ValidationError');
       givenSharedMethod(app.models.Product, 'setImage', {
@@ -233,37 +193,45 @@ describe('swagger definition', function() {
         }]
       });
 
-      expectProductDocIncludesModels(app, 'ValidationError', done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include('ValidationError');
     });
 
-    it('includes nested model references in properties', function(done) {
+    it('includes nested model references in properties', function() {
       var app = createLoopbackAppWithModel();
       givenWarehouseWithAddressModels(app);
 
       app.models.Product.defineProperty('location', { type: 'Warehouse' });
 
-      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include.members(['Address', 'Warehouse']);
     });
 
-    it('includes nested array model references in properties', function(done) {
+    it('includes nested array model references in properties', function() {
       var app = createLoopbackAppWithModel();
       givenWarehouseWithAddressModels(app);
 
       app.models.Product.defineProperty('location', { type: ['Warehouse'] });
 
-      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include.members(['Address', 'Warehouse']);
     });
 
-    it('includes nested model references in modelTo relation', function(done) {
+    it('includes nested model references in modelTo relation', function() {
       var app = createLoopbackAppWithModel();
       givenWarehouseWithAddressModels(app);
 
       app.models.Product.belongsTo(app.models.Warehouse);
 
-      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include.members(['Address', 'Warehouse']);
     });
 
-    it('includes nested model references in modelTo relation', function(done) {
+    it('includes nested model references in modelThrough relation', function() {
       var app = createLoopbackAppWithModel();
       givenWarehouseWithAddressModels(app);
       givenPrivateAppModel(app, 'ProductLocations');
@@ -271,13 +239,12 @@ describe('swagger definition', function() {
       app.models.Product.hasMany(app.models.Warehouse,
         { through: app.models.ProductLocations });
 
-      expectProductDocIncludesModels(
-        app,
-        ['Address', 'Warehouse', 'ProductLocations'],
-        done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include.members(['Address', 'Warehouse', 'ProductLocations']);
     });
 
-    it('includes nested model references in accept args', function(done) {
+    it('includes nested model references in accept args', function() {
       var app = createLoopbackAppWithModel();
       givenWarehouseWithAddressModels(app);
 
@@ -285,21 +252,25 @@ describe('swagger definition', function() {
         accepts: { arg: 'w', type: 'Warehouse' }
       });
 
-      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include.members(['Address', 'Warehouse']);
     });
 
-    it('includes nested array model references in accept args', function(done) {
+    it('includes nested array model references in accept args', function() {
       var app = createLoopbackAppWithModel();
       givenWarehouseWithAddressModels(app);
 
       givenSharedMethod(app.models.Product, 'aMethod', {
-        accepts: { arg: 'w', type: [ 'Warehouse' ] }
+        accepts: { arg: 'w', type: ['Warehouse'] }
       });
 
-      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include.members(['Address', 'Warehouse']);
     });
 
-    it('includes nested model references in return args', function(done) {
+    it('includes nested model references in return args', function() {
       var app = createLoopbackAppWithModel();
       givenWarehouseWithAddressModels(app);
 
@@ -307,10 +278,12 @@ describe('swagger definition', function() {
         returns: { arg: 'w', type: 'Warehouse', root: true }
       });
 
-      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include.members(['Address', 'Warehouse']);
     });
 
-    it('includes nested array model references in return args', function(done) {
+    it('includes nested array model references in return args', function() {
       var app = createLoopbackAppWithModel();
       givenWarehouseWithAddressModels(app);
 
@@ -318,10 +291,12 @@ describe('swagger definition', function() {
         returns: { arg: 'w', type: ['Warehouse'], root: true }
       });
 
-      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include.members(['Address', 'Warehouse']);
     });
 
-    it('includes nested model references in error responses', function(done) {
+    it('includes nested model references in error responses', function() {
       var app = createLoopbackAppWithModel();
       givenWarehouseWithAddressModels(app);
 
@@ -333,7 +308,9 @@ describe('swagger definition', function() {
         }
       });
 
-      expectProductDocIncludesModels(app, ['Address', 'Warehouse'], done);
+      var swaggerResource = swagger.createSwaggerObject(app);
+      expect(Object.keys(swaggerResource.definitions))
+        .to.include.members(['Address', 'Warehouse']);
     });
   });
 
@@ -341,7 +318,7 @@ describe('swagger definition', function() {
     it('allows cross-origin requests by default', function(done) {
       var app = givenAppWithSwagger();
       request(app)
-        .options('/explorer/resources')
+        .options('/explorer/swagger.json')
         .set('Origin', 'http://example.com/')
         .expect('Access-Control-Allow-Origin', /^http:\/\/example.com\/|\*/)
         .expect('Access-Control-Allow-Methods', /\bGET\b/)
@@ -349,9 +326,11 @@ describe('swagger definition', function() {
     });
 
     it('can be disabled by configuration', function(done) {
-      var app = givenAppWithSwagger({}, { remoting: { cors: { origin: false } } });
+      var app = givenAppWithSwagger({}, {
+        remoting: { cors: { origin: false } }
+      });
       request(app)
-        .options('/explorer/resources')
+        .options('/explorer/swagger.json')
         .end(function(err, res) {
           if (err) return done(err);
           var allowOrigin = res.get('Access-Control-Allow-Origin');
@@ -362,16 +341,17 @@ describe('swagger definition', function() {
     });
   });
 
-  function getSwaggerResources(app, restPath, classPath) {
+  function getSwaggerResource(app, restPath, classPath) {
+    if (classPath) throw new Error('classPath is no longer supported');
     return request(app)
-      .get(urlJoin(restPath || '/explorer', '/resources', classPath || ''))
+      .get(urlJoin(restPath || '/explorer', '/swagger.json'))
       .set('Accept', 'application/json')
       .expect(200)
       .expect('Content-Type', /json/);
   }
 
   function getAPIDeclaration(app, className) {
-    return getSwaggerResources(app, '', urlJoin('/', className));
+    return getSwaggerResource(app, '', urlJoin('/', className));
   }
 
   function givenAppWithSwagger(swaggerOptions, appConfig) {
@@ -387,7 +367,7 @@ describe('swagger definition', function() {
 
   function mountExplorer(app, options) {
     var swaggerApp = loopback();
-    swagger(app, swaggerApp, options);
+    swagger.mountSwagger(app, swaggerApp, options);
     app.use(app.get('explorerRoot') || '/explorer', swaggerApp);
     return app;
   }
@@ -397,12 +377,12 @@ describe('swagger definition', function() {
 
     app.dataSource('db', { connector: 'memory' });
 
-    var Product = loopback.Model.extend('product', {
+    var Product = loopback.createModel('Product', {
       foo: {type: 'string', required: true},
       bar: 'string',
       aNum: {type: 'number', min: 1, max: 10, required: true, default: 5}
-    });
-    app.model(Product, { dataSource: 'db'});
+    }, { description: ['a-description', 'line2']  });
+    app.model(Product, { dataSource: 'db' });
 
     // Simulate a restApiRoot set in config
     app.set('restApiRoot', apiRoot || '/api');
@@ -412,31 +392,19 @@ describe('swagger definition', function() {
   }
 
   function givenSharedMethod(model, name, metadata) {
-    model[name] = function(){};
+    model[name] = function() {};
     loopback.remoteMethod(model[name], metadata);
   }
 
   function givenPrivateAppModel(app, name, properties) {
     var model = loopback.createModel(name, properties);
-    app.model(model, { dataSource: 'db', public: false} );
+    app.model(model, { dataSource: 'db', public: false });
   }
 
   function givenWarehouseWithAddressModels(app) {
     givenPrivateAppModel(app, 'Address');
     givenPrivateAppModel(app, 'Warehouse', {
       shippingAddress: { type: 'Address' }
-    });
-  }
-
-  function expectProductDocIncludesModels(app, modelNames, done) {
-    if (!Array.isArray(modelNames)) modelNames = [modelNames];
-
-    mountExplorer(app);
-
-    getAPIDeclaration(app, 'products').end(function(err, res) {
-      if (err) return done(err);
-      expect(Object.keys(res.body.models)).to.include.members(modelNames);
-      done();
     });
   }
 });

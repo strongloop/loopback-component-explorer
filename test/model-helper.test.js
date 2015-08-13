@@ -1,153 +1,14 @@
 'use strict';
 
 var modelHelper = require('../lib/model-helper');
+var TypeRegistry = require('../lib/type-registry');
 var _defaults = require('lodash').defaults;
 var loopback = require('loopback');
 var expect = require('chai').expect;
 
 describe('model-helper', function() {
-  describe('properly converts LDL definitions to swagger types', function() {
-    it('converts constructor types', function() {
-      var def = buildSwaggerModels({
-        str: String, // 'string'
-        num: Number, // {type: 'number', format: 'double'}
-        date: Date,  // {type: 'string', format: 'date'}
-        bool: Boolean, // 'boolean'
-        buf: Buffer // {type: 'string', format: 'byte'}
-      });
-      var props = def.properties;
-      expect(props.str).to.eql({ type: 'string' });
-      expect(props.num).to.eql({ type: 'number', format: 'double' });
-      expect(props.date).eql({ type: 'string', format: 'date' });
-      expect(props.bool).to.eql({ type: 'boolean' });
-      expect(props.buf).to.eql({ type: 'string', format: 'byte' });
-    });
-    it('converts string types', function() {
-      var def = buildSwaggerModels({
-        str: 'string', // 'string'
-        num: 'number', // {type: 'number', format: 'double'}
-        date: 'date',  // {type: 'string', format: 'date'}
-        bool: 'boolean', // 'boolean'
-        buf: 'buffer' // {type: 'string', format: 'byte'}
-      });
-      var props = def.properties;
-      expect(props.str).to.eql({ type: 'string' });
-      expect(props.num).to.eql({ type: 'number', format: 'double' });
-      expect(props.date).eql({ type: 'string', format: 'date' });
-      expect(props.bool).to.eql({ type: 'boolean' });
-      expect(props.buf).to.eql({ type: 'string', format: 'byte' });
-    });
-    describe('array definitions', function() {
-      // There are three types we want to checK:
-      // [String]
-      // ["string"],
-      // [{type: String, ...}]
-      it('converts [Constructor] type', function() {
-        var def = buildSwaggerModels({
-          array: [String]
-        });
-        var props = def.properties;
-        expect(props.array).to.eql({ type: 'array', items: { 
-          type: 'string' 
-        }});
-      });
-
-      it('converts ["string"] type', function() {
-        var def = buildSwaggerModels({
-          array: ['string']
-        });
-        var props = def.properties;
-        expect(props.array).to.eql({ type: 'array', items: { 
-          type: 'string' 
-        }});
-      });
-
-      it('converts [{type: "string", length: 64}] type', function() {
-        var def = buildSwaggerModels({
-          array: [{type: 'string', length: 64}]
-        });
-        var props = def.properties;
-        expect(props.array).to.eql({ type: 'array', items: { 
-          type: 'string',
-          length: 64
-        }});
-      });
-
-      it('converts [{type: "date"}] type (with `format`)', function() {
-        var def = buildSwaggerModels({
-          array: [{type: 'date'}]
-        });
-        var props = def.properties;
-        expect(props.array).to.eql({ type: 'array', items: {
-          type: 'string', format: 'date'
-        }});
-      });
-
-      it('converts [] type', function() {
-        var def = buildSwaggerModels({
-          array: []
-        });
-        var prop = def.properties.array;
-        expect(prop).to.eql({
-          type: 'array',
-          items: { type: 'any' }
-        });
-      });
-
-      it('converts [undefined] type', function() {
-        var def = buildSwaggerModels({
-          // This value is somehow provided by loopback-boot called from
-          // loopback-workspace.
-          array: [undefined]
-        });
-        var prop = def.properties.array;
-        expect(prop).to.eql({ type: 'array', items: { type: 'any' } });
-      });
-
-      it('converts "array" type', function() {
-        var def = buildSwaggerModels({
-          array: 'array'
-        });
-        var prop = def.properties.array;
-        expect(prop).to.eql({ type: 'array', items: { type: 'any' } });
-      });
-
-      it('converts Model type to $ref', function() {
-        var Address = loopback.createModel('Address', {street: String});
-        var def = buildSwaggerModels({
-          str: String,
-          address: Address
-        });
-        var prop = def.properties.address;
-        expect(prop).to.eql({ $ref: 'Address' });
-      });
-
-    });
-
-    it('converts model property field `doc`', function() {
-      var def = buildSwaggerModels({
-        name: { type: String, doc: 'a-description' }
-      });
-      var nameProp = def.properties.name;
-      expect(nameProp).to.have.property('description', 'a-description');
-    });
-
-    it('converts model property field `description`', function() {
-      var def = buildSwaggerModels({
-        name: { type: String, description: 'a-description' }
-      });
-      var nameProp = def.properties.name;
-      expect(nameProp).to.have.property('description', 'a-description');
-    });
-
-    it('converts model field `description`', function() {
-      var def = buildSwaggerModels({}, { description: 'a-description' });
-      expect(def).to.have.property('description', 'a-description');
-    });
-  });
-
   describe('related models', function() {
-    it('should include related models', function () {
+    it('should include related models', function() {
       var defs = buildSwaggerModelsWithRelations({
         str: String // 'string'
       });
@@ -161,7 +22,7 @@ describe('model-helper', function() {
         str: String, // 'string'
         address: Model2
       }, { models: { Model2: Model2 } });
-      var defs = modelHelper.generateModelDefinition(Model1, {});
+      var defs = getDefinitionsForModel(Model1);
       expect(defs).has.property('Model1');
       expect(defs).has.property('Model2');
     });
@@ -171,7 +32,7 @@ describe('model-helper', function() {
       var Model3 = loopback.createModel('Model3', {
         str: String // 'string'
       }, {models: {model4: 'Model4'}});
-      var defs = modelHelper.generateModelDefinition(Model3, {});
+      var defs = getDefinitionsForModel(Model3);
       expect(defs).has.property('Model3');
       expect(defs).has.property('Model4');
     });
@@ -182,7 +43,7 @@ describe('model-helper', function() {
         str: String, // 'string'
         addresses: [Model6]
       }, { models: { Model6: Model6 } });
-      var defs = modelHelper.generateModelDefinition(Model5, {});
+      var defs = getDefinitionsForModel(Model5);
       expect(defs).has.property('Model5');
       expect(defs).has.property('Model6');
     });
@@ -193,7 +54,7 @@ describe('model-helper', function() {
         var Model7 = loopback.createModel('Model7', {street: String});
         Array.prototype.customFunc = function() {
         };
-        var defs = modelHelper.generateModelDefinition(Model7, {});
+        var defs = getDefinitionsForModel(Model7);
         expect(defs).has.property('Model7');
         expect(Object.keys(defs)).has.property('length', 1);
       });
@@ -207,7 +68,11 @@ describe('model-helper', function() {
           through: 'appointment'
         }
       });
-      var defs = modelHelper.generateModelDefinition(Model8, {});
+      var defs = getDefinitionsForModel(Model8);
+      // Hack: prevent warnings in other tests caused by global model registry
+      Model8.definition.rawProperties.patient.type = 'string';
+      Model8.definition.properties.patient.type = 'string';
+
       expect(Object.keys(defs)).to.not.contain('hasMany');
     });
   });
@@ -221,47 +86,42 @@ describe('model-helper', function() {
       aClass.ctor.definition.settings = {
         hidden: ['hiddenProperty']
       };
-      var def = modelHelper.generateModelDefinition(aClass.ctor, {}).testModel;
+      var def = getDefinitionsForModel(aClass.ctor).testModel;
       expect(def.properties).to.not.have.property('hiddenProperty');
       expect(def.properties).to.have.property('visibleProperty');
     });
   });
 
-  describe('#generateModelDefinition', function() {
-    it('should convert top level array description to string', function () {
-      var model = {};
-      model.definition = {
-        name: 'test',
-        description: ['1', '2', '3'],
-        properties: {}
-      };
-      var models = {};
-      modelHelper.generateModelDefinition(model, models);
-      expect(models.test.description).to.equal("1\n2\n3");
-    });
-
-    it('should convert property level array description to string', function () {
-      var model = {};
-      model.definition = {
-        name: 'test',
-        properties: {
-          prop1: {
-            type: 'string',
-            description: ['1', '2', '3']
-          }
-        }
-      };
-      var models = {};
-      modelHelper.generateModelDefinition(model, models);
-      expect(models.test.properties.prop1.description).to.equal("1\n2\n3");
-    });
+  it('should convert top level array description to string', function() {
+    var model = {};
+    model.definition = {
+      name: 'test',
+      description: ['1', '2', '3'],
+      properties: {}
+    };
+    var defs = getDefinitionsForModel(model);
+    expect(defs.test.description).to.equal('1\n2\n3');
   });
 
-  describe('getPropType', function() {
-    it('converts anonymous object types', function() {
-      var type = modelHelper.getPropType({ name: 'string', value: 'string' });
-      expect(type).to.eql('object');
-    });
+  it('should convert property level array description to string', function() {
+    var model = {};
+    model.definition = {
+      name: 'test',
+      properties: {
+        prop1: {
+          type: 'string',
+          description: ['1', '2', '3']
+        }
+      }
+    };
+    var defs = getDefinitionsForModel(model);
+    expect(defs.test.properties.prop1.description).to.equal('1\n2\n3');
+  });
+
+  it('omits empty "required" array', function() {
+    var aClass = createModelCtor({});
+    var def = getDefinitionsForModel(aClass.ctor).testModel;
+    expect(def).to.not.have.property('required');
   });
 });
 
@@ -319,6 +179,15 @@ function buildSwaggerModelsWithRelations(model) {
       }
     }
   };
-  return modelHelper.generateModelDefinition(aClass.ctor, {});
+
+  var registry = new TypeRegistry();
+  modelHelper.registerModelDefinition(aClass.ctor, registry);
+  return registry.getAllDefinitions();
 }
 
+function getDefinitionsForModel(modelCtor) {
+  var registry = new TypeRegistry();
+  modelHelper.registerModelDefinition(modelCtor, registry);
+  registry.reference(modelCtor.modelName || modelCtor.definition.name);
+  return registry.getDefinitions();
+}

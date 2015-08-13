@@ -35,13 +35,13 @@ function routes(loopbackApplication, options) {
   }
 
   options = _defaults({}, options, {
-    resourcePath: 'resources',
+    resourcePath: 'swagger.json',
     apiInfo: loopbackApplication.get('apiInfo') || {}
   });
 
   var router = new loopback.Router();
 
-  swagger(loopbackApplication, router, options);
+  swagger.mountSwagger(loopbackApplication, router, options);
 
   // config.json is loaded by swagger-ui. The server should respond
   // with the relative URI of the resource doc.
@@ -70,12 +70,6 @@ function routes(loopbackApplication, options) {
         router.use(loopback.static(dir));
       });
     }
-  }
-
-  if (options.swaggerDistRoot) {
-    console.warn('loopback-explorer: `swaggerDistRoot` is deprecated,' +
-      ' use `uiDirs` instead');
-    router.use(loopback.static(options.swaggerDistRoot));
   }
 
   // File in node_modules are overridden by a few customizations
