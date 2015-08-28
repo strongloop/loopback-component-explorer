@@ -12,6 +12,11 @@ describe('explorer', function() {
   describe('with default config', function() {
     beforeEach(givenLoopBackAppWithExplorer());
 
+    it('should register "loopback-explorer" to the app', function() {
+      expect(this.app.get('loopback-explorer'))
+      .to.have.property('mountPath', '/explorer');
+    });
+
     it('should redirect to /explorer/', function(done) {
       request(this.app)
         .get('/explorer')
@@ -49,6 +54,11 @@ describe('explorer', function() {
 
   describe('with custom explorer base', function() {
     beforeEach(givenLoopBackAppWithExplorer('/swagger'));
+
+    it('should register "loopback-explorer" to the app', function() {
+      expect(this.app.get('loopback-explorer'))
+      .to.have.property('mountPath', '/swagger');
+    });
 
     it('should serve correct swagger-ui config', function(done) {
       request(this.app)
