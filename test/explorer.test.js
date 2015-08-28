@@ -41,7 +41,7 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to
-            .have.property('url', '/explorer/resources');
+            .have.property('url', '/explorer/swagger.json');
           done();
         });
     });
@@ -58,7 +58,7 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to
-            .have.property('url', '/swagger/resources');
+            .have.property('url', '/swagger/swagger.json');
           done();
         });
     });
@@ -76,7 +76,7 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to
-            .have.property('url', '/explorer/resources');
+            .have.property('url', '/explorer/swagger.json');
           done();
         });
     });
@@ -86,17 +86,17 @@ describe('explorer', function() {
       // Since the resource paths are always startign with a slash,
       // if the basePath ends with a slash too, an incorrect URL is produced
       var app = loopback();
-      app.set('restApiRoot', '/');
+      app.set('restApiRoot', '/apis/');
       configureRestApiAndExplorer(app);
 
       request(app)
-        .get('/explorer/resources/products')
+        .get('/explorer/swagger.json')
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
           var baseUrl = res.body.basePath;
-          var apiPath = res.body.apis[0].path;
-          expect(baseUrl + apiPath).to.match(/http:\/\/[^\/]+\/products/);
+          var apiPath = Object.keys(res.body.paths)[0];
+          expect(baseUrl + apiPath).to.equal('/apis/products');
           done();
         });
     });
@@ -107,7 +107,7 @@ describe('explorer', function() {
     beforeEach(function setupExplorerWithUiDirs() {
       app = loopback();
       explorer(app, {
-        uiDirs: [ path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui') ]
+        uiDirs: [path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')]
       });
     });
 
@@ -157,7 +157,7 @@ describe('explorer', function() {
 
     it('should allow `uiDirs` to be defined as an Array', function(done) {
       explorer(app, {
-        uiDirs: [ path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui') ]
+        uiDirs: [path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')]
       });
 
       request(app).get('/explorer/')
@@ -194,6 +194,7 @@ describe('explorer', function() {
     app.model(Product);
 
     explorer(app, { mountPath: explorerBase });
+    app.set('legacyExplorer', false);
     app.use(app.get('restApiRoot') || '/', loopback.rest());
   }
 });
