@@ -21,8 +21,9 @@ explorer.routes = routes;
  */
 
 function explorer(loopbackApplication, options) {
-  var mountPath = options.mountPath || '/explorer';
-  loopbackApplication.use(mountPath, routes(loopbackApplication, options));
+  options = _defaults({}, options, { mountPath: '/explorer' });
+  loopbackApplication.use(options.mountPath, routes(loopbackApplication, options));
+  loopbackApplication.set('loopback-explorer', options);
 }
 
 function routes(loopbackApplication, options) {
