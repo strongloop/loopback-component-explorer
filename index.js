@@ -6,7 +6,8 @@ var url = require('url');
 var path = require('path');
 var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash').defaults;
-var swagger = require('./lib/swagger');
+var cors = require('cors');
+var createSwaggerObject = require('loopback-swagger').generateSwaggerSpec;
 var SWAGGER_UI_ROOT = require('strong-swagger-ui/index').dist;
 var STATIC_ROOT = path.join(__dirname, 'public');
 
@@ -42,7 +43,7 @@ function routes(loopbackApplication, options) {
 
   var router = new loopback.Router();
 
-  swagger.mountSwagger(loopbackApplication, router, options);
+  mountSwagger(loopbackApplication, router, options);
 
   // config.json is loaded by swagger-ui. The server should respond
   // with the relative URI of the resource doc.
@@ -80,4 +81,35 @@ function routes(loopbackApplication, options) {
   router.use(loopback.static(SWAGGER_UI_ROOT));
 
   return router;
+}
+
+/**
+ * Setup Swagger documentation on the given express app.
+ *
+ * @param {Application} loopbackApplication The loopback application to
+ * document.
+ * @param {Application} swaggerApp Swagger application used for hosting
+ * swagger documentation.
+ * @param {Object} opts Options.
+ */
+function mountSwagger(loopbackApplication, swaggerApp, opts) {
+  var swaggerObject = createSwaggerObject(loopbackApplication, opts);
+
+  var resourcePath = opts && opts.resourcePath || 'swagger.json';
+  if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
+
+  var remotes = loopbackApplication.remotes();
+  setupCors(swaggerApp, remotes);
+
+  swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
+    res.status(200).send(swaggerObject);
+  });
+}
+
+function setupCors(swaggerApp, remotes) {
+  var corsOptions = remotes.options && remotes.options.cors ||
+    { origin: true, credentials: true };
+
+  // TODO(bajtos) Skip CORS when remotes.options.cors === false
+  swaggerApp.use(cors(corsOptions));
 }

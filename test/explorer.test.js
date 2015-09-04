@@ -190,6 +190,36 @@ describe('explorer', function() {
     });
   });
 
+  describe('Cross-origin resource sharing', function() {
+    it('allows cross-origin requests by default', function(done) {
+      var app = loopback();
+      configureRestApiAndExplorer(app, '/explorer');
+
+      request(app)
+        .options('/explorer/swagger.json')
+        .set('Origin', 'http://example.com/')
+        .expect('Access-Control-Allow-Origin', /^http:\/\/example.com\/|\*/)
+        .expect('Access-Control-Allow-Methods', /\bGET\b/)
+        .end(done);
+    });
+
+    it('can be disabled by configuration', function(done) {
+      var app = loopback();
+      app.set('remoting', { cors: { origin: false } });
+      configureRestApiAndExplorer(app, '/explorer');
+
+      request(app)
+        .options('/explorer/swagger.json')
+        .end(function(err, res) {
+          if (err) return done(err);
+          var allowOrigin = res.get('Access-Control-Allow-Origin');
+          expect(allowOrigin, 'Access-Control-Allow-Origin')
+            .to.equal(undefined);
+          done();
+        });
+    });
+  });
+
   function givenLoopBackAppWithExplorer(explorerBase) {
     return function(done) {
       var app = this.app = loopback();
