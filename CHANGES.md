@@ -1,3 +1,119 @@
+2015-09-04, Version 2.0.0
+=========================
+
+ * Use loopback-swagger to generate swagger.json (Miroslav Bajtoš)
+
+ * Bump up strong-swagger-ui version to ^21.0.0 (Miroslav Bajtoš)
+
+ * Register loopback-explorer to app (Hage Yaapa)
+
+ * Generate Swagger Spec 2.0 documentation (Miroslav Bajtoš)
+
+ * Upgrade to strong-swagger-ui@21.0 (swagger-ui@2.1) (Miroslav Bajtoš)
+
+ * bump major version (Ryan Graham)
+
+ * Rework the module to a loopback component (Miroslav Bajtoš)
+
+ * Add `opts.host` to customize host of resource URLs (cndreiter)
+
+ * Removed branch-lock, and bumped version (Shelby Sanders)
+
+ * Corrected to propagate properties from existing items object (Shelby Sanders)
+
+ * Use strong-swagger-ui instead of swagger-ui (Miroslav Bajtoš)
+
+ * Remove public/images/throbber.gif (Miroslav Bajtoš)
+
+ * Move CSS customizations to loopbackStyles.css (Miroslav Bajtoš)
+
+ * Added Swagger fields for items and max/min(Items|Length) (Shelby Sanders)
+
+ * Corrected accidental duplication of responseMessages from merge (Shelby Sanders)
+
+ * review comments (Ying Tang)
+
+ * add more tests (Ying Tang)
+
+ * float additionalProperties and description to top (Ying Tang)
+
+ * Convert array to string for summary, note, and description. Fix additionalProperties (Ying Tang)
+
+ * back out changes of id to URI (Ying Tang)
+
+ * Uri id and $ref, join description (Ying Tang)
+
+ * propertyName, not property (Ying Tang)
+
+ * fix resource listing and remove id from each property (Ying Tang)
+
+ * remove id fields from required array (Ying Tang)
+
+ * remove required from sub-schema (Ying Tang)
+
+ * bump version (Ying Tang)
+
+ * add $ref and remove type for models (Ying Tang)
+
+ * Changed Swagger() to omit resources with no content (Shelby Sanders)
+
+ * Added event emission for swaggerResources to support customization (Shelby Sanders)
+
+ * Corrected handling of type for operation, including containers (Shelby Sanders)
+
+ * Corrected handling for absent settings.additionalProperties (Shelby Sanders)
+
+ * Added support for public in order to hide operations from Swagger (Shelby Sanders)
+
+ * added reference to settings for additional properties (Jake Ayala)
+
+ * Protected against non-Model generation requests (Shelby Sanders)
+
+ * Corrected merge issues (Shelby Sanders)
+
+ * Added padding to content well in order to counteract changes in SwaggerUI (Shelby Sanders)
+
+ * Added support for scanning accepts params for Model references (Shelby Sanders)
+
+ * Changed addRoute() to honor X-Forwarded-Host (Shelby Sanders)
+
+ * Removed branch-lock for loopback (Shelby Sanders)
+
+ * Changed to possibly pull model description from ctor.settings (Shelby Sanders)
+
+ * Corrected generateModelDefinition() to scan for model references nested in other models (Shelby Sanders)
+
+ * Corrected prepareDataType() to handle collections and nesting, and changed to always and only use responseMessages (Shelby Sanders)
+
+ * Corrected generateModelDefinition() to scan for model references in remote returns and errors (Shelby Sanders)
+
+ * Corrected default for consumes+produces (Shelby Sanders)
+
+ * Ported prepareDataType() from old strong-remoting:ext/swagger.js (Shelby Sanders)
+
+ * Corrected issues with merge of 2.x changes (Shelby Sanders)
+
+ * Load swagger ui from `swagger-ui` package instead. (Samuel Reed)
+
+ * Ported extensions for more Swagger 1.2 metadata, returns+errors as responseMessages, consumes+produces, and X-Forwarded-Proto for reverse-proxying from HTTPS to HTTP (Shelby Sanders)
+
+ * Upgraded to SwaggerUI 2.0.18 (Shelby Sanders)
+
+ * Added support for toggling Model and Schema, and added support for primitives in StatusCodeView (Shelby Sanders)
+
+ * Ensure Response Content Type is shown regardless of Response Class (Shelby Sanders)
+
+ * Reverted to use special loading logic from loopback-explorer (Shelby Sanders)
+
+ * Updated to latest Swagger-UI for better responseMessage signature handling (Shelby Sanders)
+
+ * Upgraded to latest Swagger-UI for 1.2 support (Shelby Sanders)
+
+ * Correct description of collections of object and nested (Shelby Sanders)
+
+ * Add indication of response being a collection (Shelby Sanders)
+
+
 2015-06-25, Version 1.8.0
 =========================
 
