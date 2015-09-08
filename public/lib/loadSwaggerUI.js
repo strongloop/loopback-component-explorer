@@ -16,6 +16,7 @@ $(function() {
 
   var accessToken;
   function loadSwaggerUi(config) {
+    var methodOrder = ['get', 'head', 'options', 'put', 'post', 'delete'];
     window.swaggerUi = new SwaggerUi({
       url: config.url || '/swagger/resources',
       apiKey: '',
@@ -48,7 +49,13 @@ $(function() {
       },
       docExpansion: 'none',
       highlightSizeThreshold: 16384,
-      sorter: 'alpha'
+      apisSorter: 'alpha',
+      operationsSorter: function(a, b) {
+        var pathCompare = a.path.localeCompare(b.path);
+        return pathCompare !== 0 ?
+          pathCompare :
+          methodOrder.indexOf(a.method) - methodOrder.indexOf(b.method);
+      }
     });
 
     $('#explore').click(setAccessToken);
