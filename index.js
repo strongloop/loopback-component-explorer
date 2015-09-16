@@ -17,14 +17,14 @@ explorer.routes = routes;
 /**
  * Example usage:
  *
- * var explorer = require('loopback-explorer');
+ * var explorer = require('loopback-component-explorer');
  * explorer(app, options);
  */
 
 function explorer(loopbackApplication, options) {
   options = _defaults({}, options, { mountPath: '/explorer' });
   loopbackApplication.use(options.mountPath, routes(loopbackApplication, options));
-  loopbackApplication.set('loopback-explorer', options);
+  loopbackApplication.set('loopback-component-explorer', options);
 }
 
 function routes(loopbackApplication, options) {
@@ -33,7 +33,7 @@ function routes(loopbackApplication, options) {
     loopback.version.split('.')[0] || 1;
 
   if (loopbackMajor < 2) {
-    throw new Error('loopback-explorer requires loopback 2.0 or newer');
+    throw new Error('loopback-component-explorer requires loopback 2.0 or newer');
   }
 
   options = _defaults({}, options, {

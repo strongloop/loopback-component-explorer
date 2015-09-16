@@ -1,5 +1,5 @@
 {
-  "name": "loopback-explorer",
+  "name": "loopback-component-explorer",
   "version": "2.0.1",
   "description": "Browse and test your LoopBack app's APIs",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/strongloop/loopback-explorer.git"
+    "url": "git://github.com/strongloop/loopback-component-explorer.git"
   },
   "keywords": [
     "loopback",
@@ -18,7 +18,7 @@
   "author": "Ritchie Martori",
   "readmeFilename": "README.md",
   "bugs": {
-    "url": "https://github.com/strongloop/loopback-explorer/issues"
+    "url": "https://github.com/strongloop/loopback-component-explorer/issues"
   },
   "devDependencies": {
     "loopback": "^2.19.1",
@@ -28,7 +28,7 @@
   },
   "license": {
     "name": "Dual MIT/StrongLoop",
-    "url": "https://github.com/strongloop/loopback-explorer/blob/master/LICENSE"
+    "url": "https://github.com/strongloop/loopback-component-explorer/blob/master/LICENSE"
   },
   "dependencies": {
     "cors": "^2.7.1",

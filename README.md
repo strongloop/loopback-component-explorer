@@ -1,4 +1,4 @@
-# loopback-explorer
+# loopback-component-explorer
 
 Browse and test your LoopBack app's APIs.
 
@@ -34,7 +34,7 @@ To upgrade your application using loopback-explorer version 1.x, just replace
 `explorer()` with `explorer.routes()` in your server script:
 
 ```js
-var explorer = require('loopback-explorer');
+var explorer = require('loopback-component-explorer');  // Module was loopback-explorer in v. 2.0.1 and earlier
 
 // v1.x - does not work anymore
 app.use('/explorer', explorer(app, options);
@@ -43,11 +43,11 @@ app.use('/explorer', explorer.routes(app, options));
 ```
 
 In applications scaffolded by `slc loopback`, the idiomatic way is to register
-loopback-explorer via `component-config.json`:
+loopback-component-explorer in `server/component-config.json`:
 
 ```json
 {
-  "loopback-explorer": {
+  "loopback-component-explorer": {
     "mountPath": "/explorer"
   }
 }
@@ -101,7 +101,7 @@ Options are passed to `explorer(app, options)`.
 > Default: `null`
 
 > A hard override for the outgoing protocol (`http` or `https`) that is designated in Swagger
-> resource documents. By default, `loopback-explorer` will write the protocol that was used to retrieve
+> resource documents. By default, `loopback-component-explorer` will write the protocol that was used to retrieve
 > the doc. This option is useful if, for instance, your API sits behind an SSL terminator
 > and thus needs to report its endpoints as `https`, even though incoming traffic is auto-detected
 > as `http`.
