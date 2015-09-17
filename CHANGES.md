@@ -1,3 +1,9 @@
+2015-09-17, Version 2.1.0
+=========================
+
+ * Rename the module to loopback-component-explorer (Rand McKinney)
+
+
 2015-09-08, Version 2.0.1
 =========================
 
