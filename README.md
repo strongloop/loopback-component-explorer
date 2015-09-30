@@ -72,7 +72,7 @@ explorer(app, {
     'title': 'My API',
     'description': 'Explorer example app.'
   },
-  resourcePath: 'swaggerResources',
+  resourcePath: 'swagger.json',
   version: '0.1-unreleasable'
 }));
 app.use('/custom-api-root', loopback.rest());
