@@ -1,3 +1,13 @@
+2015-10-01, Version 2.1.1
+=========================
+
+ * disable Swagger validation badge (Hage Yaapa)
+
+ * Updated "resourcePath: 'swaggerResources'" to "resourcePath: 'swagger.json'" (Dennis Ashby)
+
+ * Use strongloop conventions for licensing (Sam Roberts)
+
+
 2015-09-17, Version 2.1.0
 =========================
 
