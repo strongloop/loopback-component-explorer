@@ -18,6 +18,7 @@ $(function() {
   function loadSwaggerUi(config) {
     var methodOrder = ['get', 'head', 'options', 'put', 'post', 'delete'];
     window.swaggerUi = new SwaggerUi({
+      validatorUrl: null,
       url: config.url || '/swagger/resources',
       apiKey: '',
       dom_id: 'swagger-ui-container',
