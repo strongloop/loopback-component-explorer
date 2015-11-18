@@ -220,6 +220,37 @@ describe('explorer', function() {
     });
   });
 
+  it('updates swagger object when a new model is added', function(done) {
+    var app = loopback();
+    configureRestApiAndExplorer(app, '/explorer');
+
+    // Ensure the swagger object was built
+    request(app)
+      .get('/explorer/swagger.json')
+      .expect(200)
+      .end(function(err) {
+        if (err) return done(err);
+
+        // Create a new model
+        var Model = loopback.PersistedModel.extend('Customer');
+        Model.attachTo(loopback.memory());
+        app.model(Model);
+
+        // Request swagger.json again
+        request(app)
+          .get('/explorer/swagger.json')
+          .expect(200)
+          .end(function(err, res) {
+            if (err) return done(err);
+            var modelNames = Object.keys(res.body.definitions);
+            expect(modelNames).to.contain('Customer');
+            var paths = Object.keys(res.body.paths);
+            expect(paths).to.have.contain('/Customers');
+            done();
+          });
+      });
+  });
+
   function givenLoopBackAppWithExplorer(explorerBase) {
     return function(done) {
       var app = this.app = loopback();

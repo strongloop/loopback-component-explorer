@@ -95,6 +95,12 @@ function routes(loopbackApplication, options) {
 function mountSwagger(loopbackApplication, swaggerApp, opts) {
   var swaggerObject = createSwaggerObject(loopbackApplication, opts);
 
+  // listening to modelRemoted event for updating the swaggerObject
+  // with the newly created model to appear in the Swagger UI.
+  loopbackApplication.on('modelRemoted', function() {
+    swaggerObject = createSwaggerObject(loopbackApplication, opts);
+  });
+
   var resourcePath = opts && opts.resourcePath || 'swagger.json';
   if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
 
