@@ -10,6 +10,7 @@ var cors = require('cors');
 var createSwaggerObject = require('loopback-swagger').generateSwaggerSpec;
 var SWAGGER_UI_ROOT = require('strong-swagger-ui/index').dist;
 var STATIC_ROOT = path.join(__dirname, 'public');
+var swaggerObject;
 
 module.exports = explorer;
 explorer.routes = routes;
@@ -93,7 +94,7 @@ function routes(loopbackApplication, options) {
  * @param {Object} opts Options.
  */
 function mountSwagger(loopbackApplication, swaggerApp, opts) {
-  var swaggerObject = createSwaggerObject(loopbackApplication, opts);
+  swaggerObject = createSwaggerObject(loopbackApplication, opts);
 
   var resourcePath = opts && opts.resourcePath || 'swagger.json';
   if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
