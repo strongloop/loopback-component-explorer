@@ -12,7 +12,7 @@ Product.attachTo(loopback.memory());
 app.model(Product);
 
 var apiPath = '/api';
-app.use('/explorer', explorer(app, {basePath: apiPath}));
+explorer(app, {basePath: apiPath});
 app.use(apiPath, loopback.rest());
 console.log('Explorer mounted at http://localhost:' + port + '/explorer');
 
