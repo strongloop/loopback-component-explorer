@@ -220,6 +220,33 @@ describe('explorer', function() {
     });
   });
 
+  describe('when creating/adding new models', function() {
+	var app = loopback();  
+    it('should allow setting up swagger explorer', function(done) {
+      configureRestApiAndExplorer(app, '/explorer');
+
+      request(app)
+        .get('/explorer/swagger.json')
+        .expect(200)
+        .end(done);
+    });
+
+    it('should show newly created model', function(done) {
+      var modelName = 'Customer';
+      createNewModel(app, '/explorer',modelName);
+
+      request(app)
+        .get('/explorer/swagger.json')
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          var paths = Object.keys(res.body.paths);
+          expect(paths.indexOf('/'+modelName+'s')).to.not.equal(-1);
+          done();
+        });
+    });
+  });
+
   function givenLoopBackAppWithExplorer(explorerBase) {
     return function(done) {
       var app = this.app = loopback();
@@ -232,6 +259,16 @@ describe('explorer', function() {
     var Product = loopback.PersistedModel.extend('product');
     Product.attachTo(loopback.memory());
     app.model(Product);
+
+    explorer(app, { mountPath: explorerBase });
+    app.set('legacyExplorer', false);
+    app.use(app.get('restApiRoot') || '/', loopback.rest());
+  }
+
+  function createNewModel(app, explorerBase,modelName) {
+    var Model = loopback.PersistedModel.extend(modelName);
+    Model.attachTo(loopback.memory());
+    app.model(Model);
 
     explorer(app, { mountPath: explorerBase });
     app.set('legacyExplorer', false);
