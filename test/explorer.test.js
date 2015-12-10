@@ -233,7 +233,9 @@ describe('explorer', function() {
 
     it('should show newly created model', function(done) {
       var modelName = 'Customer';
-      createNewModel(app, '/explorer',modelName);
+      var Model = loopback.PersistedModel.extend(modelName);
+      Model.attachTo(loopback.memory());
+      app.model(Model);
 
       request(app)
         .get('/explorer/swagger.json')
@@ -259,16 +261,6 @@ describe('explorer', function() {
     var Product = loopback.PersistedModel.extend('product');
     Product.attachTo(loopback.memory());
     app.model(Product);
-
-    explorer(app, { mountPath: explorerBase });
-    app.set('legacyExplorer', false);
-    app.use(app.get('restApiRoot') || '/', loopback.rest());
-  }
-
-  function createNewModel(app, explorerBase,modelName) {
-    var Model = loopback.PersistedModel.extend(modelName);
-    Model.attachTo(loopback.memory());
-    app.model(Model);
 
     explorer(app, { mountPath: explorerBase });
     app.set('legacyExplorer', false);
