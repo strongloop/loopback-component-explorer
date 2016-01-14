@@ -1,3 +1,13 @@
+2016-01-14, Version 2.2.0
+=========================
+
+ * remove references to ubuntu font (Anthony Ettinger)
+
+ * Update swaggerObject when a new model was added (Pradeep Kumar Tippa)
+
+ * Refer to licenses with a link (Sam Roberts)
+
+
 2015-10-01, Version 2.1.1
 =========================
 
