@@ -1,4 +1,6 @@
-2016-01-14, Version 2.2.0
+
+
+2016-01-13, Version 2.2.0
 =========================
 
  * remove references to ubuntu font (Anthony Ettinger)
