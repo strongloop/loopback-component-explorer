@@ -138,6 +138,39 @@ describe('explorer', function() {
     });
   });
 
+  describe('with swaggerUI option', function() {
+    var app;
+    beforeEach(function setupExplorerWithoutUI() {
+      app = loopback();
+      explorer(app, {
+        swaggerUI: false
+      });
+    });
+
+    it('overrides swagger-ui files', function(done) {
+      request(app).get('/explorer/swagger-ui.js')
+        .expect(404, done);
+    });
+
+    it('should serve config.json', function(done) {
+      request(app)
+        .get('/explorer/config.json')
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to
+            .have.property('url', '/explorer/swagger.json');
+          done();
+        });
+    });
+
+    it('should serve swagger.json', function(done) {
+      request(app)
+        .get('/explorer/swagger.json')
+        .expect(200, done);
+    });
+  });
+
   describe('explorer.routes API', function() {
     var app;
     beforeEach(function() {

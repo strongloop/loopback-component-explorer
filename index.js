@@ -38,7 +38,8 @@ function routes(loopbackApplication, options) {
 
   options = _defaults({}, options, {
     resourcePath: 'swagger.json',
-    apiInfo: loopbackApplication.get('apiInfo') || {}
+    apiInfo: loopbackApplication.get('apiInfo') || {},
+    swaggerUI: true
   });
 
   var router = new loopback.Router();
@@ -60,25 +61,27 @@ function routes(loopbackApplication, options) {
     });
   });
 
-  // Allow specifying a static file roots for swagger files. Any files in
-  // these folders will override those in the swagger-ui distribution.
-  // In this way one could e.g. make changes to index.html without having
-  // to worry about constantly pulling in JS updates.
-  if (options.uiDirs) {
-    if (typeof options.uiDirs === 'string') {
-      router.use(loopback.static(options.uiDirs));
-    } else if (Array.isArray(options.uiDirs)) {
-      options.uiDirs.forEach(function(dir) {
-        router.use(loopback.static(dir));
-      });
+  if (options.swaggerUI) {
+    // Allow specifying a static file roots for swagger files. Any files in
+    // these folders will override those in the swagger-ui distribution.
+    // In this way one could e.g. make changes to index.html without having
+    // to worry about constantly pulling in JS updates.
+    if (options.uiDirs) {
+      if (typeof options.uiDirs === 'string') {
+        router.use(loopback.static(options.uiDirs));
+      } else if (Array.isArray(options.uiDirs)) {
+        options.uiDirs.forEach(function(dir) {
+          router.use(loopback.static(dir));
+        });
+      }
     }
+
+    // File in node_modules are overridden by a few customizations
+    router.use(loopback.static(STATIC_ROOT));
+
+    // Swagger UI distribution
+    router.use(loopback.static(SWAGGER_UI_ROOT));
   }
-
-  // File in node_modules are overridden by a few customizations
-  router.use(loopback.static(STATIC_ROOT));
-
-  // Swagger UI distribution
-  router.use(loopback.static(SWAGGER_UI_ROOT));
 
   return router;
 }
