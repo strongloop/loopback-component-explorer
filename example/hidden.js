@@ -7,13 +7,13 @@ var User = loopback.Model.extend('user', {
   username: 'string',
   email: 'string',
   sensitiveInternalProperty: 'string',
-}, {hidden: ['sensitiveInternalProperty']});
+}, { hidden: ['sensitiveInternalProperty'] });
 
 User.attachTo(loopback.memory());
 app.model(User);
 
 var apiPath = '/api';
-app.use('/explorer', explorer(app, {basePath: apiPath}));
+app.use('/explorer', explorer(app, { basePath: apiPath }));
 app.use(apiPath, loopback.rest());
 console.log('Explorer mounted at localhost:' + port + '/explorer');
 

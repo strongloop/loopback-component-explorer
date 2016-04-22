@@ -4,7 +4,7 @@
 /*global SwaggerUi, log, ApiKeyAuthorization, hljs, window, $ */
 $(function() {
   // Pre load translate...
-  if(window.SwaggerTranslator) {
+  if (window.SwaggerTranslator) {
     window.SwaggerTranslator.translate();
   }
 
@@ -28,7 +28,7 @@ $(function() {
         log(swaggerApi);
         log(swaggerUi);
 
-        if(window.SwaggerTranslator) {
+        if (window.SwaggerTranslator) {
           window.SwaggerTranslator.translate();
         }
 
@@ -56,7 +56,7 @@ $(function() {
         return pathCompare !== 0 ?
           pathCompare :
           methodOrder.indexOf(a.method) - methodOrder.indexOf(b.method);
-      }
+      },
     });
 
     $('#explore').click(setAccessToken);
@@ -71,7 +71,7 @@ $(function() {
     e.preventDefault();
     var key = $('#input_accessToken')[0].value;
     log('key: ' + key);
-    if(key && key.trim() !== '') {
+    if (key && key.trim() !== '') {
       log('added accessToken ' + key);
       var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization('access_token', key, 'query');
       window.swaggerUi.api.clientAuthorizations.add('key', apiKeyAuth);
