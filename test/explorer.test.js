@@ -8,7 +8,6 @@ var urlJoin = require('../lib/url-join');
 var os = require('os');
 
 describe('explorer', function() {
-
   describe('with default config', function() {
     beforeEach(givenLoopBackAppWithExplorer());
 

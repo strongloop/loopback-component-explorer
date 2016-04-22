@@ -33,14 +33,14 @@
     loopback.version.split('.')[0] || 1;
 
     if (loopbackMajor < 2) {
-    throw new Error('loopback-component-explorer requires loopback 2.0 or newer');
-  }
+      throw new Error('loopback-component-explorer requires loopback 2.0 or newer');
+    }
 
     options = _defaults({}, options, {
-    resourcePath: 'swagger.json',
-    apiInfo: loopbackApplication.get('apiInfo') || {},
-    swaggerUI: true,
-  });
+      resourcePath: 'swagger.json',
+      apiInfo: loopbackApplication.get('apiInfo') || {},
+      swaggerUI: true,
+    });
 
     var router = new loopback.Router();
 
@@ -51,37 +51,37 @@
     router.get('/config.json', function(req, res) {
     // Get the path we're mounted at. It's best to get this from the referer
     // in case we're proxied at a deep path.
-    var source = url.parse(req.headers.referer || '').pathname;
+      var source = url.parse(req.headers.referer || '').pathname;
     // If no referer is available, use the incoming url.
-    if (!source) {
-      source = req.originalUrl.replace(/\/config.json(\?.*)?$/, '');
-    }
-    res.send({
-      url: urlJoin(source, '/' + options.resourcePath),
+      if (!source) {
+        source = req.originalUrl.replace(/\/config.json(\?.*)?$/, '');
+      }
+      res.send({
+        url: urlJoin(source, '/' + options.resourcePath),
+      });
     });
-  });
 
     if (options.swaggerUI) {
     // Allow specifying a static file roots for swagger files. Any files in
     // these folders will override those in the swagger-ui distribution.
     // In this way one could e.g. make changes to index.html without having
     // to worry about constantly pulling in JS updates.
-    if (options.uiDirs) {
-      if (typeof options.uiDirs === 'string') {
-        router.use(loopback.static(options.uiDirs));
-      } else if (Array.isArray(options.uiDirs)) {
-        options.uiDirs.forEach(function(dir) {
-          router.use(loopback.static(dir));
-        });
+      if (options.uiDirs) {
+        if (typeof options.uiDirs === 'string') {
+          router.use(loopback.static(options.uiDirs));
+        } else if (Array.isArray(options.uiDirs)) {
+          options.uiDirs.forEach(function(dir) {
+            router.use(loopback.static(dir));
+          });
+        }
       }
-    }
 
     // File in node_modules are overridden by a few customizations
-    router.use(loopback.static(STATIC_ROOT));
+      router.use(loopback.static(STATIC_ROOT));
 
     // Swagger UI distribution
-    router.use(loopback.static(SWAGGER_UI_ROOT));
-  }
+      router.use(loopback.static(SWAGGER_UI_ROOT));
+    }
 
     return router;
   }
@@ -101,8 +101,8 @@
   // listening to modelRemoted event for updating the swaggerObject
   // with the newly created model to appear in the Swagger UI.
     loopbackApplication.on('modelRemoted', function() {
-    swaggerObject = createSwaggerObject(loopbackApplication, opts);
-  });
+      swaggerObject = createSwaggerObject(loopbackApplication, opts);
+    });
 
     var resourcePath = opts && opts.resourcePath || 'swagger.json';
     if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
@@ -111,8 +111,8 @@
     setupCors(swaggerApp, remotes);
 
     swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
-    res.status(200).send(swaggerObject);
-  });
+      res.status(200).send(swaggerObject);
+    });
   }
 
   function setupCors(swaggerApp, remotes) {
