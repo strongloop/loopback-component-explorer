@@ -8,7 +8,6 @@ var urlJoin = require('../lib/url-join');
 var os = require('os');
 
 describe('explorer', function() {
-
   describe('with default config', function() {
     beforeEach(givenLoopBackAppWithExplorer());
 
@@ -117,7 +116,7 @@ describe('explorer', function() {
     beforeEach(function setupExplorerWithUiDirs() {
       app = loopback();
       explorer(app, {
-        uiDirs: [path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')]
+        uiDirs: [path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')],
       });
     });
 
@@ -143,7 +142,7 @@ describe('explorer', function() {
     beforeEach(function setupExplorerWithoutUI() {
       app = loopback();
       explorer(app, {
-        swaggerUI: false
+        swaggerUI: false,
       });
     });
 
@@ -200,7 +199,7 @@ describe('explorer', function() {
 
     it('should allow `uiDirs` to be defined as an Array', function(done) {
       explorer(app, {
-        uiDirs: [path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')]
+        uiDirs: [path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')],
       });
 
       request(app).get('/explorer/')
@@ -212,7 +211,7 @@ describe('explorer', function() {
 
     it('should allow `uiDirs` to be defined as an String', function(done) {
       explorer(app, {
-        uiDirs: path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')
+        uiDirs: path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui'),
       });
 
       request(app).get('/explorer/')
@@ -238,7 +237,7 @@ describe('explorer', function() {
 
     it('can be disabled by configuration', function(done) {
       var app = loopback();
-      app.set('remoting', { cors: { origin: false } });
+      app.set('remoting', { cors: { origin: false }});
       configureRestApiAndExplorer(app, '/explorer');
 
       request(app)

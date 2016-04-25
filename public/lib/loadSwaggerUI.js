@@ -4,7 +4,7 @@
 /*global SwaggerUi, log, ApiKeyAuthorization, hljs, window, $ */
 $(function() {
   // Pre load translate...
-  if(window.SwaggerTranslator) {
+  if (window.SwaggerTranslator) {
     window.SwaggerTranslator.translate();
   }
 
@@ -17,6 +17,7 @@ $(function() {
   var accessToken;
   function loadSwaggerUi(config) {
     var methodOrder = ['get', 'head', 'options', 'put', 'post', 'delete'];
+    /* eslint-disable camelcase */
     window.swaggerUi = new SwaggerUi({
       validatorUrl: null,
       url: config.url || '/swagger/resources',
@@ -28,7 +29,7 @@ $(function() {
         log(swaggerApi);
         log(swaggerUi);
 
-        if(window.SwaggerTranslator) {
+        if (window.SwaggerTranslator) {
           window.SwaggerTranslator.translate();
         }
 
@@ -56,8 +57,9 @@ $(function() {
         return pathCompare !== 0 ?
           pathCompare :
           methodOrder.indexOf(a.method) - methodOrder.indexOf(b.method);
-      }
+      },
     });
+    /* eslint-disable camelcase */
 
     $('#explore').click(setAccessToken);
     $('#api_selector').submit(setAccessToken);
@@ -71,9 +73,10 @@ $(function() {
     e.preventDefault();
     var key = $('#input_accessToken')[0].value;
     log('key: ' + key);
-    if(key && key.trim() !== '') {
+    if (key && key.trim() !== '') {
       log('added accessToken ' + key);
-      var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization('access_token', key, 'query');
+      var apiKeyAuth =
+        new SwaggerClient.ApiKeyAuthorization('access_token', key, 'query');
       window.swaggerUi.api.clientAuthorizations.add('key', apiKeyAuth);
       accessToken = key;
       $('.accessTokenDisplay').text('Token Set.').addClass('set');
@@ -83,10 +86,9 @@ $(function() {
       if (window.localStorage) {
         window.localStorage.setItem(lsKey, key);
       }
-    }
-    // If submitted with an empty token, remove the current token. Can be
-    // useful to intentionally remove authorization.
-    else {
+    } else {
+      // If submitted with an empty token, remove the current token. Can be
+      // useful to intentionally remove authorization.
       log('removed accessToken.');
       $('.accessTokenDisplay').text('Token Not Set.').removeClass('set');
       $('.accessTokenDisplay').removeAttr('data-tooltip');
@@ -116,5 +118,3 @@ $(function() {
     }
   }
 });
-
-

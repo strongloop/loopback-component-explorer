@@ -4,7 +4,9 @@
   "description": "Browse and test your LoopBack app's APIs",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "lint": "eslint .",
+    "test": "mocha",
+    "posttest": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -21,10 +23,12 @@
     "url": "https://github.com/strongloop/loopback-component-explorer/issues"
   },
   "devDependencies": {
+    "chai": "^3.2.0",
+    "eslint": "^2.8.0",
+    "eslint-config-loopback": "^2.0.0",
     "loopback": "^2.19.1",
     "mocha": "^2.2.5",
-    "supertest": "^1.0.1",
-    "chai": "^3.2.0"
+    "supertest": "^1.0.1"
   },
   "license": "MIT",
   "dependencies": {
