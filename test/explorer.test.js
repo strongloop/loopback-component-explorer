@@ -283,6 +283,37 @@ describe('explorer', function() {
       });
   });
 
+  it('updates swagger object when a remote method is disabled', function(done) {
+    var app = loopback();
+    configureRestApiAndExplorer(app, '/explorer');
+
+    // Ensure the swagger object was built
+    request(app)
+      .get('/explorer/swagger.json')
+      .expect(200)
+      .end(function(err, res) {
+        if (err) return done(err);
+
+        // Check the method that will be disabled
+        var paths = Object.keys(res.body.paths);
+        expect(paths).to.contain('/products/findOne');
+
+        var Product = app.models.Product;
+        Product.disableRemoteMethod('findOne', true);
+
+        // Request swagger.json again
+        request(app)
+          .get('/explorer/swagger.json')
+          .expect(200)
+          .end(function(err, res) {
+            if (err) return done(err);
+            var paths = Object.keys(res.body.paths);
+            expect(paths).to.not.contain('/products/findOne');
+            done();
+          });
+      });
+  });
+
   function givenLoopBackAppWithExplorer(explorerBase) {
     return function(done) {
       var app = this.app = loopback();
