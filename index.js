@@ -1,4 +1,4 @@
-  'use strict';
+'use strict';
 /*!
  * Adds dynamically-updated docs as /explorer
  */
