@@ -104,6 +104,12 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
     swaggerObject = createSwaggerObject(loopbackApplication, opts);
   });
 
+  // listening to remoteMethodDisabled event for updating the swaggerObject
+  // when a remote method is disabled to hide that method in the Swagger UI.
+  loopbackApplication.on('remoteMethodDisabled', function() {
+    swaggerObject = createSwaggerObject(loopbackApplication, opts);
+  });
+
   var resourcePath = opts && opts.resourcePath || 'swagger.json';
   if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
 
