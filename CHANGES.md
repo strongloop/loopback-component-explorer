@@ -1,3 +1,24 @@
+2016-03-08, Version 2.4.0
+=========================
+
+ * Add `swaggerUI` option to enable/disable UI serving (Raymond Feng)
+
+
+2016-02-02, Version 2.3.0
+=========================
+
+
+
+2016-01-13, Version 2.2.0
+=========================
+
+ * remove references to ubuntu font (Anthony Ettinger)
+
+ * Update swaggerObject when a new model was added (Pradeep Kumar Tippa)
+
+ * Refer to licenses with a link (Sam Roberts)
+
+
 2015-10-01, Version 2.1.1
 =========================
 

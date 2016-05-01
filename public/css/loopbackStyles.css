@@ -1,37 +1,5 @@
 /* Styles used for loopback explorer customizations */
 
-/* Custom font */
-
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Ubuntu Light'),
-       local('Ubuntu-Light'),
-       url(../fonts/_aijTyevf54tkVDLy-dlnLO3LdcAZYWl9Si6vvxL-qU.woff)
-       format('woff');
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 500;
-  src: local('Ubuntu Medium'),
-       local('Ubuntu-Medium'),
-       url(../fonts/OsJ2DjdpjqFRVUSto6IffLO3LdcAZYWl9Si6vvxL-qU.woff)
-       format('woff');
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Ubuntu Bold'),
-       local('Ubuntu-Bold'),
-       url(../fonts/0ihfXUL2emPh0ROJezvraLO3LdcAZYWl9Si6vvxL-qU.woff)
-       format('woff');
-}
-
 .swagger-section .swagger-ui-wrap,
 .swagger-section .swagger-ui-wrap b,
 .swagger-section .swagger-ui-wrap strong,
@@ -43,13 +11,13 @@
 .swagger-section .swagger-ui-wrap p#colophon,
 .swagger-section .swagger-ui-wrap .markdown ul
 .model-signature {
-  font-family: "Ubuntu", sans-serif !important;
+  font-family: 'helvetica neue', helvetica, arial, sans-serif !important;
 }
 
 /* layout spacing and global colors */
 body {
   padding-top: 60px;
-  font-family: "Ubuntu", sans-serif;
+  font-family: 'helvetica neue', helvetica, arial, sans-serif;
 }
 
 body #header {
