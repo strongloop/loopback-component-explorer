@@ -1,3 +1,19 @@
+2016-05-02, Version 2.5.0
+=========================
+
+ * Add feature to hide disabled remote methods after explorer is initialized (Supasate Choochaisri)
+
+ * More fixes of indentation in index.js (Miroslav Bajtoš)
+
+ * Fix broken indentation (Miroslav Bajtoš)
+
+ * Fix linting errors (Amir Jafarian)
+
+ * Auto-update by eslint --fix (Amir Jafarian)
+
+ * Add eslint infrastructure (Amir Jafarian)
+
+
 2016-03-08, Version 2.4.0
 =========================
 
