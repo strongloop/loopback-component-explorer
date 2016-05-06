@@ -128,9 +128,14 @@ describe('explorer', function() {
     it('overrides swagger-ui files', function(done) {
       request(app).get('/explorer/swagger-ui.js')
         .expect(200)
-        // expect the content of `dummy-swagger-ui/swagger-ui.js`
-        .expect('/* custom swagger-ui file */' + os.EOL)
-        .end(done);
+        .end(function(err, res) {
+          if (err) return done(err);
+
+          // expect the content of `dummy-swagger-ui/swagger-ui.js`
+          expect(res.text).to.contain('/* custom swagger-ui file */' + os.EOL);
+
+          done();
+        });
     });
 
     it('overrides strongloop overrides', function(done) {
