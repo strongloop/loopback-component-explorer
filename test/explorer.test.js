@@ -38,6 +38,7 @@ describe('explorer', function() {
 
           assert(!!~res.text.indexOf('<title>StrongLoop API Explorer</title>'),
             'text does not contain expected string');
+
           done();
         });
     });
@@ -49,8 +50,10 @@ describe('explorer', function() {
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
+
           expect(res.body).to
             .have.property('url', '/explorer/swagger.json');
+
           done();
         });
     });
@@ -71,8 +74,10 @@ describe('explorer', function() {
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
+
           expect(res.body).to
             .have.property('url', '/swagger/swagger.json');
+
           done();
         });
     });
@@ -89,8 +94,10 @@ describe('explorer', function() {
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
+
           expect(res.body).to
             .have.property('url', '/explorer/swagger.json');
+
           done();
         });
     });
@@ -108,9 +115,11 @@ describe('explorer', function() {
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
+
           var baseUrl = res.body.basePath;
           var apiPath = Object.keys(res.body.paths)[0];
           expect(baseUrl + apiPath).to.equal('/apis/products');
+
           done();
         });
     });
@@ -128,9 +137,14 @@ describe('explorer', function() {
     it('overrides swagger-ui files', function(done) {
       request(app).get('/explorer/swagger-ui.js')
         .expect(200)
-        // expect the content of `dummy-swagger-ui/swagger-ui.js`
-        .expect('/* custom swagger-ui file */' + os.EOL)
-        .end(done);
+        .end(function(err, res) {
+          if (err) return done(err);
+
+          // expect the content of `dummy-swagger-ui/swagger-ui.js`
+          expect(res.text).to.contain('/* custom swagger-ui file */' + os.EOL);
+
+          done();
+        });
     });
 
     it('overrides strongloop overrides', function(done) {
@@ -162,8 +176,10 @@ describe('explorer', function() {
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
+
           expect(res.body).to
             .have.property('url', '/explorer/swagger.json');
+
           done();
         });
     });
@@ -249,9 +265,11 @@ describe('explorer', function() {
         .options('/explorer/swagger.json')
         .end(function(err, res) {
           if (err) return done(err);
+
           var allowOrigin = res.get('Access-Control-Allow-Origin');
           expect(allowOrigin, 'Access-Control-Allow-Origin')
             .to.equal(undefined);
+
           done();
         });
     });
@@ -279,10 +297,12 @@ describe('explorer', function() {
           .expect(200)
           .end(function(err, res) {
             if (err) return done(err);
+
             var modelNames = Object.keys(res.body.definitions);
             expect(modelNames).to.contain('Customer');
             var paths = Object.keys(res.body.paths);
             expect(paths).to.have.contain('/Customers');
+
             done();
           });
       });
@@ -312,8 +332,10 @@ describe('explorer', function() {
           .expect(200)
           .end(function(err, res) {
             if (err) return done(err);
+
             var paths = Object.keys(res.body.paths);
             expect(paths).to.not.contain('/products/findOne');
+
             done();
           });
       });
@@ -323,6 +345,7 @@ describe('explorer', function() {
     return function(done) {
       var app = this.app = loopback();
       configureRestApiAndExplorer(app, explorerBase);
+
       done();
     };
   }
