@@ -141,8 +141,12 @@ describe('explorer', function() {
           if (err) return done(err);
 
           // expect the content of `dummy-swagger-ui/swagger-ui.js`
-          expect(res.text).to.contain('/* custom swagger-ui file */' + os.EOL);
-
+          expect(res.text).to.contain('// Copyright IBM Corp. 2014.' +
+            ' All Rights Reserved.\n' +
+            '// Node module: loopback-component-explorer\n' +
+            '// This file is licensed under the MIT License.\n' +
+            '// License text available at https://opensource.org/licenses/MIT\n\n' +
+            '/* custom swagger-ui file */' + os.EOL);
           done();
         });
     });
