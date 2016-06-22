@@ -24,7 +24,7 @@ describe('explorer', function() {
     it('should redirect to /explorer/', function(done) {
       request(this.app)
         .get('/explorer')
-        .expect(303)
+        .expect(301)
         .end(done);
     });
 
