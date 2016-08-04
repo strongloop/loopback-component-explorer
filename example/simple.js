@@ -3,6 +3,8 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
+var g = require('strong-globalize')();
+
 var loopback = require('loopback');
 var app = loopback();
 var explorer = require('../');
@@ -19,6 +21,6 @@ app.model(Product);
 var apiPath = '/api';
 explorer(app, { basePath: apiPath });
 app.use(apiPath, loopback.rest());
-console.log('Explorer mounted at http://localhost:' + port + '/explorer');
+g.log('{{Explorer}} mounted at {{http://localhost:%s/explorer}}', port);
 
 app.listen(port);

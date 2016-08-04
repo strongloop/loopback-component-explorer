@@ -4,6 +4,11 @@
 // License text available at https://opensource.org/licenses/MIT
 
 'use strict';
+
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+var g = SG();
+
 /*!
  * Adds dynamically-updated docs as /explorer
  */
@@ -38,7 +43,8 @@ function routes(loopbackApplication, options) {
   loopback.version.split('.')[0] || 1;
 
   if (loopbackMajor < 2) {
-    throw new Error('loopback-component-explorer requires loopback 2.0 or newer');
+    throw new Error(g.f('{{loopback-component-explorer}} requires ' +
+      '{{loopback}} 2.0 or newer'));
   }
 
   options = _defaults({}, options, {
