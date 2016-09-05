@@ -1,6 +1,6 @@
 {
   "name": "loopback-component-explorer",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Browse and test your LoopBack app's APIs",
   "main": "index.js",
   "scripts": {
