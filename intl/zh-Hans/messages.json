@@ -1,0 +1,6 @@
+{
+  "b9e94c12da3208f46a969191874c425c": "在 {{localhost:{0}/explorer}} 安装了 {{Explorer}}",
+  "88bef790f515ec7b7af0c6871e60c077": "在 {{http://localhost:{0}/explorer}} 安装了 {{Explorer}}",
+  "f3f2b04c273e23780d76306f8c72a60f": "{{loopback-component-explorer}} 需要 {{loopback}} 2.0 或更新版本"
+}
+
