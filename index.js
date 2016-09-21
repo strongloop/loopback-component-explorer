@@ -133,9 +133,13 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
 }
 
 function setupCors(swaggerApp, remotes) {
-  var corsOptions = remotes.options && remotes.options.cors ||
-  { origin: true, credentials: true };
+  var corsOptions = remotes.options && remotes.options.cors;
+  if (corsOptions === false)
+    return;
 
-  // TODO(bajtos) Skip CORS when remotes.options.cors === false
+  if (corsOptions === undefined) {
+    corsOptions = { origin: true, credentials: true };
+  }
+
   swaggerApp.use(cors(corsOptions));
 }
