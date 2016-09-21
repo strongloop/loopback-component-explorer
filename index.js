@@ -12,6 +12,7 @@ var g = SG();
 /*!
  * Adds dynamically-updated docs as /explorer
  */
+var deprecated = require('depd')('loopback-explorer');
 var url = require('url');
 var path = require('path');
 var urlJoin = require('./lib/url-join');
@@ -133,9 +134,19 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
 }
 
 function setupCors(swaggerApp, remotes) {
-  var corsOptions = remotes.options && remotes.options.cors ||
-  { origin: true, credentials: true };
+  var corsOptions = remotes.options && remotes.options.cors;
+  if (corsOptions === false)
+    return;
 
-  // TODO(bajtos) Skip CORS when remotes.options.cors === false
+  deprecated(g.f(
+    'The built-in CORS middleware provided by loopback-component-explorer ' +
+      'was deprecated. See %s for more details.',
+    'https://docs.strongloop.com/display/public/LB/Security+considerations'
+  ));
+
+  if (corsOptions === undefined) {
+    corsOptions = { origin: true, credentials: true };
+  }
+
   swaggerApp.use(cors(corsOptions));
 }
