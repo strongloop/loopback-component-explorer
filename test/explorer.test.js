@@ -87,6 +87,7 @@ describe('explorer', function() {
     it('should serve correct swagger-ui config', function(done) {
       var app = loopback();
       app.set('restApiRoot', '/rest-api-root');
+      app.set('remoting', { cors: false });
       configureRestApiAndExplorer(app);
 
       request(app)
@@ -108,6 +109,7 @@ describe('explorer', function() {
       // if the basePath ends with a slash too, an incorrect URL is produced
       var app = loopback();
       app.set('restApiRoot', '/apis/');
+      app.set('remoting', { cors: false });
       configureRestApiAndExplorer(app);
 
       request(app)
@@ -129,6 +131,7 @@ describe('explorer', function() {
     var app;
     beforeEach(function setupExplorerWithUiDirs() {
       app = loopback();
+      app.set('remoting', { cors: false });
       explorer(app, {
         uiDirs: [path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')],
       });
@@ -160,6 +163,7 @@ describe('explorer', function() {
     var app;
     beforeEach(function setupExplorerWithoutUI() {
       app = loopback();
+      app.set('remoting', { cors: false });
       explorer(app, {
         swaggerUI: false,
       });
@@ -195,6 +199,7 @@ describe('explorer', function() {
     var app;
     beforeEach(function() {
       app = loopback();
+      app.set('remoting', { cors: false });
       var Product = loopback.PersistedModel.extend('product');
       Product.attachTo(loopback.memory());
       app.model(Product);
@@ -216,6 +221,7 @@ describe('explorer', function() {
     var app;
     beforeEach(function() {
       app = loopback();
+      app.set('remoting', { cors: false });
     });
 
     it('should allow `uiDirs` to be defined as an Array', function(done) {
@@ -246,6 +252,7 @@ describe('explorer', function() {
   describe('Cross-origin resource sharing', function() {
     it('allows cross-origin requests by default', function(done) {
       var app = loopback();
+      process.once('deprecation', function() { /* ignore */ });
       configureRestApiAndExplorer(app, '/explorer');
 
       request(app)
@@ -258,7 +265,7 @@ describe('explorer', function() {
 
     it('can be disabled by configuration', function(done) {
       var app = loopback();
-      app.set('remoting', { cors: { origin: false }});
+      app.set('remoting', { cors: false });
       configureRestApiAndExplorer(app, '/explorer');
 
       request(app)
@@ -277,6 +284,7 @@ describe('explorer', function() {
 
   it('updates swagger object when a new model is added', function(done) {
     var app = loopback();
+    app.set('remoting', { cors: false });
     configureRestApiAndExplorer(app, '/explorer');
 
     // Ensure the swagger object was built
@@ -310,6 +318,7 @@ describe('explorer', function() {
 
   it('updates swagger object when a remote method is disabled', function(done) {
     var app = loopback();
+    app.set('remoting', { cors: false });
     configureRestApiAndExplorer(app, '/explorer');
 
     // Ensure the swagger object was built
@@ -344,6 +353,7 @@ describe('explorer', function() {
   function givenLoopBackAppWithExplorer(explorerBase) {
     return function(done) {
       var app = this.app = loopback();
+      app.set('remoting', { cors: false });
       configureRestApiAndExplorer(app, explorerBase);
 
       done();
