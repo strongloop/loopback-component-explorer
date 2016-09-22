@@ -258,7 +258,7 @@ describe('explorer', function() {
 
     it('can be disabled by configuration', function(done) {
       var app = loopback();
-      app.set('remoting', { cors: { origin: false }});
+      app.set('remoting', { cors: false });
       configureRestApiAndExplorer(app, '/explorer');
 
       request(app)
