@@ -144,7 +144,7 @@ describe('explorer', function() {
           if (err) return done(err);
 
           // expect the content of `dummy-swagger-ui/swagger-ui.js`
-          expect(res.text).to.contain('/* custom swagger-ui file */' + os.EOL);
+          expect(res.text).to.contain('/* custom swagger-ui file */');
 
           done();
         });
@@ -153,9 +153,12 @@ describe('explorer', function() {
     it('overrides strongloop overrides', function(done) {
       request(app).get('/explorer/')
         .expect(200)
-        // expect the content of `dummy-swagger-ui/index.html`
-        .expect('custom index.html' + os.EOL)
-        .end(done);
+        .end(function(err, res) {
+          if (err) return done(er);
+          // expect the content of `dummy-swagger-ui/index.html`
+          expect(res.text).to.contain('custom index.html');
+          done();
+        });
     });
   });
 
@@ -231,9 +234,12 @@ describe('explorer', function() {
 
       request(app).get('/explorer/')
         .expect(200)
-        // expect the content of `dummy-swagger-ui/index.html`
-        .expect('custom index.html' + os.EOL)
-        .end(done);
+        .end(function(err, res) {
+          if (err) return done(err);
+          // expect the content of `dummy-swagger-ui/index.html`
+          expect(res.text).to.contain('custom index.html');
+          done();
+        });
     });
 
     it('should allow `uiDirs` to be defined as an String', function(done) {
@@ -243,9 +249,12 @@ describe('explorer', function() {
 
       request(app).get('/explorer/')
         .expect(200)
-        // expect the content of `dummy-swagger-ui/index.html`
-        .expect('custom index.html' + os.EOL)
-        .end(done);
+        .end(function(err, res) {
+          if (err) return done(err);
+          // expect the content of `dummy-swagger-ui/index.html`
+          expect(res.text).to.contain('custom index.html');
+          done();
+        });
     });
   });
 
