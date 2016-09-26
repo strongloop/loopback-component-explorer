@@ -342,7 +342,7 @@ describe('explorer', function() {
         expect(paths).to.contain('/products/findOne');
 
         var Product = app.models.Product;
-        Product.disableRemoteMethod('findOne', true);
+        Product.disableRemoteMethodByName('findOne');
 
         // Request swagger.json again
         request(app)
