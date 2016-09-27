@@ -1,0 +1,6 @@
+{
+  "b9e94c12da3208f46a969191874c425c": "{{Explorer}} monté sur {{localhost:{0}/explorer}}",
+  "88bef790f515ec7b7af0c6871e60c077": "{{Explorer}} monté sur {{http://localhost:{0}/explorer}}",
+  "f3f2b04c273e23780d76306f8c72a60f": "{{loopback-component-explorer}} requiert {{loopback}} 2.0 ou version ultérieure"
+}
+
