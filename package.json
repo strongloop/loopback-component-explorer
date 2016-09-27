@@ -38,6 +38,6 @@
     "lodash": "^3.10.0",
     "loopback-swagger": "^2.1.0",
     "strong-globalize": "^2.6.2",
-    "strong-swagger-ui": "^21.0.0"
+    "swagger-ui": "^2.2.5"
   }
 }
