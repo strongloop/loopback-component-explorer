@@ -1,3 +1,21 @@
+2016-10-12, Version 2.7.0
+=========================
+
+ * Update translation files - round#2 (Candy)
+
+ * Add translated files (gunjpan)
+
+ * Use new api for disabling a remote method. (Richard Pringle)
+
+ * Fix tests to not depend on exact EOL chars (Miroslav Bajtoš)
+
+ * Update deps to loopback 3.0.0 RC (Miroslav Bajtoš)
+
+ * Deprecate built-in CORS middleware (Miroslav Bajtoš)
+
+ * Use loopback@3.0.0-alpha for running the tests. (Miroslav Bajtoš)
+
+
 2016-09-05, Version 2.6.0
 =========================
 
