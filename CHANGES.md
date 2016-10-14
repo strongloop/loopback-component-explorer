@@ -1,3 +1,11 @@
+2016-10-14, Version 3.0.0
+=========================
+
+ * Update to mainline swagger-ui (Samuel Reed)
+
+ * Start 3.0 development (Miroslav Bajtoš)
+
+
 2016-10-12, Version 2.7.0
 =========================
 
