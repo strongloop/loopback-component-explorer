@@ -3,13 +3,13 @@
 .swagger-section .swagger-ui-wrap,
 .swagger-section .swagger-ui-wrap b,
 .swagger-section .swagger-ui-wrap strong,
-.swagger-section .swagger-ui-wrap .model-signature
+.swagger-section .swagger-ui-wrap .model-signature,
 .swagger-section .swagger-ui-wrap h1,
 .swagger-section .swagger-ui-wrap form.formtastic fieldset.inputs ol li.text textarea,
 .swagger-section .swagger-ui-wrap ul#resources,
 .swagger-section .swagger-ui-wrap ul#resources li.resource div.heading h2,
 .swagger-section .swagger-ui-wrap p#colophon,
-.swagger-section .swagger-ui-wrap .markdown ul
+.swagger-section .swagger-ui-wrap .markdown ul,
 .model-signature {
   font-family: 'helvetica neue', helvetica, arial, sans-serif !important;
 }
@@ -243,7 +243,7 @@ li.operation.head .content > .content-type > div > label {
 /* HTTP DELETE */
 
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.delete div.heading {
-  background-color: #fbede7 !important
+  background-color: #fbede7 !important;
   border: 1px solid #f4d1c3 !important;
 }
 
