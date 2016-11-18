@@ -2,7 +2,7 @@
   "name": "loopback-component-explorer",
   "version": "3.0.0",
   "publishConfig": {
-    "tag": "next"
+    "tag": "lts"
   },
   "description": "Browse and test your LoopBack app's APIs",
   "main": "index.js",
