@@ -5,6 +5,9 @@
     "tag": "next"
   },
   "description": "Browse and test your LoopBack app's APIs",
+  "engines": {
+    "node": ">=4"
+  },
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
