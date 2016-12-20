@@ -1,3 +1,17 @@
+2016-12-20, Version 3.0.1
+=========================
+
+ * CSS line terminations (Wisu Suntoyo)
+
+ * Revert loopback 2.x (siddhipai)
+
+ * Revert dev-dependency on loopback to 2.x (Siddhi Pai)
+
+ * Set publish tag to "lts" (Siddhi Pai)
+
+ * Fix jsoneditor not defined error (David Cheung)
+
+
 2016-10-14, Version 3.0.0
 =========================
 
