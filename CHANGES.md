@@ -1,3 +1,23 @@
+2016-12-21, Version 4.0.0
+=========================
+
+ * Updates for LB3 release (Simon Ho)
+
+ * Update paid support URL (Siddhi Pai)
+
+ * Added another example for explorer Advanced Usage (Pratheek Hegde)
+
+ * Start 3.x + drop support for Node v0.10/v0.12 (siddhipai)
+
+ * Drop support for Node v0.10 and v0.12 (Siddhi Pai)
+
+ * Start the development of the next major version (Siddhi Pai)
+
+ * CSS line terminations (Wisu Suntoyo)
+
+ * Fix jsoneditor not defined error (David Cheung)
+
+
 2016-10-14, Version 3.0.0
 =========================
 
