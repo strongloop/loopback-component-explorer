@@ -1,6 +1,9 @@
 {
   "name": "loopback-component-explorer",
   "version": "2.7.0",
+  "publishConfig": {
+    "tag": "lts"
+  },
   "description": "Browse and test your LoopBack app's APIs",
   "main": "index.js",
   "scripts": {
