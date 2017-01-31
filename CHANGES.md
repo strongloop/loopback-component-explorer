@@ -1,3 +1,9 @@
+2017-01-31, Version 4.1.0
+=========================
+
+ * bump loopback-swagger version to 3.0.1 (Jurien Hamaker)
+
+
 2016-12-21, Version 4.0.0
 =========================
 
