@@ -1,3 +1,11 @@
+2017-02-17, Version 4.1.1
+=========================
+
+ * Set z-index to 1 on header to fix styling bug (Imam Assidiqqi)
+
+ * replace slc with lb (ivy ho)
+
+
 2017-01-31, Version 4.1.0
 =========================
 
