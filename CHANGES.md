@@ -1,3 +1,9 @@
+2017-03-24, Version 4.2.0
+=========================
+
+ * Change Explorer header to use LoopBack (emckean)
+
+
 2017-02-17, Version 4.1.1
 =========================
 
