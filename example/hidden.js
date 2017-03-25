@@ -8,7 +8,7 @@ var g = require('strong-globalize')();
 var loopback = require('loopback');
 var app = loopback();
 var explorer = require('../');
-var port = 3000;
+var port = 0;
 
 var User = loopback.Model.extend('user', {
   username: 'string',

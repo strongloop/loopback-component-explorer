@@ -8,7 +8,7 @@ var g = require('strong-globalize')();
 var loopback = require('loopback');
 var app = loopback();
 var explorer = require('../');
-var port = 3000;
+var port = 0;
 
 var Product = loopback.PersistedModel.extend('product', {
   foo: { type: 'string', required: true },

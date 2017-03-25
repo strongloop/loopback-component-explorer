@@ -23,7 +23,7 @@ Below is a simple LoopBack application. The explorer is mounted at `/explorer`.
 var loopback = require('loopback');
 var app = loopback();
 var explorer = require('../');
-var port = 3000;
+var port = 0;
 
 var Product = loopback.Model.extend('product');
 Product.attachTo(loopback.memory());
