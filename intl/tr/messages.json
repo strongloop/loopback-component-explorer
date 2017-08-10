@@ -1,6 +1,7 @@
 {
-  "b9e94c12da3208f46a969191874c425c": "{{Explorer}}, {{localhost:{0}/explorer}} noktasında sisteme bağlandı",
   "88bef790f515ec7b7af0c6871e60c077": "{{Explorer}}, {{http://localhost:{0}/explorer}} noktasında sisteme bağlandı",
+  "af448751b9a970c539400cadd2681e93": "loopback-component-explorer tarafından sağlanan yerleşik CORS ara katmanı kullanım dışı bırakıldı. Daha fazla ayrıntı için bkz. {0}.",
+  "b9e94c12da3208f46a969191874c425c": "{{Explorer}}, {{localhost:{0}/explorer}} noktasında sisteme bağlandı",
   "f3f2b04c273e23780d76306f8c72a60f": "{{loopback-component-explorer}} için {{loopback}} 2.0 ya da daha yeni bir sürüm gerekli"
 }
 
