@@ -1,6 +1,7 @@
 {
-  "b9e94c12da3208f46a969191874c425c": "{{Explorer}} 已裝載於 {{localhost:{0}/explorer}}",
   "88bef790f515ec7b7af0c6871e60c077": "{{Explorer}} 已裝載於 {{http://localhost:{0}/explorer}}",
+  "af448751b9a970c539400cadd2681e93": "loopback-component-explorer 提供的內建 CORS 中介軟體已淘汰。如需其他詳細資訊，請參閱 {0}。",
+  "b9e94c12da3208f46a969191874c425c": "{{Explorer}} 已裝載於 {{localhost:{0}/explorer}}",
   "f3f2b04c273e23780d76306f8c72a60f": "{{loopback-component-explorer}} 需要 {{loopback}} 2.0 或更新版本"
 }
 
