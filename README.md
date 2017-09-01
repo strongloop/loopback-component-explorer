@@ -1,4 +1,5 @@
 # loopback-component-explorer
+TEST
 
 Browse and test your LoopBack app's APIs.
 
