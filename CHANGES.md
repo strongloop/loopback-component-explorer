@@ -1,3 +1,29 @@
+2017-09-05, Version 5.0.0
+=========================
+
+ * Increment loopback-swagger ver (rashmihunt)
+
+ * CODEOWNERS: turn off PR notifications for STRML (Miroslav Bajtoš)
+
+ * version no to 5.0.0 (rashmihunt)
+
+ * bump swagger version to 4.x (rashmihunt)
+
+ * Add stalebot configuration (Kevin Delisle)
+
+ * Update Issue and PR Templates (#216) (Sakib Hasan)
+
+ * Update translated strings Q3 2017 (Allen Boone)
+
+ * update translation file (Diana Lau)
+
+ * Add CODEOWNER file (Diana Lau)
+
+ * Replicate new issue_template from loopback (Siddhi Pai)
+
+ * Replicate issue_template from loopback repo (Siddhi Pai)
+
+
 2017-03-24, Version 4.2.0
 =========================
 
