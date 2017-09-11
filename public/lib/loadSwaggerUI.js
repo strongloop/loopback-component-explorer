@@ -34,7 +34,7 @@ $(function() {
     var methodOrder = ['get', 'head', 'options', 'put', 'post', 'delete'];
     var url = config.url || '/swagger/resources';
     if (GetParameterValues('model')) {
-      url += '?model=' + GetParameterValues('model');
+      url += url.indexOf('?') > 0 ? '&' : '?' + 'model=' + GetParameterValues('model');
     }
     /* eslint-disable camelcase */
     window.swaggerUi = new SwaggerUi({

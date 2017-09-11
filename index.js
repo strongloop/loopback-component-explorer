@@ -136,8 +136,9 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
         return key.indexOf('/' + req.query.model) === 0;
       });
       res.status(200).send(filteredSwaggerObject);
+    } else {
+      res.status(200).send(swaggerObject);
     }
-    res.status(200).send(swaggerObject);
   });
 }
 
