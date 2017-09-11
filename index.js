@@ -17,6 +17,7 @@ var url = require('url');
 var path = require('path');
 var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash').defaults;
+var _ = require('lodash');
 var cors = require('cors');
 var createSwaggerObject = require('loopback-swagger').generateSwaggerSpec;
 var SWAGGER_UI_ROOT = require('swagger-ui/index').dist;
