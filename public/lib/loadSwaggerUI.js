@@ -20,12 +20,26 @@ $(function() {
   });
 
   var accessToken;
+  function GetParameterValues(param) {
+    var url = window.location.href.slice(window.location.href.indexOf('?') + 1)
+      .split('&');
+    for (var i = 0; i < url.length; i++) {
+      var urlparam = url[i].split('=');
+      if (urlparam[0] === param) {
+        return urlparam[1];
+      }
+    }
+  }
   function loadSwaggerUi(config) {
     var methodOrder = ['get', 'head', 'options', 'put', 'post', 'delete'];
+    var url = config.url || '/swagger/resources';
+    if (GetParameterValues('model')) {
+      url += '?model=' + GetParameterValues('model');
+    }
     /* eslint-disable camelcase */
     window.swaggerUi = new SwaggerUi({
       validatorUrl: null,
-      url: config.url || '/swagger/resources',
+      url: url,
       apiKey: '',
       dom_id: 'swagger-ui-container',
       supportHeaderParams: true,

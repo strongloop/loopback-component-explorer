@@ -129,6 +129,11 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
   setupCors(swaggerApp, remotes);
 
   swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
+    if (swaggerObject && swaggerObject.paths && req.query && req.query.model) {
+      swaggerObject.paths = _.pickBy(swaggerObject.paths, function(val, key) {
+        return key.indexOf('/' + req.query.model) === 0;
+      });
+    }
     res.status(200).send(swaggerObject);
   });
 }
