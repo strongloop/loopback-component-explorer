@@ -131,9 +131,11 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
 
   swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
     if (swaggerObject && swaggerObject.paths && req.query && req.query.model) {
-      swaggerObject.paths = _.pickBy(swaggerObject.paths, function(val, key) {
+      var filteredSwaggerObject = JSON.parse(JSON.stringify(swaggerObject));
+      filteredSwaggerObject.paths = _.pickBy(swaggerObject.paths, function(val, key) {
         return key.indexOf('/' + req.query.model) === 0;
       });
+      res.status(200).send(filteredSwaggerObject);
     }
     res.status(200).send(swaggerObject);
   });
