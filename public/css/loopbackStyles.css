@@ -319,20 +319,34 @@ li.operation.delete .content > .content-type > div > label {
   color: #080;
 }
 
-.contentWell {
-    padding-left: 30px;
-    padding-right: 30px;
-}
-
-/* 
+/*
 FIXME: Separate the overrides from the rest of the styles, rather than override screen.css entirely.
 */
 /* Improve spacing when the browser window is small */
-#message-bar, #swagger-ui-container {
-  padding-left: 30px;
-  padding-right: 30px;
-}
 
 #api_selector {
   padding: 0px 20px;
+}
+
+body.stripped{
+  padding-top: 0;
+}
+
+.stripped .contentWell, .stripped #message-bar, .stripped #swagger-ui-container {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.stripped.swagger-section .swagger-ui-wrap{
+  min-width: inherit;
+  max-width: inherit;
+}
+
+.stripped.swagger-section #message-bar{
+  min-height: inherit;
+  padding-top: 0;
+}
+
+.stripped.swagger-section #api_info, .stripped.swagger-section .footer, .stripped #header{
+  display: none;
 }

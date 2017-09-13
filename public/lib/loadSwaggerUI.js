@@ -14,6 +14,7 @@ $(function() {
   }
 
   var lsKey = 'swagger_accessToken';
+  var appKey = 'authToken';
   $.getJSON('config.json', function(config) {
     log(config);
     loadSwaggerUi(config);
@@ -33,8 +34,9 @@ $(function() {
   function loadSwaggerUi(config) {
     var methodOrder = ['get', 'head', 'options', 'put', 'post', 'delete'];
     var url = config.url || '/swagger/resources';
-    if (GetParameterValues('model')) {
-      url += url.indexOf('?') > 0 ? '&' : '?' + 'model=' + GetParameterValues('model');
+    var model = GetParameterValues('model');
+    if (model) {
+      url += url.indexOf('?') > 0 ? '&' : '?' + 'model=' + model;
     }
     /* eslint-disable camelcase */
     window.swaggerUi = new SwaggerUi({
@@ -51,6 +53,9 @@ $(function() {
         if (window.SwaggerTranslator) {
           window.SwaggerTranslator.translate();
         }
+        if (model) {
+          $('body').addClass('stripped');
+        }
 
         $('pre code').each(function(i, e) {
           hljs.highlightBlock(e);
@@ -58,7 +63,7 @@ $(function() {
 
         // Recover accessToken from localStorage if present.
         if (window.localStorage) {
-          var key = window.localStorage.getItem(lsKey);
+          var key = window.localStorage.getItem(appKey);
           if (key) {
             $('#input_accessToken').val(key).submit();
           }
@@ -68,7 +73,7 @@ $(function() {
         log('Unable to Load SwaggerUI');
         log(data);
       },
-      docExpansion: 'none',
+      docExpansion: model ? 'list' : 'none',
       highlightSizeThreshold: 16384,
       apisSorter: 'alpha',
       operationsSorter: function(a, b) {
