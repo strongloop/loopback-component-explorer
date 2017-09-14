@@ -37,6 +37,7 @@ $(function() {
     var model = GetParameterValues('model');
     if (model) {
       url += url.indexOf('?') > 0 ? '&' : '?' + 'model=' + model;
+      $('body').addClass('stripped');
     }
     /* eslint-disable camelcase */
     window.swaggerUi = new SwaggerUi({
@@ -52,9 +53,6 @@ $(function() {
 
         if (window.SwaggerTranslator) {
           window.SwaggerTranslator.translate();
-        }
-        if (model) {
-          $('body').addClass('stripped');
         }
 
         $('pre code').each(function(i, e) {
