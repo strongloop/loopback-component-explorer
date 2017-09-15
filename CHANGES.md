@@ -1,3 +1,9 @@
+2017-09-15, Version 4.3.0
+=========================
+
+ * Refresh swagger on remoteMethodAdded (Raymond Feng)
+
+
 2017-03-24, Version 4.2.0
 =========================
 
