@@ -116,6 +116,13 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
     swaggerObject = createSwaggerObject(loopbackApplication, opts);
   });
 
+  // listening to started event for updating the swaggerObject
+  // when a call to app.models.[modelName].nestRemoting([modelName])
+  // to appear that method in the Swagger UI.
+  loopbackApplication.on('remoteMethodAdded', function() {
+    swaggerObject = createSwaggerObject(loopbackApplication, opts);
+  });
+
   // listening to remoteMethodDisabled event for updating the swaggerObject
   // when a remote method is disabled to hide that method in the Swagger UI.
   loopbackApplication.on('remoteMethodDisabled', function() {
