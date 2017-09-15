@@ -1,53 +1,47 @@
-// Copyright IBM Corp. 2014,2016. All Rights Reserved.
+// Copyright IBM Corp. 2014,2017. All Rights Reserved.
 // Node module: loopback-component-explorer
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
 'use strict';
 
-// Refactoring of inline script from index.html.
-/*global SwaggerUi, log, ApiKeyAuthorization, hljs, window, $ */
-$(function() {
+/*global SwaggerUIBundle, window, $ */
+document.addEventListener('DOMContentLoaded', function() {
   // Pre load translate...
   if (window.SwaggerTranslator) {
     window.SwaggerTranslator.translate();
   }
 
-  var lsKey = 'swagger_accessToken';
-  $.getJSON('config.json', function(config) {
-    log(config);
+  getJSON('config.json', function(err, config) {
+    if (err) log(err);
+    else log(config);
     loadSwaggerUi(config);
   });
 
   var accessToken;
   function loadSwaggerUi(config) {
-    var methodOrder = ['get', 'head', 'options', 'put', 'post', 'delete'];
+    var methodOrder = ['get', 'head', 'options', 'put', 'patch', 'post', 'delete'];
     /* eslint-disable camelcase */
-    window.swaggerUi = new SwaggerUi({
+    var defaults = {
       validatorUrl: null,
       url: config.url || '/swagger/resources',
-      apiKey: '',
-      dom_id: 'swagger-ui-container',
+      dom_id: '#swagger-ui',
       supportHeaderParams: true,
-      onComplete: function(swaggerApi, swaggerUi) {
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIStandalonePreset,
+      ],
+      plugins: [
+        SwaggerUIBundle.plugins.DownloadUrl,
+      ],
+      layout: 'StandaloneLayout',
+      onComplete: function(swaggerAPI, swaggerUI) {
         log('Loaded SwaggerUI');
-        log(swaggerApi);
-        log(swaggerUi);
+        log(swaggerAPI);
+        log(swaggerUI);
 
         if (window.SwaggerTranslator) {
           window.SwaggerTranslator.translate();
-        }
-
-        $('pre code').each(function(i, e) {
-          hljs.highlightBlock(e);
-        });
-
-        // Recover accessToken from localStorage if present.
-        if (window.localStorage) {
-          var key = window.localStorage.getItem(lsKey);
-          if (key) {
-            $('#input_accessToken').val(key).submit();
-          }
         }
       },
       onFailure: function(data) {
@@ -55,71 +49,69 @@ $(function() {
         log(data);
       },
       docExpansion: 'none',
-      highlightSizeThreshold: 16384,
-      apisSorter: 'alpha',
+      highlightSizeThreshold: 16384, // not yet supported, https://github.com/swagger-api/swagger-ui/issues/3105
       operationsSorter: function(a, b) {
-        var pathCompare = a.path.localeCompare(b.path);
+        var pathCompare = a.get('path').localeCompare(b.get('path'));
         return pathCompare !== 0 ?
           pathCompare :
-          methodOrder.indexOf(a.method) - methodOrder.indexOf(b.method);
+          methodOrder.indexOf(a.get('method')) - methodOrder.indexOf(b.get('method'));
       },
-    });
-    /* eslint-disable camelcase */
-
-    $('#explore').click(setAccessToken);
-    $('#api_selector').submit(setAccessToken);
-    $('#input_accessToken').keyup(onInputChange);
-
-    window.swaggerUi.load();
+    };
+    var options = Object.assign({}, defaults, window.swaggerUIOptions || {});
+    window.swaggerUI = new SwaggerUIBundle(options);
   }
 
-  function setAccessToken(e) {
-    e.stopPropagation(); // Don't let the default #explore handler fire
-    e.preventDefault();
-    var key = $('#input_accessToken')[0].value;
-    log('key: ' + key);
-    if (key && key.trim() !== '') {
-      log('added accessToken ' + key);
-      var apiKeyAuth =
-        new SwaggerClient.ApiKeyAuthorization('access_token', key, 'query');
-      window.swaggerUi.api.clientAuthorizations.add('key', apiKeyAuth);
-      accessToken = key;
-      $('.accessTokenDisplay').text('Token Set.').addClass('set');
-      $('.accessTokenDisplay').attr('data-tooltip', 'Current Token: ' + key);
-
-      // Save this token to localStorage if we can to make it persist on refresh.
-      if (window.localStorage) {
-        window.localStorage.setItem(lsKey, key);
-      }
-    } else {
-      // If submitted with an empty token, remove the current token. Can be
-      // useful to intentionally remove authorization.
-      log('removed accessToken.');
-      $('.accessTokenDisplay').text('Token Not Set.').removeClass('set');
-      $('.accessTokenDisplay').removeAttr('data-tooltip');
-      if (window.swaggerUi) {
-        window.swaggerUi.api.clientAuthorizations.remove('key');
-      }
-      if (window.localStorage) {
-        window.localStorage.removeItem(lsKey);
-      }
-    }
-  }
-
-  function onInputChange(e) {
-    var el = e.currentTarget;
-    var key = $(e.currentTarget)[0].value;
-    if (!key || key.trim === '') return;
-    if (accessToken !== key) {
-      $('.accessTokenDisplay').text('Token changed; submit to confirm.');
-    } else {
-      $('.accessTokenDisplay').text('Token Set.');
-    }
-  }
+  //
+  // Utils
+  //
 
   function log() {
     if ('console' in window) {
       console.log.apply(console, arguments);
     }
+  }
+
+  function getJSON(url, cb) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.onload = function(e) {
+      try {
+        if (this.status !== 200) throw new Error('Invalid Status: ' + this.status);
+        cb(null, JSON.parse(this.responseText));
+      } catch (e) {
+        cb(e);
+      }
+    };
+    xhr.send();
+  }
+
+  if (typeof Object.assign != 'function') {
+    // Must be writable: true, enumerable: false, configurable: true
+    Object.defineProperty(Object, 'assign', {
+      value: function assign(target, varArgs) { // .length of function is 2
+        'use strict';
+        if (target == null) { // TypeError if undefined or null
+          throw new TypeError('Cannot convert undefined or null to object');
+        }
+
+        var to = Object(target);
+
+        for (var index = 1; index < arguments.length; index++) {
+          var nextSource = arguments[index];
+
+          if (nextSource != null) { // Skip over if undefined or null
+            for (var nextKey in nextSource) {
+              // Avoid bugs when hasOwnProperty is shadowed
+              if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                to[nextKey] = nextSource[nextKey];
+              }
+            }
+          }
+        }
+        return to;
+      },
+      writable: true,
+      configurable: true,
+    });
   }
 });
