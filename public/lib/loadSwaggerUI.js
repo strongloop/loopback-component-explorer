@@ -37,11 +37,11 @@ $(function() {
     var model = GetParameterValues('model');
     var token = window.localStorage.getItem(appKey);
     if (model) {
-      url += url.indexOf('?') > 0 ? '&' : '?' + 'model=' + model;
+      url += (url.indexOf('?') > 0 ? '&' : '?') + 'model=' + model;
       $('body').addClass('stripped');
     }
     if (token) {
-      url += url.indexOf('?') > 0 ? '&' : '?' + 'acccess_token=' + token;
+      url += (url.indexOf('?') > 0 ? '&' : '?') + 'acccess_token=' + token;
     }
     /* eslint-disable camelcase */
     window.swaggerUi = new SwaggerUi({
