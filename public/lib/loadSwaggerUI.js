@@ -39,6 +39,9 @@ $(function() {
       url += url.indexOf('?') > 0 ? '&' : '?' + 'model=' + model;
       $('body').addClass('stripped');
     }
+    if (appKey) {
+      url += url.indexOf('?') > 0 ? '&' : '?' + 'acccess_token=' + appKey;
+    }
     /* eslint-disable camelcase */
     window.swaggerUi = new SwaggerUi({
       validatorUrl: null,
