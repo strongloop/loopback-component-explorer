@@ -35,12 +35,13 @@ $(function() {
     var methodOrder = ['get', 'head', 'options', 'put', 'post', 'delete'];
     var url = config.url || '/swagger/resources';
     var model = GetParameterValues('model');
+    var token = window.localStorage.getItem(appKey);
     if (model) {
       url += url.indexOf('?') > 0 ? '&' : '?' + 'model=' + model;
       $('body').addClass('stripped');
     }
-    if (appKey) {
-      url += url.indexOf('?') > 0 ? '&' : '?' + 'acccess_token=' + appKey;
+    if (token) {
+      url += url.indexOf('?') > 0 ? '&' : '?' + 'acccess_token=' + token;
     }
     /* eslint-disable camelcase */
     window.swaggerUi = new SwaggerUi({
@@ -63,11 +64,8 @@ $(function() {
         });
 
         // Recover accessToken from localStorage if present.
-        if (window.localStorage) {
-          var key = window.localStorage.getItem(appKey);
-          if (key) {
-            $('#input_accessToken').val(key).submit();
-          }
+        if (window.localStorage && token) {
+          $('#input_accessToken').val(token).submit();
         }
       },
       onFailure: function(data) {
