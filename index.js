@@ -130,14 +130,25 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
   setupCors(swaggerApp, remotes);
 
   swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
-    if (swaggerObject && swaggerObject.paths && req.query && req.query.model) {
-      var filteredSwaggerObject = JSON.parse(JSON.stringify(swaggerObject));
-      filteredSwaggerObject.paths = _.pickBy(swaggerObject.paths, function(val, key) {
-        return key.indexOf('/' + req.query.model) === 0;
-      });
-      res.status(200).send(filteredSwaggerObject);
+    var tenantId = require('loopback-context').getCurrentContext().get('tenantId');
+    var swaggerFilterPath;
+    if (tenantId) {
+      swaggerFilterPath = '/custom/' + tenantId
+      if (req.query && req.query.model) {
+        swaggerFilterPath += '-' + req.query.model;
+      }
+
+      if (swaggerObject && swaggerObject.paths) {
+        var filteredSwaggerObject = JSON.parse(JSON.stringify(swaggerObject));
+        filteredSwaggerObject.paths = _.pickBy(swaggerObject.paths, function(val, key) {
+          return key.indexOf(swaggerFilterPath) === 0;
+        });
+        res.status(200).send(filteredSwaggerObject);
+      } else {
+        res.status(200).send(swaggerObject);
+      }
     } else {
-      res.status(200).send(swaggerObject);
+      res.status(401).send({});
     }
   });
 }
