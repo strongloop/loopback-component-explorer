@@ -140,9 +140,12 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
 
       if (swaggerObject && swaggerObject.paths) {
         var filteredSwaggerObject = JSON.parse(JSON.stringify(swaggerObject));
-        filteredSwaggerObject.paths = _.pickBy(swaggerObject.paths, function(val, key) {
+        filteredSwaggerObject.paths = _.reduce(_.pickBy(swaggerObject.paths, function(val, key) {
           return key.indexOf(swaggerFilterPath) === 0;
-        });
+        }), function(result, val, key) {
+          result[key.replace(tenantId + '-', '')] = val;
+          return result;
+        }, {});
         res.status(200).send(filteredSwaggerObject);
       } else {
         res.status(200).send(swaggerObject);
