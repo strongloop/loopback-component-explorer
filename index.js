@@ -132,8 +132,9 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
   swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
     var tenantId = require('loopback-context').getCurrentContext().get('tenantId');
     var swaggerFilterPath;
+    var verbs = ['head', 'get', 'post', 'put', 'patch', 'delete'];
     if (tenantId) {
-      swaggerFilterPath = '/custom/' + tenantId
+      swaggerFilterPath = '/custom/' + tenantId;
       if (req.query && req.query.model) {
         swaggerFilterPath += '-' + req.query.model;
       }
@@ -144,6 +145,13 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
           return key.indexOf(swaggerFilterPath) === 0;
         }), function(result, val, key) {
           result[key.replace(tenantId + '-', '')] = val;
+          _.each(verbs, function(verb){
+            if (result[key.replace(tenantId + '-', '')][verb] && result[key.replace(tenantId + '-', '')][verb].tags) {
+              result[key.replace(tenantId + '-', '')][verb].tags = _.map(result[key.replace(tenantId + '-', '')][verb].tags, function(tag){
+                return tag.replace(tenantId + '-', '');
+              });
+            }
+          });
           return result;
         }, {});
         res.status(200).send(filteredSwaggerObject);
