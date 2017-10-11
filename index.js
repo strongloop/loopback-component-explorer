@@ -144,11 +144,24 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
         filteredSwaggerObject.paths = _.reduce(_.pickBy(swaggerObject.paths, function(val, key) {
           return key.indexOf(swaggerFilterPath) === 0;
         }), function(result, val, key) {
-          result[key.replace(tenantId + '-', '')] = val;
-          _.each(verbs, function(verb){
-            if (result[key.replace(tenantId + '-', '')][verb] && result[key.replace(tenantId + '-', '')][verb].tags) {
-              result[key.replace(tenantId + '-', '')][verb].tags = _.map(result[key.replace(tenantId + '-', '')][verb].tags, function(tag){
+          var newKey = key.replace(tenantId + '-', '');
+          result[newKey] = val;
+          _.each(verbs, function(verb) {
+            if (result[newKey][verb] && result[newKey][verb].tags) {
+              result[newKey][verb].tags = _.map(result[newKey][verb].tags, function(tag){
                 return tag.replace(tenantId + '-', '');
+              });
+            }
+            if (verb === 'get' && result[newKey].get) {
+              if (!result[newKey].get.parameters) {
+                result[newKey].get.parameters = [];
+              }
+              result[newKey].get.parameters.push({
+                name: 'getFrom',
+                in: 'query',
+                required: false,
+                type: 'string',
+                enum: ['elastic']
               });
             }
           });
