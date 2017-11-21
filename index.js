@@ -167,6 +167,9 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
           });
           return result;
         }, {});
+        filteredSwaggerObject.definitions = _.pickBy(swaggerObject.definitions, function(val, key) {
+          return key.startsWith(tenantId);
+        });
         res.status(200).send(filteredSwaggerObject);
       } else {
         res.status(200).send(swaggerObject);
