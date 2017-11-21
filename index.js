@@ -156,13 +156,15 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
               if (!result[newKey].get.parameters) {
                 result[newKey].get.parameters = [];
               }
-              result[newKey].get.parameters.push({
-                name: 'getFrom',
-                in: 'query',
-                required: false,
-                type: 'string',
-                enum: ['elastic']
-              });
+              if (_.isArray(result[newKey].get.parameters) && _.findIndex(result[newKey].get.parameters, { name: 'getFrom', enum: ['elastic'] }) === -1) {
+                result[newKey].get.parameters.push({
+                  name: 'getFrom',
+                  in: 'query',
+                  required: false,
+                  type: 'string',
+                  enum: ['elastic']
+                });
+              }
             }
           });
           return result;
