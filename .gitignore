@@ -19,3 +19,4 @@ npm-debug.log
 node_modules
 
 LoopBackExplorer.iml
+yarn.lock
