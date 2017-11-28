@@ -136,7 +136,11 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
     if (tenantId) {
       swaggerFilterPath = '/custom/' + tenantId;
       if (req.query && req.query.model) {
-        swaggerFilterPath += '-' + req.query.model;
+        const modelName = tenantId + '-' + req.query.model;
+        const modelDef = req.app.models[modelName];
+        if (modelDef && modelDef.definition && modelDef.definition.settings && modelDef.definition.settings.slug) {
+          swaggerFilterPath += '-' + modelDef.definition.settings.slug;
+        } else swaggerFilterPath += '-' + req.query.model;
       }
 
       if (swaggerObject && swaggerObject.paths) {
