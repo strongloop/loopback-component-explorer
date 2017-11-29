@@ -166,7 +166,8 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
                   in: 'query',
                   required: false,
                   type: 'string',
-                  enum: ['elastic']
+                  enum: ['elastic'],
+                  description: 'Gets the resource from the indexed elastic store rather than the default'
                 });
               }
             }
