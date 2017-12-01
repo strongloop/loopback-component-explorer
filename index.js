@@ -173,8 +173,9 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
           });
           return result;
         }, {});
+        const includeDefinitions = ['ObjectID', 'x-any'];
         filteredSwaggerObject.definitions = _.pickBy(swaggerObject.definitions, function(val, key) {
-          return key.startsWith(tenantId);
+          return key.startsWith(tenantId) || includeDefinitions.indexOf(key) !== -1;
         });
         res.status(200).send(filteredSwaggerObject);
       } else {
