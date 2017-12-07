@@ -157,7 +157,11 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
               });
             }
             if (verb === 'get' && result[newKey].get) {
-              if (!result[newKey].get.parameters) {
+              if (result[newKey].get.parameters) {
+                if (result[newKey].get.parameters[0].name === 'filter') {
+                  result[newKey].get.parameters[0].default = JSON.stringify({limit: 10});
+                }
+              } else {
                 result[newKey].get.parameters = [];
               }
               if (_.isArray(result[newKey].get.parameters) && _.findIndex(result[newKey].get.parameters, { name: 'getFrom', enum: ['elastic'] }) === -1) {
