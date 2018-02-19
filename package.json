@@ -1,6 +1,6 @@
 {
   "name": "loopback-component-explorer",
-  "version": "5.2.0",
+  "version": "5.3.0",
   "description": "Browse and test your LoopBack app's APIs",
   "engines": {
     "node": ">=4"

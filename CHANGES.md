@@ -1,3 +1,11 @@
+2018-02-19, Version 5.3.0
+=========================
+
+ * Upgrade lodash from 3.x to 4.x (Miroslav Bajtoš)
+
+ * chore: update license (Diana Lau)
+
+
 2017-10-13, Version 5.2.0
 =========================
 
