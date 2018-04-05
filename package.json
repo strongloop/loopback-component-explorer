@@ -35,9 +35,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cors": "^2.7.1",
     "debug": "^2.2.0",
-    "depd": "^1.1.0",
     "lodash": "^4.17.5",
     "loopback-swagger": "^5.0.0",
     "strong-globalize": "^3.1.0",

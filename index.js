@@ -12,12 +12,10 @@ var g = SG();
 /*!
  * Adds dynamically-updated docs as /explorer
  */
-var deprecated = require('depd')('loopback-explorer');
 var url = require('url');
 var path = require('path');
 var urlJoin = require('./lib/url-join');
 var _defaults = require('lodash').defaults;
-var cors = require('cors');
 var createSwaggerObject = require('loopback-swagger').generateSwaggerSpec;
 var SWAGGER_UI_ROOT = require('swagger-ui/index').dist;
 var STATIC_ROOT = path.join(__dirname, 'public');
@@ -135,9 +133,6 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
   var resourcePath = (opts && opts.resourcePath) || 'swagger.json';
   if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
 
-  var remotes = loopbackApplication.remotes();
-  setupCors(swaggerApp, remotes);
-
   swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
     res.status(200).send(swaggerObject);
   });
@@ -145,23 +140,4 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
   function rebuildSwaggerObject() {
     swaggerObject = createSwaggerObject(loopbackApplication, opts);
   }
-}
-
-function setupCors(swaggerApp, remotes) {
-  var corsOptions = remotes.options && remotes.options.cors;
-  if (corsOptions === false) return;
-
-  deprecated(
-    g.f(
-      'The built-in CORS middleware provided by loopback-component-explorer ' +
-        'was deprecated. See %s for more details.',
-      'https://loopback.io/doc/en/lb3/Security-considerations.html'
-    )
-  );
-
-  if (corsOptions === undefined) {
-    corsOptions = { origin: true, credentials: true };
-  }
-
-  swaggerApp.use(cors(corsOptions));
 }
