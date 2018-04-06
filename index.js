@@ -34,18 +34,25 @@ explorer.routes = routes;
 
 function explorer(loopbackApplication, options) {
   options = _defaults({}, options, { mountPath: '/explorer' });
-  loopbackApplication.use(options.mountPath, routes(loopbackApplication, options));
+  loopbackApplication.use(
+    options.mountPath,
+    routes(loopbackApplication, options)
+  );
   loopbackApplication.set('loopback-component-explorer', options);
 }
 
 function routes(loopbackApplication, options) {
   var loopback = loopbackApplication.loopback;
-  var loopbackMajor = loopback && loopback.version &&
-  loopback.version.split('.')[0] || 1;
+  var loopbackMajor =
+    (loopback && loopback.version && loopback.version.split('.')[0]) || 1;
 
   if (loopbackMajor < 2) {
-    throw new Error(g.f('{{loopback-component-explorer}} requires ' +
-      '{{loopback}} 2.0 or newer'));
+    throw new Error(
+      g.f(
+        '{{loopback-component-explorer}} requires ' +
+          '{{loopback}} 2.0 or newer'
+      )
+    );
   }
 
   options = _defaults({}, options, {
@@ -129,7 +136,7 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
     swaggerObject = createSwaggerObject(loopbackApplication, opts);
   });
 
-  var resourcePath = opts && opts.resourcePath || 'swagger.json';
+  var resourcePath = (opts && opts.resourcePath) || 'swagger.json';
   if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
 
   var remotes = loopbackApplication.remotes();
@@ -142,14 +149,15 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
 
 function setupCors(swaggerApp, remotes) {
   var corsOptions = remotes.options && remotes.options.cors;
-  if (corsOptions === false)
-    return;
+  if (corsOptions === false) return;
 
-  deprecated(g.f(
-    'The built-in CORS middleware provided by loopback-component-explorer ' +
-      'was deprecated. See %s for more details.',
-    'https://docs.strongloop.com/display/public/LB/Security+considerations'
-  ));
+  deprecated(
+    g.f(
+      'The built-in CORS middleware provided by loopback-component-explorer ' +
+        'was deprecated. See %s for more details.',
+      'https://loopback.io/doc/en/lb3/Security-considerations.html'
+    )
+  );
 
   if (corsOptions === undefined) {
     corsOptions = { origin: true, credentials: true };
