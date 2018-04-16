@@ -119,22 +119,18 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
 
   // listening to modelRemoted event for updating the swaggerObject
   // with the newly created model to appear in the Swagger UI.
-  loopbackApplication.on('modelRemoted', function() {
-    swaggerObject = createSwaggerObject(loopbackApplication, opts);
-  });
+  loopbackApplication.on('modelRemoted', rebuildSwaggerObject);
+
+  loopbackApplication.on('modelDeleted', rebuildSwaggerObject);
 
   // listening to started event for updating the swaggerObject
   // when a call to app.models.[modelName].nestRemoting([modelName])
   // to appear that method in the Swagger UI.
-  loopbackApplication.on('remoteMethodAdded', function() {
-    swaggerObject = createSwaggerObject(loopbackApplication, opts);
-  });
+  loopbackApplication.on('remoteMethodAdded', rebuildSwaggerObject);
 
   // listening to remoteMethodDisabled event for updating the swaggerObject
   // when a remote method is disabled to hide that method in the Swagger UI.
-  loopbackApplication.on('remoteMethodDisabled', function() {
-    swaggerObject = createSwaggerObject(loopbackApplication, opts);
-  });
+  loopbackApplication.on('remoteMethodDisabled', rebuildSwaggerObject);
 
   var resourcePath = (opts && opts.resourcePath) || 'swagger.json';
   if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
@@ -145,6 +141,10 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
   swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
     res.status(200).send(swaggerObject);
   });
+
+  function rebuildSwaggerObject() {
+    swaggerObject = createSwaggerObject(loopbackApplication, opts);
+  }
 }
 
 function setupCors(swaggerApp, remotes) {
