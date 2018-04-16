@@ -167,7 +167,6 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
               var nonElasticOperationIds = ['.prototype.__get__model', '.prototype.__get__user', '.prototype.__get__tenant'];
               var nonElasticOperationId = nonElasticOperationIds.filter(opId => _.includes(result[newKey].get.operationId, opId))[0];
               if (!nonElasticOperationId && _.endsWith(newKey, '/change-stream') && _.isArray(result[newKey].get.parameters) && _.findIndex(result[newKey].get.parameters, { name: 'getFrom', enum: ['elastic'] }) === -1) {
-              if (_.isArray(result[newKey].get.parameters) && _.findIndex(result[newKey].get.parameters, { name: 'getFrom', enum: ['elastic'] }) === -1) {
                 result[newKey].get.parameters.push({
                   name: 'getFrom',
                   in: 'query',
