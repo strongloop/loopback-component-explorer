@@ -325,6 +325,41 @@ describe('explorer', function() {
       });
   });
 
+  it('updates swagger object when a model is removed', function(done) {
+    var app = loopback();
+    app.set('remoting', { cors: false });
+    configureRestApiAndExplorer(app, '/explorer');
+
+    var Model = loopback.PersistedModel.extend('Customer');
+    Model.attachTo(loopback.memory());
+    app.model(Model);
+
+    // Ensure the swagger object was built
+    request(app)
+      .get('/explorer/swagger.json')
+      .expect(200)
+      .end(function(err) {
+        if (err) return done(err);
+
+        app.deleteModelByName('Customer');
+
+        // Request swagger.json again
+        request(app)
+          .get('/explorer/swagger.json')
+          .expect(200)
+          .end(function(err, res) {
+            if (err) return done(err);
+
+            var modelNames = Object.keys(res.body.definitions);
+            expect(modelNames).to.not.contain('Customer');
+            var paths = Object.keys(res.body.paths);
+            expect(paths).to.not.contain('/Customers');
+
+            done();
+          });
+      });
+  });
+
   it('updates swagger object when a remote method is disabled', function(done) {
     var app = loopback();
     app.set('remoting', { cors: false });
