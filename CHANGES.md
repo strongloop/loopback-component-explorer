@@ -1,3 +1,15 @@
+2018-04-17, Version 5.4.0
+=========================
+
+ * feat: rebuild swagger after a model was deleted (Miroslav Bajtoš)
+
+ * update link for docs.strongloop.com (Diana Lau)
+
+ * Revert "docs: update link from docs.strongloop.com" (Diana Lau)
+
+ * docs: update link from docs.strongloop.com (Diana Lau)
+
+
 2018-02-19, Version 5.3.0
 =========================
 
