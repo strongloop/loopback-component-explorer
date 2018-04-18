@@ -1,3 +1,11 @@
+2018-04-18, Version 6.0.0
+=========================
+
+ * [SEMVER-MAJOR] Remove deprecated CORS support (Hiran del Castillo)
+
+ * Add Travis CI configuration (Miroslav Bajtoš)
+
+
 2018-04-17, Version 5.4.0
 =========================
 
