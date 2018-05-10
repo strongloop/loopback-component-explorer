@@ -38,7 +38,7 @@
     "cors": "^2.7.1",
     "debug": "^2.2.0",
     "depd": "^1.1.0",
-    "lodash": "^3.10.0",
+    "lodash": "^4.17.5",
     "loopback-swagger": "^3.0.1",
     "strong-globalize": "^2.6.2",
     "swagger-ui": "^2.2.5"
