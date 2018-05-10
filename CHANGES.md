@@ -1,3 +1,11 @@
+2018-05-10, Version 6.0.1
+=========================
+
+ * Update LTS information in README (Miroslav Bajtoš)
+
+ * Enable Node.js 10 on Travis CI (Miroslav Bajtoš)
+
+
 2018-04-18, Version 6.0.0
 =========================
 
