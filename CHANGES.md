@@ -1,3 +1,9 @@
+2018-05-10, Version 4.3.1
+=========================
+
+ * Fix lodash vulnerability: Prototype Pollution (Jee Mok)
+
+
 2017-09-15, Version 4.3.0
 =========================
 
