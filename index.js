@@ -164,18 +164,6 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
               } else {
                 result[newKey].get.parameters = [];
               }
-              let nonElasticOperationIds = ['.prototype.__get__model', '.prototype.__get__user', '.prototype.__get__tenant'];
-              let nonElasticOperationId = nonElasticOperationIds.filter(opId => _.includes(result[newKey].get.operationId, opId))[0];
-              if (!nonElasticOperationId && !_.endsWith(newKey, '/change-stream') && _.isArray(result[newKey].get.parameters) && _.findIndex(result[newKey].get.parameters, { name: 'getFrom', enum: ['mongo', 'elastic'] }) === -1) {
-                result[newKey].get.parameters.push({
-                  name: 'getFrom',
-                  in: 'query',
-                  required: true,
-                  type: 'string',
-                  enum: ['mongo', 'elastic'],
-                  description: 'Gets the resource from the indexed elastic store rather than the default'
-                });
-              }
             }
           });
           return result;
