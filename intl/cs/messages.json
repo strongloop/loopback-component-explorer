@@ -1,0 +1,7 @@
+{
+  "88bef790f515ec7b7af0c6871e60c077": "{{Explorer}} připojen k {{http://localhost:{0}/explorer}}",
+  "af448751b9a970c539400cadd2681e93": "Vestavěný middleware CORS poskytnutý modulem loopback-component-explorer byl zamítnut. Další podrobnosti viz {0}.",
+  "b9e94c12da3208f46a969191874c425c": "{{Explorer}} připojen k {{localhost:{0}/explorer}}",
+  "f3f2b04c273e23780d76306f8c72a60f": "{{loopback-component-explorer}} vyžaduje {{loopback}} 2.0 nebo novější"
+}
+

@@ -1,0 +1,7 @@
+{
+  "88bef790f515ec7b7af0c6871e60c077": "{{Explorer}} podłączony pod adresem {{http://localhost:{0}/explorer}}",
+  "af448751b9a970c539400cadd2681e93": "Wbudowana warstwa pośrednia CORS zapewniana przez moduł loopback-component-explorer jest nieaktualna. Więcej informacji na ten temat zawiera sekcja {0}.",
+  "b9e94c12da3208f46a969191874c425c": "{{Explorer}} podłączony pod adresem {{localhost:{0}/explorer}}",
+  "f3f2b04c273e23780d76306f8c72a60f": "{{loopback-component-explorer}} wymaga aplikacji {{loopback}} 2.0 lub nowszej"
+}
+
