@@ -1,3 +1,13 @@
+2018-07-09, Version 6.1.0
+=========================
+
+ * [WebFM] cs/pl/ru translation (candytangnb)
+
+ * remove package-lock.json (Diana Lau)
+
+ * update dependencies (Diana Lau)
+
+
 2018-05-10, Version 6.0.1
 =========================
 
