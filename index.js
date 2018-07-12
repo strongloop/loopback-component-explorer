@@ -133,6 +133,11 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
     var tenantId = require('loopback-context').getCurrentContext().get('tenantId');
     var swaggerFilterPath;
     var verbs = ['head', 'get', 'post', 'put', 'patch', 'delete'];
+    const blackListApi = {
+      '': ['put'],
+    }; //list of APIs to hide from UI.
+    const blackListKeys = _.keys(blackListApi);
+    const blackListValues = _.values(blackListApi);
     if (tenantId) {
       swaggerFilterPath = '/custom/' + tenantId;
       if (req.query && req.query.model) {
@@ -148,8 +153,19 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
         filteredSwaggerObject.paths = _.reduce(_.pickBy(swaggerObject.paths, function(val, key) {
           return key.indexOf(swaggerFilterPath) === 0;
         }), function(result, val, key) {
+          const tempKey = key.substring(key.indexOf(tenantId));
+          const index = (tempKey.indexOf('/') > -1) ? (tempKey.indexOf('/') + 1) : (tempKey.length);
+          const blackListKey = tempKey.substring(index);
           var newKey = key.replace(tenantId + '-', '');
           result[newKey] = val;
+          const isInValid = _.indexOf(blackListKeys, blackListKey);
+          if (isInValid > -1) {
+             _.forEach(blackListValues[isInValid], (method) => {
+               if (result[newKey] && result[newKey][method]) {
+                 delete result[newKey][method];
+               }
+             });
+          }
           _.each(verbs, function(verb) {
             if (result[newKey][verb] && result[newKey][verb].tags) {
               result[newKey][verb].tags = _.map(result[newKey][verb].tags, function(tag){
