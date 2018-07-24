@@ -3,7 +3,7 @@
   "version": "6.1.0",
   "description": "Browse and test your LoopBack app's APIs",
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "main": "index.js",
   "scripts": {
@@ -35,10 +35,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "^2.2.0",
+    "debug": "^3.1.0",
     "lodash": "^4.17.5",
     "loopback-swagger": "^5.0.0",
-    "strong-globalize": "^3.1.0",
+    "strong-globalize": "^4.1.1",
     "swagger-ui": "^2.2.5"
   }
 }
