@@ -27,6 +27,7 @@ $(function() {
       validatorUrl: null,
       url: config.url || '/swagger/resources',
       apiKey: '',
+      auth: config.auth,
       dom_id: 'swagger-ui-container',
       supportHeaderParams: true,
       onComplete: function(swaggerApi, swaggerUi) {
@@ -76,12 +77,15 @@ $(function() {
   function setAccessToken(e) {
     e.stopPropagation(); // Don't let the default #explore handler fire
     e.preventDefault();
+    var authOptions = window.swaggerUi.options.auth || {};
+    var keyLocation = authOptions.in || 'query';
+    var keyName = authOptions.name || 'access_token';
     var key = $('#input_accessToken')[0].value;
     log('key: ' + key);
     if (key && key.trim() !== '') {
       log('added accessToken ' + key);
       var apiKeyAuth =
-        new SwaggerClient.ApiKeyAuthorization('access_token', key, 'query');
+        new SwaggerClient.ApiKeyAuthorization(keyName, key, keyLocation);
       window.swaggerUi.api.clientAuthorizations.add('key', apiKeyAuth);
       accessToken = key;
       $('.accessTokenDisplay').text('Token Set.').addClass('set');

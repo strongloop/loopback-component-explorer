@@ -79,6 +79,7 @@ function routes(loopbackApplication, options) {
     }
     res.send({
       url: urlJoin(source, '/' + options.resourcePath),
+      auth: options.auth,
     });
   });
 
