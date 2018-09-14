@@ -34,6 +34,40 @@ describe('explorer', function() {
         .expect('Content-Type', /html/)
         .expect(200)
         .end(function(err, res) {
+          if (err) return done(err);
+
+          assert(!!~res.text.indexOf('<title>LoopBack API Explorer</title>'),
+            'text does not contain expected string');
+
+          done();
+        });
+    });
+
+    it('should serve correct swagger-ui config', function(done) {
+      request(this.app)
+        .get('/explorer/config.json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+
+          expect(res.body).to
+            .have.property('url', '/explorer/swagger.json');
+
+          done();
+        });
+    });
+  });
+
+  describe('when filename is included in url', function() {
+    beforeEach(givenLoopBackAppWithExplorer());
+
+    it('should serve the explorer at /explorer/index.html', function(done) {
+      request(this.app)
+        .get('/explorer/index.html')
+        .expect('Content-Type', /html/)
+        .expect(200)
+        .end(function(err, res) {
           if (err) throw err;
 
           assert(!!~res.text.indexOf('<title>LoopBack API Explorer</title>'),
@@ -46,6 +80,7 @@ describe('explorer', function() {
     it('should serve correct swagger-ui config', function(done) {
       request(this.app)
         .get('/explorer/config.json')
+        .set('Referer', 'http://example.com/explorer/index.html')
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res) {

@@ -69,12 +69,17 @@ function routes(loopbackApplication, options) {
     // Get the path we're mounted at. It's best to get this from the referer
     // in case we're proxied at a deep path.
     var source = url.parse(req.headers.referer || '').pathname;
+    // strip index.html if present in referer
+    if (source && /\/index\.html$/.test(source)) {
+      source = source.replace(/\/index\.html$/, '');
+    }
     // If no referer is available, use the incoming url.
     if (!source) {
       source = req.originalUrl.replace(/\/config.json(\?.*)?$/, '');
     }
     res.send({
       url: urlJoin(source, '/' + options.resourcePath),
+      auth: options.auth,
     });
   });
 
