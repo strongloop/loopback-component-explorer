@@ -1,3 +1,11 @@
+2018-09-14, Version 6.3.0
+=========================
+
+ * Add config option for custom auth header (Jonathan Prince)
+
+ * Fix config.json URL when running from /index.html (Jonathan Prince)
+
+
 2018-07-24, Version 6.2.0
 =========================
 
