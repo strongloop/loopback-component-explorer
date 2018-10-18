@@ -1,3 +1,9 @@
+2018-10-18, Version 6.3.1
+=========================
+
+ * README: update LTS status (Miroslav Bajtoš)
+
+
 2018-09-14, Version 6.3.0
 =========================
 
