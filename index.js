@@ -151,7 +151,7 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
       if (swaggerObject && swaggerObject.paths) {
         var filteredSwaggerObject = JSON.parse(JSON.stringify(swaggerObject));
         filteredSwaggerObject.paths = _.reduce(_.pickBy(swaggerObject.paths, function(val, key) {
-          return key.indexOf(swaggerFilterPath) === 0;
+          return (key === swaggerFilterPath || key.startsWith(swaggerFilterPath + '/'));
         }), function(result, val, key) {
           const tempKey = key.substring(key.indexOf(tenantId));
           const index = (tempKey.indexOf('/') > -1) ? (tempKey.indexOf('/') + 1) : (tempKey.length);
