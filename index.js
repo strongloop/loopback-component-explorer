@@ -5,20 +5,20 @@
 
 'use strict';
 
-var SG = require('strong-globalize');
+const SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-var g = SG();
+const g = SG();
 
 /*!
  * Adds dynamically-updated docs as /explorer
  */
-var url = require('url');
-var path = require('path');
-var urlJoin = require('./lib/url-join');
-var _defaults = require('lodash').defaults;
-var createSwaggerObject = require('loopback-swagger').generateSwaggerSpec;
-var SWAGGER_UI_ROOT = require('swagger-ui/index').dist;
-var STATIC_ROOT = path.join(__dirname, 'public');
+const url = require('url');
+const path = require('path');
+const urlJoin = require('./lib/url-join');
+const _defaults = require('lodash').defaults;
+const createSwaggerObject = require('loopback-swagger').generateSwaggerSpec;
+const SWAGGER_UI_ROOT = require('swagger-ui/index').dist;
+const STATIC_ROOT = path.join(__dirname, 'public');
 
 module.exports = explorer;
 explorer.routes = routes;
@@ -31,7 +31,7 @@ explorer.routes = routes;
  */
 
 function explorer(loopbackApplication, options) {
-  options = _defaults({}, options, { mountPath: '/explorer' });
+  options = _defaults({}, options, {mountPath: '/explorer'});
   loopbackApplication.use(
     options.mountPath,
     routes(loopbackApplication, options)
@@ -40,8 +40,8 @@ function explorer(loopbackApplication, options) {
 }
 
 function routes(loopbackApplication, options) {
-  var loopback = loopbackApplication.loopback;
-  var loopbackMajor =
+  const loopback = loopbackApplication.loopback;
+  const loopbackMajor =
     (loopback && loopback.version && loopback.version.split('.')[0]) || 1;
 
   if (loopbackMajor < 2) {
@@ -59,7 +59,7 @@ function routes(loopbackApplication, options) {
     swaggerUI: true,
   });
 
-  var router = new loopback.Router();
+  const router = new loopback.Router();
 
   mountSwagger(loopbackApplication, router, options);
 
@@ -68,7 +68,7 @@ function routes(loopbackApplication, options) {
   router.get('/config.json', function(req, res) {
     // Get the path we're mounted at. It's best to get this from the referer
     // in case we're proxied at a deep path.
-    var source = url.parse(req.headers.referer || '').pathname;
+    let source = url.parse(req.headers.referer || '').pathname;
     // strip index.html if present in referer
     if (source && /\/index\.html$/.test(source)) {
       source = source.replace(/\/index\.html$/, '');
@@ -118,7 +118,7 @@ function routes(loopbackApplication, options) {
  * @param {Object} opts Options.
  */
 function mountSwagger(loopbackApplication, swaggerApp, opts) {
-  var swaggerObject = createSwaggerObject(loopbackApplication, opts);
+  let swaggerObject = createSwaggerObject(loopbackApplication, opts);
 
   // listening to modelRemoted event for updating the swaggerObject
   // with the newly created model to appear in the Swagger UI.
@@ -135,7 +135,7 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
   // when a remote method is disabled to hide that method in the Swagger UI.
   loopbackApplication.on('remoteMethodDisabled', rebuildSwaggerObject);
 
-  var resourcePath = (opts && opts.resourcePath) || 'swagger.json';
+  let resourcePath = (opts && opts.resourcePath) || 'swagger.json';
   if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
 
   swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
