@@ -27,8 +27,8 @@
   },
   "devDependencies": {
     "chai": "^3.2.0",
-    "eslint": "^2.13.1",
-    "eslint-config-loopback": "^2.0.0",
+    "eslint": "^5.13.0",
+    "eslint-config-loopback": "^13.0.0",
     "loopback": "^3.19.0",
     "mocha": "^5.2.0",
     "supertest": "^3.1.0"

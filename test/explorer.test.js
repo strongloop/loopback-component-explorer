@@ -3,14 +3,16 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
-var loopback = require('loopback');
-var explorer = require('../');
-var request = require('supertest');
-var assert = require('assert');
-var path = require('path');
-var expect = require('chai').expect;
-var urlJoin = require('../lib/url-join');
-var os = require('os');
+'use strict';
+
+const loopback = require('loopback');
+const explorer = require('../');
+const request = require('supertest');
+const assert = require('assert');
+const path = require('path');
+const expect = require('chai').expect;
+const urlJoin = require('../lib/url-join');
+const os = require('os');
 
 describe('explorer', function() {
   describe('with default config', function() {
@@ -18,7 +20,7 @@ describe('explorer', function() {
 
     it('should register "loopback-component-explorer" to the app', function() {
       expect(this.app.get('loopback-component-explorer'))
-      .to.have.property('mountPath', '/explorer');
+        .to.have.property('mountPath', '/explorer');
     });
 
     it('should redirect to /explorer/', function(done) {
@@ -99,7 +101,7 @@ describe('explorer', function() {
 
     it('should register "loopback-component-explorer" to the app', function() {
       expect(this.app.get('loopback-component-explorer'))
-      .to.have.property('mountPath', '/swagger');
+        .to.have.property('mountPath', '/swagger');
     });
 
     it('should serve correct swagger-ui config', function(done) {
@@ -120,9 +122,9 @@ describe('explorer', function() {
 
   describe('with custom app.restApiRoot', function() {
     it('should serve correct swagger-ui config', function(done) {
-      var app = loopback();
+      const app = loopback();
       app.set('restApiRoot', '/rest-api-root');
-      app.set('remoting', { cors: false });
+      app.set('remoting', {cors: false});
       configureRestApiAndExplorer(app);
 
       request(app)
@@ -142,9 +144,9 @@ describe('explorer', function() {
       // SwaggerUI builds resource URL by concatenating basePath + resourcePath
       // Since the resource paths are always startign with a slash,
       // if the basePath ends with a slash too, an incorrect URL is produced
-      var app = loopback();
+      const app = loopback();
       app.set('restApiRoot', '/apis/');
-      app.set('remoting', { cors: false });
+      app.set('remoting', {cors: false});
       configureRestApiAndExplorer(app);
 
       request(app)
@@ -153,8 +155,8 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) return done(err);
 
-          var baseUrl = res.body.basePath;
-          var apiPath = Object.keys(res.body.paths)[0];
+          const baseUrl = res.body.basePath;
+          const apiPath = Object.keys(res.body.paths)[0];
           expect(baseUrl + apiPath).to.equal('/apis/products');
 
           done();
@@ -163,10 +165,10 @@ describe('explorer', function() {
   });
 
   describe('with custom front-end files', function() {
-    var app;
+    let app;
     beforeEach(function setupExplorerWithUiDirs() {
       app = loopback();
-      app.set('remoting', { cors: false });
+      app.set('remoting', {cors: false});
       explorer(app, {
         uiDirs: [path.resolve(__dirname, 'fixtures', 'dummy-swagger-ui')],
       });
@@ -189,7 +191,7 @@ describe('explorer', function() {
       request(app).get('/explorer/')
         .expect(200)
         .end(function(err, res) {
-          if (err) return done(er);
+          if (err) return done(err);
           // expect the content of `dummy-swagger-ui/index.html`
           expect(res.text).to.contain('custom index.html');
           done();
@@ -198,10 +200,10 @@ describe('explorer', function() {
   });
 
   describe('with swaggerUI option', function() {
-    var app;
+    let app;
     beforeEach(function setupExplorerWithoutUI() {
       app = loopback();
-      app.set('remoting', { cors: false });
+      app.set('remoting', {cors: false});
       explorer(app, {
         swaggerUI: false,
       });
@@ -234,11 +236,11 @@ describe('explorer', function() {
   });
 
   describe('explorer.routes API', function() {
-    var app;
+    let app;
     beforeEach(function() {
       app = loopback();
-      app.set('remoting', { cors: false });
-      var Product = loopback.PersistedModel.extend('product');
+      app.set('remoting', {cors: false});
+      const Product = loopback.PersistedModel.extend('product');
       Product.attachTo(loopback.memory());
       app.model(Product);
     });
@@ -256,10 +258,10 @@ describe('explorer', function() {
   });
 
   describe('when specifying custom static file root directories', function() {
-    var app;
+    let app;
     beforeEach(function() {
       app = loopback();
-      app.set('remoting', { cors: false });
+      app.set('remoting', {cors: false});
     });
 
     it('should allow `uiDirs` to be defined as an Array', function(done) {
@@ -294,8 +296,8 @@ describe('explorer', function() {
   });
 
   it('updates swagger object when a new model is added', function(done) {
-    var app = loopback();
-    app.set('remoting', { cors: false });
+    const app = loopback();
+    app.set('remoting', {cors: false});
     configureRestApiAndExplorer(app, '/explorer');
 
     // Ensure the swagger object was built
@@ -306,7 +308,7 @@ describe('explorer', function() {
         if (err) return done(err);
 
         // Create a new model
-        var Model = loopback.PersistedModel.extend('Customer');
+        const Model = loopback.PersistedModel.extend('Customer');
         Model.attachTo(loopback.memory());
         app.model(Model);
 
@@ -317,9 +319,9 @@ describe('explorer', function() {
           .end(function(err, res) {
             if (err) return done(err);
 
-            var modelNames = Object.keys(res.body.definitions);
+            const modelNames = Object.keys(res.body.definitions);
             expect(modelNames).to.contain('Customer');
-            var paths = Object.keys(res.body.paths);
+            const paths = Object.keys(res.body.paths);
             expect(paths).to.have.contain('/Customers');
 
             done();
@@ -328,11 +330,11 @@ describe('explorer', function() {
   });
 
   it('updates swagger object when a model is removed', function(done) {
-    var app = loopback();
-    app.set('remoting', { cors: false });
+    const app = loopback();
+    app.set('remoting', {cors: false});
     configureRestApiAndExplorer(app, '/explorer');
 
-    var Model = loopback.PersistedModel.extend('Customer');
+    const Model = loopback.PersistedModel.extend('Customer');
     Model.attachTo(loopback.memory());
     app.model(Model);
 
@@ -352,9 +354,9 @@ describe('explorer', function() {
           .end(function(err, res) {
             if (err) return done(err);
 
-            var modelNames = Object.keys(res.body.definitions);
+            const modelNames = Object.keys(res.body.definitions);
             expect(modelNames).to.not.contain('Customer');
-            var paths = Object.keys(res.body.paths);
+            const paths = Object.keys(res.body.paths);
             expect(paths).to.not.contain('/Customers');
 
             done();
@@ -363,8 +365,8 @@ describe('explorer', function() {
   });
 
   it('updates swagger object when a remote method is disabled', function(done) {
-    var app = loopback();
-    app.set('remoting', { cors: false });
+    const app = loopback();
+    app.set('remoting', {cors: false});
     configureRestApiAndExplorer(app, '/explorer');
 
     // Ensure the swagger object was built
@@ -375,10 +377,10 @@ describe('explorer', function() {
         if (err) return done(err);
 
         // Check the method that will be disabled
-        var paths = Object.keys(res.body.paths);
+        const paths = Object.keys(res.body.paths);
         expect(paths).to.contain('/products/findOne');
 
-        var Product = app.models.Product;
+        const Product = app.models.Product;
         Product.disableRemoteMethodByName('findOne');
 
         // Request swagger.json again
@@ -388,7 +390,7 @@ describe('explorer', function() {
           .end(function(err, res) {
             if (err) return done(err);
 
-            var paths = Object.keys(res.body.paths);
+            const paths = Object.keys(res.body.paths);
             expect(paths).to.not.contain('/products/findOne');
 
             done();
@@ -397,8 +399,8 @@ describe('explorer', function() {
   });
 
   it('updates swagger object when a remote method is added', function(done) {
-    var app = loopback();
-    app.set('remoting', { cors: false });
+    const app = loopback();
+    app.set('remoting', {cors: false});
     configureRestApiAndExplorer(app, '/explorer');
 
     // Ensure the swagger object was built
@@ -409,10 +411,10 @@ describe('explorer', function() {
         if (err) return done(err);
 
         // Check the method that will be disabled
-        var paths = Object.keys(res.body.paths);
+        const paths = Object.keys(res.body.paths);
         expect(paths).to.contain('/products/findOne');
 
-        var Product = app.models.Product;
+        const Product = app.models.Product;
         Product.findOne2 = function(cb) { cb(null, 1); };
         Product.remoteMethod('findOne2', {});
 
@@ -423,7 +425,7 @@ describe('explorer', function() {
           .end(function(err, res) {
             if (err) return done(err);
 
-            var paths = Object.keys(res.body.paths);
+            const paths = Object.keys(res.body.paths);
             expect(paths).to.contain('/products/findOne2');
 
             done();
@@ -433,8 +435,8 @@ describe('explorer', function() {
 
   function givenLoopBackAppWithExplorer(explorerBase) {
     return function(done) {
-      var app = this.app = loopback();
-      app.set('remoting', { cors: false });
+      const app = this.app = loopback();
+      app.set('remoting', {cors: false});
       configureRestApiAndExplorer(app, explorerBase);
 
       done();
@@ -442,11 +444,11 @@ describe('explorer', function() {
   }
 
   function configureRestApiAndExplorer(app, explorerBase) {
-    var Product = loopback.PersistedModel.extend('product');
+    const Product = loopback.PersistedModel.extend('product');
     Product.attachTo(loopback.memory());
     app.model(Product);
 
-    explorer(app, { mountPath: explorerBase });
+    explorer(app, {mountPath: explorerBase});
     app.set('legacyExplorer', false);
     app.use(app.get('restApiRoot') || '/', loopback.rest());
   }

@@ -3,24 +3,26 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
-var g = require('strong-globalize')();
+'use strict';
 
-var loopback = require('loopback');
-var app = loopback();
-var explorer = require('../');
-var port = 3000;
+const g = require('strong-globalize')();
 
-var User = loopback.Model.extend('user', {
+const loopback = require('loopback');
+const app = loopback();
+const explorer = require('../');
+const port = 3000;
+
+const User = loopback.Model.extend('user', {
   username: 'string',
   email: 'string',
   sensitiveInternalProperty: 'string',
-}, { hidden: ['sensitiveInternalProperty'] });
+}, {hidden: ['sensitiveInternalProperty']});
 
 User.attachTo(loopback.memory());
 app.model(User);
 
-var apiPath = '/api';
-explorer(app, { basePath: apiPath });
+const apiPath = '/api';
+explorer(app, {basePath: apiPath});
 app.use(apiPath, loopback.rest());
 g.log('{{Explorer}} mounted at {{localhost:%s/explorer}}', port);
 
