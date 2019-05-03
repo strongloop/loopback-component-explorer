@@ -20,7 +20,7 @@
     "api",
     "explorer"
   ],
-  "author": "Ritchie Martori",
+  "author": "IBM Corp.",
   "readmeFilename": "README.md",
   "bugs": {
     "url": "https://github.com/strongloop/loopback-component-explorer/issues"
