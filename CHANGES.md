@@ -1,3 +1,21 @@
+2019-05-10, Version 6.4.0
+=========================
+
+ * chore: update copyrights years (Agnes Lin)
+
+ * update README for LTS status (Diana Lau)
+
+ * Updated README with small code fix. (Pradeep Kumar Tippa)
+
+ * fix: update lodash (jannyHou)
+
+ * Prevent accidental upgrades to swagger-ui v3+ (Miroslav Bajtoš)
+
+ * Update eslint & config to latest major versions (Miroslav Bajtoš)
+
+ * Update eslint & config to latest (Miroslav Bajtoš)
+
+
 2018-10-18, Version 6.3.1
 =========================
 
