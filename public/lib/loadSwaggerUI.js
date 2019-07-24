@@ -122,6 +122,9 @@ $(function() {
         window.localStorage.removeItem(lsKey);
       }
     }
+    var timezoneHeader =
+      new SwaggerClient.ApiKeyAuthorization('X-Com-ApplaudSolutions-Timezone-Offset', new Date().getTimezoneOffset(), 'header');
+    window.swaggerUi.api.clientAuthorizations.add('timezoneHeader', timezoneHeader);
   }
 
   function onInputChange(e) {
