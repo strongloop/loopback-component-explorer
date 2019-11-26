@@ -90,6 +90,26 @@ Link: https://www.npmjs.com/advisories/976
 LoopBack 3 API Explorer does not support OAuth auth flow, that means
 loopback-component-explorer **IS NOT AFFECTED** by this vulnerability.
 
+### GitHub advisory CVE-2019-17495
+
+Link: https://github.com/advisories/GHSA-c427-hjc3-wrfw
+> A Cascading Style Sheets (CSS) injection vulnerability in Swagger UI before
+> 3.23.11 allows attackers to use the Relative Path Overwrite (RPO) technique
+> to perform CSS-based input field value exfiltration, such as exfiltration of
+> a CSRF token value.
+
+Quoting from the
+[disclosure](https://github.com/tarantula-team/CSS-injection-in-Swagger-UI/tree/15edeaaa5806aa8e83ee55d883f956a3c3573ac9):
+
+> We’ve observed that the `?url=` parameter in SwaggerUI allows an attacker to
+> override an otherwise hard-coded schema file.  We realize that Swagger UI
+> allows users to embed untrusted Json format from remote servers This means we
+> can inject json content via the GET parameter to victim Swagger UI.  etc.
+
+LoopBack 3 API Explorer does not suport `?url=` parameter, it always loads the
+Swagger spec file from the LoopBack server serving the Explorer UI. That means
+loopback-component-explorer **IS NOT AFFECTED** by this vulnerability.
+
 ## Upgrading from v1.x
 
 To upgrade your application using loopback-explorer version 1.x, just replace
