@@ -1,4 +1,22 @@
-2019-05-10, Version 6.4.0
+2019-11-28, Version 6.5.0
+=========================
+
+ * docs: describe GitHub advisory CVE-2019-17495 (Miroslav Bajtoš)
+
+ * chore: improve README formatting (Miroslav Bajtoš)
+
+ * Update README on swagger-ui (Diana Lau)
+
+ * chore: improve issue and PR templates (Nora)
+
+ * chore: add Node.js 12 to travis ci (Nora)
+
+ * chore: drop support for Node.js 6 (Nora)
+
+ * update LTS (Diana Lau)
+
+
+2019-05-09, Version 6.4.0
 =========================
 
  * chore: update copyrights years (Agnes Lin)
