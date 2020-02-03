@@ -34,6 +34,7 @@ body #header a#logo {
 
 body #header form#api_selector .input a#explore {
   background-color: #7dbd33 !important;
+  cursor: pointer;
 }
 
 
