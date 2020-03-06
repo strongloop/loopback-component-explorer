@@ -1,3 +1,11 @@
+2020-03-06, Version 6.5.1
+=========================
+
+ * Update LTS status in README (Miroslav Bajtoš)
+
+ * Cursor is made pointer of the add token button (Siraj Alam)
+
+
 2019-11-28, Version 6.5.0
 =========================
 
