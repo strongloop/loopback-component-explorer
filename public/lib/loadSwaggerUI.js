@@ -35,10 +35,14 @@ $(function() {
     var methodOrder = ['get', 'head', 'options', 'put', 'post', 'delete'];
     var url = config.url || '/swagger/resources';
     var model = GetParameterValues('model');
+    var type = GetParameterValues('type');
     var token = window.localStorage.getItem(appKey);
     if (model) {
       url += (url.indexOf('?') > 0 ? '&' : '?') + 'model=' + model;
       $('body').addClass('stripped');
+    }
+    if (type) {
+      url += (url.indexOf('?') > 0 ? '&' : '?') + 'type=' + type;
     }
     if (token) {
       url += (url.indexOf('?') > 0 ? '&' : '?') + 'acccess_token=' + token;

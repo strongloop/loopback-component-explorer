@@ -138,14 +138,18 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
     }; //list of APIs to hide from UI.
     const blackListKeys = _.keys(blackListApi);
     const blackListValues = _.values(blackListApi);
+    const isStandardModel = req.query.type === 'seed';
     if (tenantId) {
-      swaggerFilterPath = '/custom/' + tenantId;
+      let Model;
+      if (isStandardModel) swaggerFilterPath = '/';
+      else swaggerFilterPath = '/custom/' + tenantId + '-';
       if (req.query && req.query.model) {
-        const modelName = tenantId + '-' + req.query.model;
+        const modelName = isStandardModel ? req.query.model : tenantId + '-' + req.query.model;
         const modelDef = req.app.models[modelName];
+        Model = modelDef;
         if (modelDef && modelDef.definition && modelDef.definition.settings && modelDef.definition.settings.slug) {
-          swaggerFilterPath += '-' + modelDef.definition.settings.slug;
-        } else swaggerFilterPath += '-' + req.query.model;
+          swaggerFilterPath += modelDef.definition.settings.slug;
+        } else swaggerFilterPath += req.query.model;
       }
 
       if (swaggerObject && swaggerObject.paths) {
@@ -189,7 +193,7 @@ function mountSwagger(loopbackApplication, swaggerApp, opts) {
         }, {});
         const includeDefaultDefinitions = ['ObjectID', 'x-any'];
         filteredSwaggerObject.definitions = _.pickBy(swaggerObject.definitions, function(val, key) {
-          return key.startsWith(tenantId) || includeDefaultDefinitions.indexOf(key) !== -1;
+          return (Model && Model.modelName === key) || key.startsWith(tenantId) || includeDefaultDefinitions.indexOf(key) !== -1;
         });
         res.status(200).send(filteredSwaggerObject);
       } else {
