@@ -39,7 +39,7 @@
     "debug": "^2.2.0",
     "depd": "^1.1.0",
     "lodash": "^4.17.4",
-    "loopback-swagger": "5.7.3",
+    "loopback-swagger": "github:ApplaudSolutions/loopback-swagger#applaud-cloud",
     "strong-globalize": "^2.6.2",
     "swagger-ui": "^2.2.5"
   }
