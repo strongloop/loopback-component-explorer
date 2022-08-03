@@ -5,29 +5,12 @@
 
 'use strict';
 
-// NOTE(bajtos) It's important to run this check before we load the Explorer
-// because require() may fail (e.g. with MODULE_NOT_FOUND error) and make
-// it difficult to identify the actual problem
-const uiVersion = require('../package.json').dependencies['swagger-ui'];
-if (!uiVersion.startsWith('^2')) {
-  console.error(`
-Upgrading from swagger-ui@2 to a newer major version (${uiVersion}) is difficult,
-see https://github.com/strongloop/loopback-component-explorer/issues/254
-If you are confident about this change and have manually verified API Explorer
-functionality in the browser, including access-token based authentication,
-then you can delete this check.
-`);
-  process.exit(2);
-}
-
 const loopback = require('loopback');
 const explorer = require('../');
 const request = require('supertest');
 const assert = require('assert');
 const path = require('path');
 const expect = require('chai').expect;
-const urlJoin = require('../lib/url-join');
-const os = require('os');
 
 describe('explorer', function() {
   describe('with default config', function() {

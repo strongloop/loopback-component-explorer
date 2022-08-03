@@ -7,13 +7,10 @@
   },
   "main": "index.js",
   "scripts": {
+    "preinstall": "npx force-resolutions",
     "lint": "eslint .",
     "test": "mocha",
     "posttest": "npm run lint"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/strongloop/loopback-component-explorer.git"
   },
   "keywords": [
     "loopback",
@@ -22,9 +19,6 @@
   ],
   "author": "IBM Corp.",
   "readmeFilename": "README.md",
-  "bugs": {
-    "url": "https://github.com/strongloop/loopback-component-explorer/issues"
-  },
   "devDependencies": {
     "chai": "^3.2.0",
     "eslint": "^5.13.0",
@@ -39,6 +33,10 @@
     "lodash": "^4.17.11",
     "loopback-swagger": "^5.0.0",
     "strong-globalize": "^4.1.1",
-    "swagger-ui": "^2.2.5"
+    "swagger-ui-dist": "^4.13.2"
+  },
+  "resolutions": {
+    "minimist": "1.2.6",
+    "ejs": "3.1.8"
   }
 }
