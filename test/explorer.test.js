@@ -13,6 +13,27 @@ const path = require('path');
 const expect = require('chai').expect;
 
 describe('explorer', function() {
+
+  function configureRestApiAndExplorer(app, explorerBase) {
+    const Product = loopback.PersistedModel.extend('product');
+    Product.attachTo(loopback.memory());
+    app.model(Product);
+
+    explorer(app, {mountPath: explorerBase});
+    app.set('legacyExplorer', false);
+    app.use(app.get('restApiRoot') || '/', loopback.rest());
+  }
+
+  function givenLoopBackAppWithExplorer(explorerBase) {
+    return function(done) {
+      const app = this.app = loopback();
+      app.set('remoting', {cors: false});
+      configureRestApiAndExplorer(app, explorerBase);
+
+      done();
+    };
+  }
+
   describe('with default config', function() {
     beforeEach(givenLoopBackAppWithExplorer());
 
@@ -36,7 +57,7 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) return done(err);
 
-          assert(!!~res.text.indexOf('<title>LoopBack API Explorer</title>'),
+          assert(Boolean(res.text.indexOf('<title>LoopBack API Explorer</title>') !== -1),
             'text does not contain expected string');
 
           done();
@@ -70,7 +91,7 @@ describe('explorer', function() {
         .end(function(err, res) {
           if (err) throw err;
 
-          assert(!!~res.text.indexOf('<title>LoopBack API Explorer</title>'),
+          assert(Boolean(res.text.indexOf('<title>LoopBack API Explorer</title>') !== -1),
             'text does not contain expected string');
 
           done();
@@ -413,7 +434,7 @@ describe('explorer', function() {
         expect(paths).to.contain('/products/findOne');
 
         const Product = app.models.Product;
-        Product.findOne2 = function(cb) { cb(null, 1); };
+        Product.findOne2 = (cb) => cb(null, 1);
         Product.remoteMethod('findOne2', {});
 
         // Request swagger.json again
@@ -430,24 +451,4 @@ describe('explorer', function() {
           });
       });
   });
-
-  function givenLoopBackAppWithExplorer(explorerBase) {
-    return function(done) {
-      const app = this.app = loopback();
-      app.set('remoting', {cors: false});
-      configureRestApiAndExplorer(app, explorerBase);
-
-      done();
-    };
-  }
-
-  function configureRestApiAndExplorer(app, explorerBase) {
-    const Product = loopback.PersistedModel.extend('product');
-    Product.attachTo(loopback.memory());
-    app.model(Product);
-
-    explorer(app, {mountPath: explorerBase});
-    app.set('legacyExplorer', false);
-    app.use(app.get('restApiRoot') || '/', loopback.rest());
-  }
 });

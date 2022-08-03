@@ -21,8 +21,9 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "chai": "^3.2.0",
-    "eslint": "^5.13.0",
+    "eslint": "^8.11.0",
     "eslint-config-loopback": "^13.0.0",
+    "eslint-config-plume": "git+ssh://git@github.com/plume-design/eslint-config-plume.git#1.1.4",
     "loopback": "^3.19.0",
     "mocha": "^5.2.0",
     "supertest": "^3.1.0"

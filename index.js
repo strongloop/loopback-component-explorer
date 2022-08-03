@@ -5,10 +5,6 @@
 
 'use strict';
 
-const SG = require('strong-globalize');
-SG.SetRootDir(__dirname);
-const g = SG();
-
 /*!
  * Adds dynamically-updated docs as /explorer
  */
@@ -20,38 +16,48 @@ const createSwaggerObject = require('loopback-swagger').generateSwaggerSpec;
 const SWAGGER_UI_ROOT = require('swagger-ui-dist').absolutePath();
 const STATIC_ROOT = path.join(__dirname, 'public');
 
-module.exports = explorer;
-explorer.routes = routes;
 
 /**
- * Example usage:
+ * Setup Swagger documentation on the given express app.
  *
- * var explorer = require('loopback-component-explorer');
- * explorer(app, options);
+ * @param {Application} loopbackApplication The loopback application to
+ * document.
+ * @param {Application} swaggerApp Swagger application used for hosting
+ * swagger documentation.
+ * @param {Object} opts Options.
  */
+function mountSwagger(loopbackApplication, swaggerApp, opts) {
+  let swaggerObject = createSwaggerObject(loopbackApplication, opts);
 
-function explorer(loopbackApplication, options) {
-  options = _defaults({}, options, {mountPath: '/explorer'});
-  loopbackApplication.use(
-    options.mountPath,
-    routes(loopbackApplication, options)
-  );
-  loopbackApplication.set('loopback-component-explorer', options);
+  function rebuildSwaggerObject() {
+    swaggerObject = createSwaggerObject(loopbackApplication, opts);
+  }
+
+  // listening to modelRemoted event for updating the swaggerObject
+  // with the newly created model to appear in the Swagger UI.
+  loopbackApplication.on('modelRemoted', rebuildSwaggerObject);
+
+  loopbackApplication.on('modelDeleted', rebuildSwaggerObject);
+
+  // listening to started event for updating the swaggerObject
+  // when a call to app.models.[modelName].nestRemoting([modelName])
+  // to appear that method in the Swagger UI.
+  loopbackApplication.on('remoteMethodAdded', rebuildSwaggerObject);
+
+  // listening to remoteMethodDisabled event for updating the swaggerObject
+  // when a remote method is disabled to hide that method in the Swagger UI.
+  loopbackApplication.on('remoteMethodDisabled', rebuildSwaggerObject);
+
+  let resourcePath = (opts && opts.resourcePath) || 'swagger.json';
+  if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
+
+  swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
+    res.status(200).send(swaggerObject);
+  });
 }
 
 function routes(loopbackApplication, options) {
   const loopback = loopbackApplication.loopback;
-  const loopbackMajor =
-    (loopback && loopback.version && loopback.version.split('.')[0]) || 1;
-
-  if (loopbackMajor < 2) {
-    throw new Error(
-      g.f(
-        '{{loopback-component-explorer}} requires ' +
-          '{{loopback}} 2.0 or newer'
-      )
-    );
-  }
 
   options = _defaults({}, options, {
     resourcePath: 'swagger.json',
@@ -109,40 +115,20 @@ function routes(loopbackApplication, options) {
 }
 
 /**
- * Setup Swagger documentation on the given express app.
+ * Example usage:
  *
- * @param {Application} loopbackApplication The loopback application to
- * document.
- * @param {Application} swaggerApp Swagger application used for hosting
- * swagger documentation.
- * @param {Object} opts Options.
+ * var explorer = require('loopback-component-explorer');
+ * explorer(app, options);
  */
-function mountSwagger(loopbackApplication, swaggerApp, opts) {
-  let swaggerObject = createSwaggerObject(loopbackApplication, opts);
 
-  // listening to modelRemoted event for updating the swaggerObject
-  // with the newly created model to appear in the Swagger UI.
-  loopbackApplication.on('modelRemoted', rebuildSwaggerObject);
-
-  loopbackApplication.on('modelDeleted', rebuildSwaggerObject);
-
-  // listening to started event for updating the swaggerObject
-  // when a call to app.models.[modelName].nestRemoting([modelName])
-  // to appear that method in the Swagger UI.
-  loopbackApplication.on('remoteMethodAdded', rebuildSwaggerObject);
-
-  // listening to remoteMethodDisabled event for updating the swaggerObject
-  // when a remote method is disabled to hide that method in the Swagger UI.
-  loopbackApplication.on('remoteMethodDisabled', rebuildSwaggerObject);
-
-  let resourcePath = (opts && opts.resourcePath) || 'swagger.json';
-  if (resourcePath[0] !== '/') resourcePath = '/' + resourcePath;
-
-  swaggerApp.get(resourcePath, function sendSwaggerObject(req, res) {
-    res.status(200).send(swaggerObject);
-  });
-
-  function rebuildSwaggerObject() {
-    swaggerObject = createSwaggerObject(loopbackApplication, opts);
-  }
+function explorer(loopbackApplication, options) {
+  options = _defaults({}, options, {mountPath: '/explorer'});
+  loopbackApplication.use(
+    options.mountPath,
+    routes(loopbackApplication, options)
+  );
+  loopbackApplication.set('loopback-component-explorer', options);
 }
+
+module.exports = explorer;
+explorer.routes = routes;
